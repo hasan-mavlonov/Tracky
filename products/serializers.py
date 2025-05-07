@@ -6,7 +6,7 @@ from decimal import Decimal
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['name', 'barcode', 'RFID', 'bought_price', 'selling_price']
+        fields = ['name', 'barcode', 'shop', 'RFID', 'bought_price', 'selling_price']
 
     def validate_bought_price(self, value):
         if value <= 0:
