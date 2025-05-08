@@ -1,0 +1,55 @@
+<form id="productForm">
+    {% csrf_token %}
+    <label for="name">Product Name:</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="barcode">Barcode:</label>
+    <input type="text" id="barcode" name="barcode" placeholder="Optional">
+
+    <button type="button" id="generateBarcodeBtn">Generate Barcode</button>
+
+    <label for="shop">Shop:</label>
+    <select name="shop" id="shop">
+        <!-- Populate this with shop data -->
+    </select>
+
+    <label for="bought_price">Bought Price:</label>
+    <input type="number" name="bought_price" required>
+
+    <label for="selling_price">Selling Price:</label>
+    <input type="number" name="selling_price" required>
+
+    <button type="submit">Submit</button>
+</form>
+
+
+<script>
+    document.getElementById('generateBarcodeBtn').addEventListener('click', function () {
+        const productName = document.getElementById('name').value;
+
+        // Get CSRF token from the cookie or hidden input
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        // Call your barcode generation API
+        fetch('/products/api/generate-barcode/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken,  // Include CSRF token here
+            },
+            body: JSON.stringify({name: productName}),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.barcode) {
+                    document.getElementById('barcode').value = data.barcode;  // Populate barcode field
+                } else {
+                    alert("Barcode generation failed!");
+                }
+            })
+            .catch(error => {
+                console.error('Error generating barcode:', error);
+                alert('Error generating barcode!');
+            });
+    });
+</script>

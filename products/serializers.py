@@ -5,7 +5,8 @@ from .models import Product
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['name', 'barcode', 'shop', 'RFID', 'bought_price', 'selling_price']
+        fields = ['id', 'name', 'barcode', 'RFID', 'bought_price', 'selling_price', 'shop']
+        read_only_fields = ['created_at']
 
     def validate_bought_price(self, value):
         if value <= 0:
