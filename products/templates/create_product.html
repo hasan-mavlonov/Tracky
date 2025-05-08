@@ -1,4 +1,4 @@
-<form id="productForm">
+<form id="productForm" method="POST" action="/products/create/">
     {% csrf_token %}
     <label for="name">Product Name:</label>
     <input type="text" id="name" name="name" required>
@@ -10,8 +10,11 @@
 
     <label for="shop">Shop:</label>
     <select name="shop" id="shop">
-        <!-- Populate this with shop data -->
+        {% for shop in shops %}
+            <option value="{{ shop.id }}">{{ shop.name }}</option>
+        {% endfor %}
     </select>
+
 
     <label for="bought_price">Bought Price:</label>
     <input type="number" name="bought_price" required>

@@ -3,6 +3,8 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, status
 from rest_framework.response import Response
+
+from shops.models import Shop
 from .models import Product
 from .serializers import ProductSerializer
 from django.http import JsonResponse
@@ -15,11 +17,12 @@ class ProductCreateAPIView(generics.CreateAPIView):
     serializer_class = ProductSerializer
 
     def get(self, request, *args, **kwargs):
-        # This handles rendering the HTML template when the user accesses the page
-        return render(request, 'create_product.html')
+        # Fetch all shops from the database and pass them to the template
+        shops = Shop.objects.all()
+        return render(request, 'create_product.html', {'shops': shops})
 
     def post(self, request, *args, **kwargs):
-        # This handles the API request to create the product when the form is submitted
+        # Handle form submission and product creation
         barcode = request.data.get('barcode', None)
         serializer = self.get_serializer(data=request.data)
 
