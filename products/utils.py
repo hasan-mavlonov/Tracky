@@ -1,9 +1,7 @@
-import barcode
-from barcode.writer import ImageWriter
-from io import BytesIO
-from django.core.files.base import ContentFile
 import random
 import string
+import barcode
+from barcode.writer import ImageWriter
 
 
 def generate_barcode(product_name):
@@ -15,3 +13,8 @@ def generate_barcode(product_name):
     barcode_image = "dummy_image_url"  # Replace this with actual barcode image generation logic
 
     return barcode_image, barcode_code
+
+
+def generate_barcode_image(barcode_number):
+    ean = barcode.get('ean13', barcode_number, writer=ImageWriter())
+    return ean.render()  # this returns a PIL image

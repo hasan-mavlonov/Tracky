@@ -1,16 +1,17 @@
 # products/views.py
-from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, status
 from rest_framework.response import Response
-
 from shops.models import Shop
-from .models import Product
 from .serializers import ProductSerializer
 from django.http import JsonResponse
 from .utils import generate_barcode
 import json
-
+import base64
+from io import BytesIO
+from django.shortcuts import render, get_object_or_404
+from .models import Product
+from .utils import generate_barcode_image
 
 class ProductCreateAPIView(generics.CreateAPIView):
     queryset = Product.objects.all()
@@ -96,3 +97,22 @@ def generate_barcode_view(request):
 
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+
+def print_product_barcode_view(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+
+    image_base64 = None
+    if product.barcode:
+        try:
+            image = generate_barcode_image(product.barcode)  # returns PIL image
+            buffer = BytesIO()
+            image.save(buffer, format="PNG")
+            image_base64 = base64.b64encode(buffer.getvalue()).decode()
+        except Exception as e:
+            print(f"Error generating barcode: {e}")
+
+    return render(request, 'print_barcode.html', {
+        'product': product,
+        'barcode_image': image_base64
+    })

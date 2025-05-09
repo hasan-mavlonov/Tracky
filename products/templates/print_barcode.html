@@ -1,0 +1,93 @@
+<!-- templates/print_barcode.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Print Barcode</title>
+    <style>
+        @page {
+            size: 58mm 30mm;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            width: 58mm;
+            height: 30mm;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .product-name {
+            font-size: 8pt;
+            font-weight: bold;
+            text-align: center;
+            margin: 2mm 0 0 0;
+            padding: 0;
+            width: 100%;
+            line-height: 1.2;
+            max-height: 12mm;
+            overflow: hidden;
+            text-transform: uppercase;
+        }
+
+        .product-price {
+            font-size: 10pt;
+            font-weight: bold;
+            text-align: center;
+            margin: 1mm 0;
+            padding: 0;
+        }
+
+        .barcode-container {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 2mm;
+        }
+
+        .barcode {
+            max-width: 90%;
+            max-height: 12mm;
+            object-fit: contain;
+        }
+
+        .barcode-number {
+            font-size: 8pt;
+            text-align: center;
+            margin: 0.5mm 0 0 0;
+            padding: 0;
+            letter-spacing: 1px;
+            font-family: 'Courier New', monospace;
+        }
+
+        @media print {
+            button {
+                display: none;
+            }
+        }
+    </style>
+    <script>
+        window.onload = function () {
+            window.print();
+        }
+    </script>
+</head>
+<body>
+    <p class="product-name">{{ product.name }}</p>
+    <p class="product-price">{{ product.selling_price }} UZS</p>
+    <div class="barcode-container">
+        {% if barcode_image %}
+            <img class="barcode" src="data:image/png;base64,{{ barcode_image }}" alt="Barcode">
+        {% else %}
+            <p style="color: red; font-size: 8pt;">Barcode missing</p>
+        {% endif %}
+        <p class="barcode-number">{{ product.barcode }}</p>
+    </div>
+</body>
+</html>
