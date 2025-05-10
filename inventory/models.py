@@ -35,3 +35,5 @@ class ShopInventory(models.Model):
 
     def __str__(self):
         return f"{self.shop.name} - {self.product.name} ({self.stock_quantity})"
+
+

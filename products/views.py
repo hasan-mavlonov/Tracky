@@ -10,8 +10,9 @@ import json
 import base64
 from io import BytesIO
 from django.shortcuts import render, get_object_or_404
-from .models import Product
+from .models import Product, ProductInstance
 from .utils import generate_barcode_image
+
 
 class ProductCreateAPIView(generics.CreateAPIView):
     queryset = Product.objects.all()
@@ -100,19 +101,43 @@ def generate_barcode_view(request):
 
 
 def print_product_barcode_view(request, pk):
+    # load product
     product = get_object_or_404(Product, pk=pk)
 
-    image_base64 = None
-    if product.barcode:
-        try:
-            image = generate_barcode_image(product.barcode)  # returns PIL image
-            buffer = BytesIO()
-            image.save(buffer, format="PNG")
-            image_base64 = base64.b64encode(buffer.getvalue()).decode()
-        except Exception as e:
-            print(f"Error generating barcode: {e}")
+    # queue this product for the next RFID scan
+    request.session['pending_print_pk'] = product.pk
+
+    # render barcode image to base64
+    image = generate_barcode_image(product.barcode)
+    buf = BytesIO()
+    image.save(buf, format="PNG")
+    img_b64 = base64.b64encode(buf.getvalue()).decode()
 
     return render(request, 'print_barcode.html', {
         'product': product,
-        'barcode_image': image_base64
+        'barcode_image': img_b64,
     })
+
+
+@csrf_exempt
+def bind_rfid_view(request, pk):
+    # only POST from the scanner
+    if request.method == 'POST':
+        rfid_code = request.POST.get('rfid', '').strip()
+        pending_pk = request.session.get('pending_print_pk')
+
+        if not pending_pk or pending_pk != pk:
+            return JsonResponse({'status': 'error', 'message': 'No matching print job queued.'}, status=400)
+
+        if not rfid_code:
+            return JsonResponse({'status': 'error', 'message': 'No RFID received.'}, status=400)
+
+        product = get_object_or_404(Product, pk=pk)
+        # create the physical instance
+        ProductInstance.objects.create(product=product, RFID=rfid_code)
+        # clear queue
+        del request.session['pending_print_pk']
+
+        return JsonResponse({'status': 'success', 'message': f'RFID {rfid_code} bound.'})
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid method.'}, status=405)

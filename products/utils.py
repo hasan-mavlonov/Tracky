@@ -16,5 +16,6 @@ def generate_barcode(product_name):
 
 
 def generate_barcode_image(barcode_number):
-    ean = barcode.get('ean13', barcode_number, writer=ImageWriter())
-    return ean.render()  # this returns a PIL image
+    code = barcode.get('code128', barcode_number, writer=ImageWriter())
+    return code.render()
+
