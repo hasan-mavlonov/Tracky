@@ -8,10 +8,15 @@ class Product(models.Model):
     """Represents a product type with common attributes"""
     name = models.CharField(max_length=255)
     barcode = models.CharField(max_length=100, unique=True)  # Shared across all instances
+    RFID = models.CharField(max_length=100, unique=True, null=True, blank=True)
     bought_price = models.DecimalField(max_digits=10, decimal_places=2)
     selling_price = models.DecimalField(max_digits=10, decimal_places=2)
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def has_rfid(self):
+        """Check if the product has an RFID assigned"""
+        return self.RFID is not None and self.RFID.strip() != ''
 
     class Meta:
         indexes = [
@@ -20,6 +25,7 @@ class Product(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.barcode})"
+
 
 class ProductInstance(models.Model):
     """Represents a physical item with unique RFID"""
