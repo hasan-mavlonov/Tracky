@@ -9,7 +9,7 @@ from .utils import generate_barcode
 import json
 import base64
 from io import BytesIO
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Product, ProductInstance
 from .utils import generate_barcode_image
 
@@ -101,30 +101,39 @@ def generate_barcode_view(request):
 
 
 def print_product_barcode_view(request, pk):
-    # load product
     product = get_object_or_404(Product, pk=pk)
 
-    # queue this product for the next RFID scan
-    request.session['pending_print_pk'] = product.pk
+    if request.method == 'POST':
+        qty = int(request.POST.get('quantity', 1))
 
-    # render barcode image to base64
-    image = generate_barcode_image(product.barcode)
-    buf = BytesIO()
-    image.save(buf, format="PNG")
-    img_b64 = base64.b64encode(buf.getvalue()).decode()
+        # Save info for RFID binding
+        request.session['pending_print_pk'] = product.pk
+        request.session['pending_print_qty'] = qty
+        request.session['bound_rfids'] = []
 
-    return render(request, 'print_barcode.html', {
-        'product': product,
-        'barcode_image': img_b64,
-    })
+        # Generate barcode image once
+        image = generate_barcode_image(product.barcode)
+        buf = BytesIO()
+        image.save(buf, format="PNG")
+        img_b64 = base64.b64encode(buf.getvalue()).decode()
+
+        return render(request, 'print_barcode.html', {
+            'product': product,
+            'quantity_range': range(qty),
+            'img_b64': img_b64,
+        })
+
+    return render(request, 'choose_quantity.html', {'product': product})
+
 
 
 @csrf_exempt
 def bind_rfid_view(request, pk):
-    # only POST from the scanner
     if request.method == 'POST':
         rfid_code = request.POST.get('rfid', '').strip()
         pending_pk = request.session.get('pending_print_pk')
+        qty = request.session.get('pending_print_qty', 0)
+        bound_rfids = request.session.get('bound_rfids', [])
 
         if not pending_pk or pending_pk != pk:
             return JsonResponse({'status': 'error', 'message': 'No matching print job queued.'}, status=400)
@@ -132,12 +141,29 @@ def bind_rfid_view(request, pk):
         if not rfid_code:
             return JsonResponse({'status': 'error', 'message': 'No RFID received.'}, status=400)
 
-        product = get_object_or_404(Product, pk=pk)
-        # create the physical instance
-        ProductInstance.objects.create(product=product, RFID=rfid_code)
-        # clear queue
-        del request.session['pending_print_pk']
+        if rfid_code in bound_rfids:
+            return JsonResponse({'status': 'error', 'message': 'RFID already bound.'}, status=400)
 
-        return JsonResponse({'status': 'success', 'message': f'RFID {rfid_code} bound.'})
+        product = get_object_or_404(Product, pk=pk)
+        ProductInstance.objects.create(product=product, RFID=rfid_code)
+
+        bound_rfids.append(rfid_code)
+        request.session['bound_rfids'] = bound_rfids
+
+        if len(bound_rfids) >= qty:
+            del request.session['pending_print_pk']
+            del request.session['pending_print_qty']
+            del request.session['bound_rfids']
+            return JsonResponse({'status': 'done', 'message': 'All RFIDs bound.'})
+
+        return JsonResponse({'status': 'success', 'message': f'RFID {rfid_code} bound. {qty - len(bound_rfids)} left.'})
 
     return JsonResponse({'status': 'error', 'message': 'Invalid method.'}, status=405)
+
+
+def choose_quantity_view(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == 'POST':
+        qty = int(request.POST.get('quantity', 1))
+        return redirect(f'/print-barcode/{pk}/?qty={qty}')
+    return render(request, 'choose_quantity.html', {'product': product})
