@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bind RFIDs</title>
+    <script>
+        window.onload = () => {
+            const input = document.getElementById('rfidInput');
+            input.focus();
+
+            input.addEventListener('keydown', async (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();  // prevent form from submitting normally
+
+                    const rfid = input.value.trim();
+                    if (!rfid) return;
+
+                    const response = await fetch("{% url 'bind_rfid' product.pk %}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: new URLSearchParams({ rfid })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.status === 'done') {
+                        document.body.innerHTML = '<h3>✅ All RFIDs successfully bound.</h3>';
+                    } else if (data.status === 'success') {
+                        document.getElementById('status').textContent = data.message;
+                        input.value = '';
+                        input.focus();
+                    } else {
+                        document.getElementById('status').textContent = `❌ ${data.message}`;
+                        input.value = '';
+                        input.focus();
+                    }
+                }
+            });
+        };
+    </script>
+</head>
+<body>
+<h3>Binding RFIDs for: {{ product.name }}</h3>
+<p id="status">Remaining: {{ remaining }}</p>
+
+<input id="rfidInput" style="opacity:0;position:absolute;" autocomplete="off">
+</body>
+</html>

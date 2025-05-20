@@ -4,7 +4,7 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from shops.models import Shop
 from .serializers import ProductSerializer
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from .utils import generate_barcode
 import json
 import base64
@@ -126,14 +126,13 @@ def print_product_barcode_view(request, pk):
     return render(request, 'choose_quantity.html', {'product': product})
 
 
-
-@csrf_exempt
 def bind_rfid_view(request, pk):
+    pending_pk = request.session.get('pending_print_pk')
+    qty = request.session.get('pending_print_qty', 0)
+    bound_rfids = request.session.get('bound_rfids', [])
+
     if request.method == 'POST':
         rfid_code = request.POST.get('rfid', '').strip()
-        pending_pk = request.session.get('pending_print_pk')
-        qty = request.session.get('pending_print_qty', 0)
-        bound_rfids = request.session.get('bound_rfids', [])
 
         if not pending_pk or pending_pk != pk:
             return JsonResponse({'status': 'error', 'message': 'No matching print job queued.'}, status=400)
@@ -157,6 +156,17 @@ def bind_rfid_view(request, pk):
             return JsonResponse({'status': 'done', 'message': 'All RFIDs bound.'})
 
         return JsonResponse({'status': 'success', 'message': f'RFID {rfid_code} bound. {qty - len(bound_rfids)} left.'})
+
+    elif request.method == 'GET':
+        if not pending_pk or pending_pk != pk:
+            return HttpResponse("No RFID binding session found.", status=400)
+
+        product = get_object_or_404(Product, pk=pk)
+        remaining = qty - len(bound_rfids)
+        return render(request, 'bind_rfids.html', {
+            'product': product,
+            'remaining': remaining
+        })
 
     return JsonResponse({'status': 'error', 'message': 'Invalid method.'}, status=405)
 

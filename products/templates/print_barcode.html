@@ -56,10 +56,14 @@
     </style>
     <script>
         window.onload = () => {
-            // focus hidden RFID field so scanner input goes there
             document.getElementById('rfidInput').focus();
-            // trigger print
             window.print();
+
+            setTimeout(() => {
+                // Remove this if it feels too slow or auto-bind should start instantly
+                window.location.href = "{% url 'bind_rfid' product.pk %}";
+            }, 500); // 500ms instead of 2000ms, or trigger earlier
+
         };
 
         // when scanner “types” and hits Enter, submit to bind endpoint
