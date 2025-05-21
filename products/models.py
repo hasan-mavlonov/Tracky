@@ -45,6 +45,9 @@ class ProductInstance(models.Model):
 
     class Meta:
         unique_together = ('RFID', 'product')
+        indexes = [
+            models.Index(fields=["RFID"]),
+        ]
 
     def __str__(self):
         return f"{self.product.name} - {self.RFID}"

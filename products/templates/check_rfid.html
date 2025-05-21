@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Check Product by RFID</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 2rem;
+        }
+
+        #productInfo {
+            margin-top: 1rem;
+            border: 1px solid #ddd;
+            padding: 1rem;
+            border-radius: 5px;
+            display: none;
+        }
+
+        #notFound {
+            margin-top: 1rem;
+            color: red;
+            font-weight: bold;
+            display: none;
+        }
+    </style>
+    <script>
+        window.onload = () => {
+            const input = document.getElementById('rfidInput');
+            input.focus();
+
+            input.addEventListener('keydown', async (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const rfid = input.value.trim();
+                    if (!rfid) return;
+
+                    const response = await fetch("{% url 'lookup_rfid' %}", {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: new URLSearchParams({rfid})
+                    });
+
+                    const data = await response.json();
+
+                    if (data.status === 'success') {
+                        document.getElementById('productName').textContent = data.product.name;
+                        document.getElementById('productPrice').textContent = data.product.price + ' UZS';
+                        document.getElementById('productBarcode').textContent = data.product.barcode;
+                        document.getElementById('productInfo').style.display = 'block';
+                        document.getElementById('notFound').style.display = 'none';
+                    } else {
+                        document.getElementById('productInfo').style.display = 'none';
+                        document.getElementById('notFound').style.display = 'block';
+                    }
+
+                    input.value = '';
+                    input.focus();
+                }
+            });
+        };
+    </script>
+</head>
+<body>
+<h2>🔍 Check Product by RFID</h2>
+
+<input id="rfidInput" style="opacity:0; position:absolute;" autocomplete="off">
+
+<div id="productInfo">
+    <p><strong>Name:</strong> <span id="productName"></span></p>
+    <p><strong>Price:</strong> <span id="productPrice"></span></p>
+    <p><strong>Barcode:</strong> <span id="productBarcode"></span></p>
+</div>
+
+<div id="notFound">❌ Product not found.</div>
+</body>
+</html>

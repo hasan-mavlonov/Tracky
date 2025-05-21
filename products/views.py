@@ -187,3 +187,31 @@ def cancel_print_session(request):
         request.session.pop('bound_rfids', None)
         return JsonResponse({'status': 'cancelled'})
     return JsonResponse({'status': 'error'}, status=405)
+
+
+def check_rfid_view(request):
+    return render(request, "check_rfid.html")
+
+
+@csrf_exempt
+def lookup_rfid_view(request):
+    if request.method == "POST":
+        rfid = request.POST.get("rfid", "").strip()
+        if not rfid:
+            return JsonResponse({"status": "error", "message": "No RFID provided"})
+
+        instance = ProductInstance.objects.select_related("product").filter(RFID=rfid).first()
+        if instance:
+            product = instance.product
+            return JsonResponse({
+                "status": "success",
+                "product": {
+                    "name": product.name,
+                    "price": product.selling_price,
+                    "barcode": product.barcode,
+                }
+            })
+        else:
+            return JsonResponse({"status": "not_found", "message": "RFID not found"})
+
+    return JsonResponse({"status": "error", "message": "Invalid request"})
