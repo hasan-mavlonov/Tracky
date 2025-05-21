@@ -5,16 +5,20 @@
     <title>Check Product by RFID</title>
     <style>
         body {
-            font-family: Arial;
+            font-family: Arial, sans-serif;
             padding: 2rem;
         }
 
-        #productInfo {
-            margin-top: 1rem;
+        .product-item {
             border: 1px solid #ddd;
             padding: 1rem;
             border-radius: 5px;
-            display: none;
+            margin-bottom: 1rem;
+            background-color: #f9f9f9;
+        }
+
+        #productList {
+            margin-top: 2rem;
         }
 
         #notFound {
@@ -24,57 +28,79 @@
             display: none;
         }
     </style>
-    <script>
-        window.onload = () => {
-            const input = document.getElementById('rfidInput');
-            input.focus();
-
-            input.addEventListener('keydown', async (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    const rfid = input.value.trim();
-                    if (!rfid) return;
-
-                    const response = await fetch("{% url 'lookup_rfid' %}", {
-                        method: "POST",
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                            'X-CSRFToken': '{{ csrf_token }}'
-                        },
-                        body: new URLSearchParams({rfid})
-                    });
-
-                    const data = await response.json();
-
-                    if (data.status === 'success') {
-                        document.getElementById('productName').textContent = data.product.name;
-                        document.getElementById('productPrice').textContent = data.product.price + ' UZS';
-                        document.getElementById('productBarcode').textContent = data.product.barcode;
-                        document.getElementById('productInfo').style.display = 'block';
-                        document.getElementById('notFound').style.display = 'none';
-                    } else {
-                        document.getElementById('productInfo').style.display = 'none';
-                        document.getElementById('notFound').style.display = 'block';
-                    }
-
-                    input.value = '';
-                    input.focus();
-                }
-            });
-        };
-    </script>
 </head>
 <body>
-<h2>🔍 Check Product by RFID</h2>
+<h2>🔍 Scan Products by RFID</h2>
 
 <input id="rfidInput" style="opacity:0; position:absolute;" autocomplete="off">
 
-<div id="productInfo">
-    <p><strong>Name:</strong> <span id="productName"></span></p>
-    <p><strong>Price:</strong> <span id="productPrice"></span></p>
-    <p><strong>Barcode:</strong> <span id="productBarcode"></span></p>
-</div>
+<div id="productList"></div>
 
 <div id="notFound">❌ Product not found.</div>
+
+<script>
+    const scannedRFIDs = new Map();  // Use a Map to preserve order & uniqueness
+
+    window.onload = () => {
+        const input = document.getElementById('rfidInput');
+        input.focus();
+
+        input.addEventListener('keydown', async (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const rfid = input.value.trim();
+                if (!rfid) return;
+
+                const response = await fetch("{% url 'lookup_rfid' %}", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: new URLSearchParams({ rfid })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    // Remove if already exists
+                    if (scannedRFIDs.has(rfid)) {
+                        scannedRFIDs.delete(rfid);
+                    }
+
+                    scannedRFIDs.set(rfid, data.product);  // Add to the top
+
+                    renderProductList();
+                    document.getElementById('notFound').style.display = 'none';
+                } else {
+                    document.getElementById('notFound').style.display = 'block';
+                }
+
+                input.value = '';
+                input.focus();
+            }
+        });
+    };
+
+    function renderProductList() {
+        const container = document.getElementById('productList');
+        container.innerHTML = '';
+
+        // Render in reverse (newest first)
+        const items = Array.from(scannedRFIDs.entries()).reverse();
+
+        for (const [rfid, product] of items) {
+            const div = document.createElement('div');
+            div.className = 'product-item';
+            div.innerHTML = `
+                <p><strong>Name:</strong> ${product.name}</p>
+                <p><strong>Price:</strong> ${product.price} UZS</p>
+                <p><strong>Barcode:</strong> ${product.barcode}</p>
+                <p><strong>RFID:</strong> ${rfid}</p>
+            `;
+            container.appendChild(div);
+        }
+    }
+</script>
 </body>
 </html>
