@@ -55,24 +55,31 @@
         }
     </style>
     <script>
+        let timeoutId;
+
         window.onload = () => {
             document.getElementById('rfidInput').focus();
             window.print();
 
-            setTimeout(() => {
-                // Remove this if it feels too slow or auto-bind should start instantly
+            // Set a timeout to go to RFID binding after 20 seconds
+            timeoutId = setTimeout(() => {
                 window.location.href = "{% url 'bind_rfid' product.pk %}";
-            }, 500); // 500ms instead of 2000ms, or trigger earlier
-
+            }, 20000); // 20 seconds
         };
 
-        // when scanner “types” and hits Enter, submit to bind endpoint
-        function rfidScanned(e) {
-            if (e.key === 'Enter') {
-                document.getElementById('rfidForm').submit();
-            }
+        function cancelBinding() {
+            clearTimeout(timeoutId);
+            fetch("{% url 'cancel_print_session' %}", {
+                method: "POST",
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                }
+            }).then(() => {
+                window.location.href = "{% url 'product-list' %}"; // redirect to product list
+            });
         }
     </script>
+
 </head>
 <body>
 {% for i in quantity_range %}
@@ -92,5 +99,7 @@
     <input id="rfidInput" name="rfid" onkeydown="rfidScanned(event)" style="opacity:0;position:absolute;"
            autocomplete="off">
 </form>
+
+<button onclick="cancelBinding()">❌ Cancel Binding</button>
 </body>
 </html>

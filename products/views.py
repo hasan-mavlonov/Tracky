@@ -177,3 +177,13 @@ def choose_quantity_view(request, pk):
         qty = int(request.POST.get('quantity', 1))
         return redirect(f'/print-barcode/{pk}/?qty={qty}')
     return render(request, 'choose_quantity.html', {'product': product})
+
+
+@csrf_exempt
+def cancel_print_session(request):
+    if request.method == 'POST':
+        request.session.pop('pending_print_pk', None)
+        request.session.pop('pending_print_qty', None)
+        request.session.pop('bound_rfids', None)
+        return JsonResponse({'status': 'cancelled'})
+    return JsonResponse({'status': 'error'}, status=405)

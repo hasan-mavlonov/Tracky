@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import ProductCreateAPIView, ProductListAPIView, ProductDetailAPIView, generate_barcode_view, \
-    print_product_barcode_view, bind_rfid_view, choose_quantity_view
+    print_product_barcode_view, bind_rfid_view, choose_quantity_view, cancel_print_session
 
 urlpatterns = [
     path('create/', ProductCreateAPIView.as_view(), name='product-create'),
@@ -10,5 +10,6 @@ urlpatterns = [
     path('<int:pk>/print-barcode/', print_product_barcode_view, name='print_barcode'),
     path('<int:pk>/bind-rfid/', bind_rfid_view, name='bind_rfid'),
     path('choose-quantity/<int:pk>/', choose_quantity_view, name='choose_quantity'),
+    path('cancel-print-session/', cancel_print_session, name='cancel_print_session'),
 
 ]
