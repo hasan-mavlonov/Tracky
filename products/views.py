@@ -1,17 +1,20 @@
 # products/views.py
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, status
 from rest_framework.response import Response
 from shops.models import Shop
 from .serializers import ProductSerializer
-from django.http import JsonResponse, HttpResponse
 from .utils import generate_barcode
 import json
+
+from django.shortcuts import redirect
+from .utils import generate_barcode_image
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from .models import Product, ProductInstance
 import base64
 from io import BytesIO
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Product, ProductInstance
-from .utils import generate_barcode_image
 
 
 class ProductCreateAPIView(generics.CreateAPIView):
@@ -106,10 +109,16 @@ def print_product_barcode_view(request, pk):
     if request.method == 'POST':
         qty = int(request.POST.get('quantity', 1))
 
+        # Clear any previous session data
+        request.session.pop('pending_print_pk', None)
+        request.session.pop('pending_print_qty', None)
+        request.session.pop('bound_rfids', None)
+
         # Save info for RFID binding
         request.session['pending_print_pk'] = product.pk
         request.session['pending_print_qty'] = qty
         request.session['bound_rfids'] = []
+        request.session.modified = True  # Ensure session is saved
 
         # Generate barcode image once
         image = generate_barcode_image(product.barcode)
@@ -126,49 +135,71 @@ def print_product_barcode_view(request, pk):
     return render(request, 'choose_quantity.html', {'product': product})
 
 
+@require_POST
+@csrf_exempt  # Temporarily exempt for testing, remove in production
 def bind_rfid_view(request, pk):
     pending_pk = request.session.get('pending_print_pk')
     qty = request.session.get('pending_print_qty', 0)
     bound_rfids = request.session.get('bound_rfids', [])
 
-    if request.method == 'POST':
-        rfid_code = request.POST.get('rfid', '').strip()
+    rfid_code = request.POST.get('rfid', '').strip()
 
-        if not pending_pk or pending_pk != pk:
-            return JsonResponse({'status': 'error', 'message': 'No matching print job queued.'}, status=400)
+    if not pending_pk or pending_pk != pk:
+        return JsonResponse({'status': 'error', 'message': 'No matching print job queued.'}, status=400)
 
-        if not rfid_code:
-            return JsonResponse({'status': 'error', 'message': 'No RFID received.'}, status=400)
+    if not rfid_code:
+        return JsonResponse({'status': 'error', 'message': 'No RFID received.'}, status=400)
 
-        if rfid_code in bound_rfids:
-            return JsonResponse({'status': 'error', 'message': 'RFID already bound.'}, status=400)
+    if rfid_code in bound_rfids:
+        return JsonResponse({'status': 'error', 'message': 'RFID already bound.'}, status=400)
 
+    try:
         product = get_object_or_404(Product, pk=pk)
         ProductInstance.objects.create(product=product, RFID=rfid_code)
 
         bound_rfids.append(rfid_code)
         request.session['bound_rfids'] = bound_rfids
+        request.session.modified = True  # Ensure session is saved
 
-        if len(bound_rfids) >= qty:
-            del request.session['pending_print_pk']
-            del request.session['pending_print_qty']
-            del request.session['bound_rfids']
-            return JsonResponse({'status': 'done', 'message': 'All RFIDs bound.'})
-
-        return JsonResponse({'status': 'success', 'message': f'RFID {rfid_code} bound. {qty - len(bound_rfids)} left.'})
-
-    elif request.method == 'GET':
-        if not pending_pk or pending_pk != pk:
-            return HttpResponse("No RFID binding session found.", status=400)
-
-        product = get_object_or_404(Product, pk=pk)
         remaining = qty - len(bound_rfids)
-        return render(request, 'bind_rfids.html', {
-            'product': product,
+        if remaining <= 0:
+            # Clear session when done
+            request.session.pop('pending_print_pk', None)
+            request.session.pop('pending_print_qty', None)
+            request.session.pop('bound_rfids', None)
+            return JsonResponse({
+                'status': 'done',
+                'message': 'All RFIDs bound.',
+                'remaining': 0
+            })
+
+        return JsonResponse({
+            'status': 'success',
+            'message': f'RFID {rfid_code} bound.',
             'remaining': remaining
         })
 
-    return JsonResponse({'status': 'error', 'message': 'Invalid method.'}, status=405)
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Error processing RFID: {str(e)}'
+        }, status=500)
+
+
+def bind_rfid_page_view(request, pk):
+    pending_pk = request.session.get('pending_print_pk')
+    qty = request.session.get('pending_print_qty', 0)
+    bound_rfids = request.session.get('bound_rfids', [])
+
+    if not pending_pk or pending_pk != pk:
+        return HttpResponse("No RFID binding session found.", status=400)
+
+    product = get_object_or_404(Product, pk=pk)
+    remaining = qty - len(bound_rfids)
+    return render(request, 'bind_rfids.html', {
+        'product': product,
+        'remaining': remaining
+    })
 
 
 def choose_quantity_view(request, pk):
@@ -215,3 +246,11 @@ def lookup_rfid_view(request):
             return JsonResponse({"status": "not_found", "message": "RFID not found"})
 
     return JsonResponse({"status": "error", "message": "Invalid request"})
+
+
+@require_POST
+def cancel_print_session_view(request):
+    request.session.pop('pending_print_pk', None)
+    request.session.pop('pending_print_qty', None)
+    request.session.pop('bound_rfids', None)
+    return JsonResponse({'status': 'success'})

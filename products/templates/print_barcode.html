@@ -4,82 +4,157 @@
     <meta charset="UTF-8">
     <title>Print Barcode</title>
     <style>
-        /* your 58×30mm styling… */
         @page {
-            size: 58mm 30mm;
+            size: 44mm 18mm;
             margin: 0;
         }
 
         body {
             margin: 0;
-            width: 58mm;
-            height: 30mm;
-            font-family: Arial;
+            width: 44mm;
+            height: 18mm;
+            font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
+        .label {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
         .product-name {
-            font-size: 8pt;
+            font-size: 6pt;
             font-weight: bold;
-            margin-top: 2mm;
+            margin-top: 1mm;
             text-transform: uppercase;
+            text-align: center;
         }
 
         .product-price {
-            font-size: 10pt;
+            font-size: 7pt;
             font-weight: bold;
-            margin: 1mm 0;
+            margin: 0.5mm 0;
+            text-align: center;
         }
 
         .barcode-container {
             text-align: center;
+            width: 100%;
         }
 
         .barcode {
             max-width: 90%;
-            max-height: 12mm;
+            max-height: 8mm;
         }
 
         .barcode-number {
-            font-size: 8pt;
+            font-size: 6pt;
             font-family: 'Courier New';
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
+            text-align: center;
         }
 
         @media print {
-            button, #rfidInput {
+            button, #rfidInput, .binding-info {
                 display: none;
             }
         }
-    </style>
-    <script>
-        let timeoutId;
 
-        window.onload = () => {
-            document.getElementById('rfidInput').focus();
-            window.print();
-
-            // Set a timeout to go to RFID binding after 20 seconds
-            timeoutId = setTimeout(() => {
-                window.location.href = "{% url 'bind_rfid' product.pk %}";
-            }, 20000); // 20 seconds
-        };
-
-        function cancelBinding() {
-            clearTimeout(timeoutId);
-            fetch("{% url 'cancel_print_session' %}", {
-                method: "POST",
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
-                }
-            }).then(() => {
-                window.location.href = "{% url 'product-list' %}"; // redirect to product list
-            });
+        .binding-info {
+            position: fixed;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px;
+            font-size: 10pt;
         }
-    </script>
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            window.print();
+            $('#rfidInput').focus();
 
+            const timeoutId = setTimeout(() => {
+                window.location.href = "{% url 'bind_rfid_page' product.pk %}";
+            }, 20000);
+
+            $('#rfidInput').on('input', function () {
+                clearTimeout(timeoutId);
+            });
+
+            let rfidBuffer = '';
+            let processing = false;
+
+            $('#rfidInput').on('keydown', function (e) {
+                if (processing) return;
+                if (e.which === 13) {
+                    processing = true;
+                    const rfidCode = rfidBuffer;
+                    rfidBuffer = '';
+                    if (rfidCode.length > 0) {
+                        processRFID(rfidCode);
+                    }
+                    return;
+                }
+
+                if (e.which >= 16 && e.which <= 20) return;
+                if (e.which >= 112 && e.which <= 123) return;
+
+                rfidBuffer += String.fromCharCode(e.which);
+            });
+
+            function processRFID(rfidCode) {
+                $.ajax({
+                    url: "{% url 'bind_rfid' product.pk %}",
+                    method: "POST",
+                    data: {
+                        rfid: rfidCode,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        $('#rfidInput').val('');
+                        $('.remaining-count').text(response.remaining);
+
+                        if (response.status === 'done') {
+                            setTimeout(() => {
+                                window.location.href = "{% url 'product-list' %}";
+                            }, 1000);
+                        } else {
+                            processing = false;
+                            $('#rfidInput').focus();
+                        }
+                    },
+                    error: function (xhr) {
+                        alert('Error processing RFID: ' + xhr.responseJSON?.message || 'Unknown error');
+                        processing = false;
+                        $('#rfidInput').focus();
+                    }
+                });
+            }
+
+            $('#cancelBtn').click(function () {
+                $.ajax({
+                    url: "{% url 'cancel_print_session' %}",
+                    method: "POST",
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                    success: function () {
+                        window.location.href = "{% url 'product-list' %}";
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
 {% for i in quantity_range %}
@@ -93,13 +168,11 @@
     </div>
 {% endfor %}
 
-<!-- hidden form to catch scanner input -->
-<form id="rfidForm" action="{% url 'bind_rfid' product.pk %}" method="post">
-    {% csrf_token %}
-    <input id="rfidInput" name="rfid" onkeydown="rfidScanned(event)" style="opacity:0;position:absolute;"
-           autocomplete="off">
-</form>
+<div class="binding-info">
+    <p>Scan RFID tags (<span class="remaining-count">{{ quantity_range|length }}</span> remaining)</p>
+    <button id="cancelBtn">❌ Cancel Binding</button>
+</div>
 
-<button onclick="cancelBinding()">❌ Cancel Binding</button>
+<input id="rfidInput" type="text" style="opacity:0;position:absolute;left:-1000px;" autocomplete="off">
 </body>
 </html>

@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import ProductCreateAPIView, ProductListAPIView, ProductDetailAPIView, generate_barcode_view, \
     print_product_barcode_view, bind_rfid_view, choose_quantity_view, cancel_print_session, check_rfid_view, \
-    lookup_rfid_view
+    lookup_rfid_view, cancel_print_session_view, bind_rfid_page_view
 
 urlpatterns = [
     path('create/', ProductCreateAPIView.as_view(), name='product-create'),
@@ -14,4 +14,6 @@ urlpatterns = [
     path('cancel-print-session/', cancel_print_session, name='cancel_print_session'),
     path("check-rfid/", check_rfid_view, name="check_rfid"),
     path("lookup-rfid/", lookup_rfid_view, name="lookup_rfid"),
+    path('products/<int:pk>/bind-rfid-page/', bind_rfid_page_view, name='bind_rfid_page'),
+    path('cancel-print-session/', cancel_print_session_view, name='cancel_print_session'),
 ]
