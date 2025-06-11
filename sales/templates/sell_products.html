@@ -2,57 +2,43 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Register Sale by RFID</title>
+    <title>Sell Products by RFID</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: Arial;
             padding: 2rem;
         }
 
         .product-item {
-            border: 1px solid #ddd;
+            border: 1px solid #ccc;
             padding: 1rem;
-            border-radius: 5px;
             margin-bottom: 1rem;
-            background-color: #f9f9f9;
-        }
-
-        #productList {
-            margin-top: 2rem;
+            border-radius: 5px;
+            background: #f0f0f0;
         }
 
         #notFound {
-            margin-top: 1rem;
             color: red;
             font-weight: bold;
             display: none;
         }
 
-        button {
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
+        #sellBtn {
             margin-top: 1rem;
+            padding: 1rem;
+            background: green;
+            color: white;
+            border: none;
             cursor: pointer;
-        }
-
-        #successMessage {
-            color: green;
-            font-weight: bold;
-            margin-top: 1rem;
-            display: none;
         }
     </style>
 </head>
 <body>
-<h2>🛒 Scan Products for Sale</h2>
-
+<h2>🛒 Sell Products</h2>
 <input id="rfidInput" style="opacity:0; position:absolute;" autocomplete="off">
-
 <div id="productList"></div>
-<div id="notFound">❌ Product not found.</div>
-<div id="successMessage">✅ Sale completed successfully!</div>
-
-<button id="sellButton">Sell</button>
+<div id="notFound">❌ RFID not found or already sold.</div>
+<button id="sellBtn">💸 Sell All</button>
 
 <script>
     const scannedRFIDs = new Map();
@@ -67,22 +53,21 @@
                 const rfid = input.value.trim();
                 if (!rfid) return;
 
-                const response = await fetch("/sales/scan/", {
+                const response = await fetch("{% url 'lookup_rfid' %}", {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': '{{ csrf_token }}'
                     },
                     body: new URLSearchParams({rfid})
                 });
 
                 const data = await response.json();
-
                 if (data.status === 'success') {
-                    if (!scannedRFIDs.has(rfid)) {
-                        scannedRFIDs.set(rfid, data.product);
-                        document.getElementById('notFound').style.display = 'none';
-                        renderProductList();
-                    }
+                    if (scannedRFIDs.has(rfid)) scannedRFIDs.delete(rfid);
+                    scannedRFIDs.set(rfid, data.product);
+                    renderProductList();
+                    document.getElementById('notFound').style.display = 'none';
                 } else {
                     document.getElementById('notFound').style.display = 'block';
                 }
@@ -92,29 +77,26 @@
             }
         });
 
-        const sellButton = document.getElementById('sellButton');
-        sellButton.addEventListener('click', async () => {
-            if (scannedRFIDs.size === 0) {
-                alert("No RFIDs scanned.");
-                return;
-            }
+        document.getElementById("sellBtn").addEventListener("click", async () => {
+            if (scannedRFIDs.size === 0) return alert("Nothing to sell!");
 
-            const response = await fetch("/sales/register/", {
+            const rfids = Array.from(scannedRFIDs.keys());
+            const response = await fetch("{% url 'sell_scanned_products' %}", {
                 method: "POST",
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
                 },
-                body: JSON.stringify({rfids: Array.from(scannedRFIDs.keys())})
+                body: JSON.stringify({rfids})
             });
 
-            const data = await response.json();
-
-            if (data.status === 'success') {
-                document.getElementById('successMessage').style.display = 'block';
+            const result = await response.json();
+            if (result.status === 'success') {
+                alert(`Sold ${result.sold.length} product(s)!`);
                 scannedRFIDs.clear();
                 renderProductList();
             } else {
-                alert("Error: " + data.message);
+                alert("Error: " + result.message);
             }
         });
     };
@@ -131,9 +113,7 @@
                 <p><strong>Name:</strong> ${product.name}</p>
                 <p><strong>Price:</strong> ${product.price} UZS</p>
                 <p><strong>Barcode:</strong> ${product.barcode}</p>
-                <p><strong>Shop:</strong> ${product.shop}</p>
                 <p><strong>RFID:</strong> ${rfid}</p>
-                <p><strong>Scanned At:</strong> ${product.sold_at}</p>
             `;
             container.appendChild(div);
         }

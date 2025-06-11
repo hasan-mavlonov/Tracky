@@ -1,9 +1,7 @@
-# sales/urls.py
-
 from django.urls import path
-from .views import scan_rfid_view, register_sale_view
+from .views import sell_products_view, sell_scanned_products_view
 
 urlpatterns = [
-    path('scan/', scan_rfid_view, name='scan_sale'),
-    path('register/', register_sale_view, name='register_sale'),
+    path('sell/', sell_products_view, name='sell_products'),
+    path('sell/confirm/', sell_scanned_products_view, name='sell_scanned_products'),
 ]
