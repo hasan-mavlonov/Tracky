@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register Sale by RFID</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+        }
+
+        .product-item {
+            border: 1px solid #ddd;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            background-color: #f9f9f9;
+        }
+
+        #productList {
+            margin-top: 2rem;
+        }
+
+        #notFound {
+            margin-top: 1rem;
+            color: red;
+            font-weight: bold;
+            display: none;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            margin-top: 1rem;
+            cursor: pointer;
+        }
+
+        #successMessage {
+            color: green;
+            font-weight: bold;
+            margin-top: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<h2>🛒 Scan Products for Sale</h2>
+
+<input id="rfidInput" style="opacity:0; position:absolute;" autocomplete="off">
+
+<div id="productList"></div>
+<div id="notFound">❌ Product not found.</div>
+<div id="successMessage">✅ Sale completed successfully!</div>
+
+<button id="sellButton">Sell</button>
+
+<script>
+    const scannedRFIDs = new Map();
+
+    window.onload = () => {
+        const input = document.getElementById('rfidInput');
+        input.focus();
+
+        input.addEventListener('keydown', async (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const rfid = input.value.trim();
+                if (!rfid) return;
+
+                const response = await fetch("/sales/scan/", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({rfid})
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    if (!scannedRFIDs.has(rfid)) {
+                        scannedRFIDs.set(rfid, data.product);
+                        document.getElementById('notFound').style.display = 'none';
+                        renderProductList();
+                    }
+                } else {
+                    document.getElementById('notFound').style.display = 'block';
+                }
+
+                input.value = '';
+                input.focus();
+            }
+        });
+
+        const sellButton = document.getElementById('sellButton');
+        sellButton.addEventListener('click', async () => {
+            if (scannedRFIDs.size === 0) {
+                alert("No RFIDs scanned.");
+                return;
+            }
+
+            const response = await fetch("/sales/register/", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({rfids: Array.from(scannedRFIDs.keys())})
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                document.getElementById('successMessage').style.display = 'block';
+                scannedRFIDs.clear();
+                renderProductList();
+            } else {
+                alert("Error: " + data.message);
+            }
+        });
+    };
+
+    function renderProductList() {
+        const container = document.getElementById('productList');
+        container.innerHTML = '';
+        const items = Array.from(scannedRFIDs.entries()).reverse();
+
+        for (const [rfid, product] of items) {
+            const div = document.createElement('div');
+            div.className = 'product-item';
+            div.innerHTML = `
+                <p><strong>Name:</strong> ${product.name}</p>
+                <p><strong>Price:</strong> ${product.price} UZS</p>
+                <p><strong>Barcode:</strong> ${product.barcode}</p>
+                <p><strong>Shop:</strong> ${product.shop}</p>
+                <p><strong>RFID:</strong> ${rfid}</p>
+                <p><strong>Scanned At:</strong> ${product.sold_at}</p>
+            `;
+            container.appendChild(div);
+        }
+    }
+</script>
+</body>
+</html>
