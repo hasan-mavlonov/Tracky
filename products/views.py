@@ -227,12 +227,20 @@ def check_rfid_view(request):
 @csrf_exempt
 def lookup_rfid_view(request):
     if request.method == "POST":
-        rfid = request.POST.get("rfid", "").strip()
+        rfid = request.POST.get("rfid", "").strip()  # ✅ STRIP INPUT
+
         if not rfid:
             return JsonResponse({"status": "error", "message": "No RFID provided"})
 
         instance = ProductInstance.objects.select_related("product").filter(RFID=rfid).first()
+
         if instance:
+            if instance.status != "IN_STOCK":
+                return JsonResponse({
+                    "status": "error",
+                    "message": f"Item unavailable: {instance.status.replace('_', ' ').title()}"
+                })
+
             product = instance.product
             return JsonResponse({
                 "status": "success",
@@ -242,10 +250,10 @@ def lookup_rfid_view(request):
                     "barcode": product.barcode,
                 }
             })
-        else:
-            return JsonResponse({"status": "not_found", "message": "RFID not found"})
 
-    return JsonResponse({"status": "error", "message": "Invalid request"})
+        return JsonResponse({"status": "not_found", "message": "RFID not found"})
+
+    return JsonResponse({"status": "error", "message": "Invalid request method"})
 
 
 @require_POST
