@@ -13,7 +13,7 @@
             margin: 0;
             width: 44mm;
             height: 18mm;
-            font-family: Arial, sans-serif;
+            font-family: 'Source Sans 3', Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -71,90 +71,16 @@
             bottom: 10px;
             left: 0;
             right: 0;
-            text-align: center;
             background: rgba(255, 255, 255, 0.9);
             padding: 5px;
             font-size: 10pt;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            z-index: 1000;
         }
     </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            window.print();
-            $('#rfidInput').focus();
-
-            const timeoutId = setTimeout(() => {
-                window.location.href = "{% url 'bind_rfid_page' product.pk %}";
-            }, 20000);
-
-            $('#rfidInput').on('input', function () {
-                clearTimeout(timeoutId);
-            });
-
-            let rfidBuffer = '';
-            let processing = false;
-
-            $('#rfidInput').on('keydown', function (e) {
-                if (processing) return;
-                if (e.which === 13) {
-                    processing = true;
-                    const rfidCode = rfidBuffer;
-                    rfidBuffer = '';
-                    if (rfidCode.length > 0) {
-                        processRFID(rfidCode);
-                    }
-                    return;
-                }
-
-                if (e.which >= 16 && e.which <= 20) return;
-                if (e.which >= 112 && e.which <= 123) return;
-
-                rfidBuffer += String.fromCharCode(e.which);
-            });
-
-            function processRFID(rfidCode) {
-                $.ajax({
-                    url: "{% url 'bind_rfid' product.pk %}",
-                    method: "POST",
-                    data: {
-                        rfid: rfidCode,
-                        csrfmiddlewaretoken: '{{ csrf_token }}'
-                    },
-                    success: function (response) {
-                        $('#rfidInput').val('');
-                        $('.remaining-count').text(response.remaining);
-
-                        if (response.status === 'done') {
-                            setTimeout(() => {
-                                window.location.href = "{% url 'product-list' %}";
-                            }, 1000);
-                        } else {
-                            processing = false;
-                            $('#rfidInput').focus();
-                        }
-                    },
-                    error: function (xhr) {
-                        alert('Error processing RFID: ' + xhr.responseJSON?.message || 'Unknown error');
-                        processing = false;
-                        $('#rfidInput').focus();
-                    }
-                });
-            }
-
-            $('#cancelBtn').click(function () {
-                $.ajax({
-                    url: "{% url 'cancel_print_session' %}",
-                    method: "POST",
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}',
-                    },
-                    success: function () {
-                        window.location.href = "{% url 'product-list' %}";
-                    }
-                });
-            });
-        });
-    </script>
 </head>
 <body>
 {% for i in quantity_range %}
@@ -170,9 +96,90 @@
 
 <div class="binding-info">
     <p>Scan RFID tags (<span class="remaining-count">{{ quantity_range|length }}</span> remaining)</p>
-    <button id="cancelBtn">❌ Cancel Binding</button>
+    <button id="cancelBtn" class="btn btn-danger btn-sm mt-2">
+        <i class="bi bi-x-circle"></i> Cancel Binding
+    </button>
 </div>
 
 <input id="rfidInput" type="text" style="opacity:0;position:absolute;left:-1000px;" autocomplete="off">
+
+<script>
+    $(document).ready(function () {
+        window.print();
+        $('#rfidInput').focus();
+
+        const timeoutId = setTimeout(() => {
+            window.location.href = "{% url 'bind_rfid_page' product.pk %}";
+        }, 20000);
+
+        $('#rfidInput').on('input', function () {
+            clearTimeout(timeoutId);
+        });
+
+        let rfidBuffer = '';
+        let processing = false;
+
+        $('#rfidInput').on('keydown', function (e) {
+            if (processing) return;
+
+            if (e.which === 13) {
+                processing = true;
+                const rfidCode = rfidBuffer;
+                rfidBuffer = '';
+                if (rfidCode.length > 0) {
+                    processRFID(rfidCode);
+                }
+                return;
+            }
+
+            if (e.which >= 16 && e.which <= 20) return;
+            if (e.which >= 112 && e.which <= 123) return;
+
+            rfidBuffer += String.fromCharCode(e.which);
+        });
+
+        function processRFID(rfidCode) {
+            $.ajax({
+                url: "{% url 'bind_rfid' product.pk %}",
+                method: "POST",
+                data: {
+                    rfid: rfidCode,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function (response) {
+                    $('#rfidInput').val('');
+                    $('.remaining-count').text(response.remaining);
+
+                    if (response.status === 'done') {
+                        setTimeout(() => {
+                            window.location.href = "{% url 'product-list' %}";
+                        }, 1000);
+                    } else {
+                        processing = false;
+                        $('#rfidInput').focus();
+                    }
+                },
+                error: function (xhr) {
+                    alert('Error processing RFID: ' + (xhr.responseJSON?.message || 'Unknown error'));
+                    processing = false;
+                    $('#rfidInput').focus();
+                }
+            });
+        }
+
+        $('#cancelBtn').click(function () {
+            $.ajax({
+                url: "{% url 'cancel_print_session' %}",
+                method: "POST",
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                success: function () {
+                    window.location.href = "{% url 'product-list' %}";
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

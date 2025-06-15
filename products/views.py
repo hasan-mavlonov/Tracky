@@ -1,11 +1,13 @@
 # products/views.py
+from django.urls import reverse_lazy
 from rest_framework import generics, status
 from rest_framework.response import Response
 from shops.models import Shop
+from .forms import ProductForm
 from .serializers import ProductSerializer
 from .utils import generate_barcode
 import json
-
+from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from django.shortcuts import redirect
 from .utils import generate_barcode_image
 from django.shortcuts import render, get_object_or_404
@@ -54,32 +56,30 @@ class ProductCreateAPIView(generics.CreateAPIView):
         )
 
 
-class ProductListAPIView(generics.ListAPIView):
-    queryset = Product.objects.all().order_by('-created_at')
-    serializer_class = ProductSerializer
+class ProductListAPIView(ListView):
+    model = Product
+    template_name = "products.html"  # your template
+    context_object_name = "products"
+    ordering = ["-created_at"]
 
 
-class ProductDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-    lookup_field = 'id'
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = "product.html"
+    context_object_name = "product"
 
-    def delete(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response(
-            {'status': 'success', 'message': 'Product deleted successfully'},
-            status=status.HTTP_204_NO_CONTENT
-        )
 
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = "product_edit.html"
+    success_url = "/products/all"  # or use reverse_lazy('product-list')
 
-    def patch(self, request, *args, **kwargs):
-        return self.partial_update(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+class ProductDeleteView(DeleteView):
+    model = Product
+    template_name = "product_confirm_delete.html"
+    success_url = reverse_lazy("product-list")  # or wherever you want to redirect
 
 
 @csrf_exempt
@@ -109,18 +109,17 @@ def print_product_barcode_view(request, pk):
     if request.method == 'POST':
         qty = int(request.POST.get('quantity', 1))
 
-        # Clear any previous session data
+        # Clear previous session data
         request.session.pop('pending_print_pk', None)
         request.session.pop('pending_print_qty', None)
         request.session.pop('bound_rfids', None)
 
-        # Save info for RFID binding
         request.session['pending_print_pk'] = product.pk
         request.session['pending_print_qty'] = qty
         request.session['bound_rfids'] = []
-        request.session.modified = True  # Ensure session is saved
+        request.session.modified = True
 
-        # Generate barcode image once
+        # Generate barcode image
         image = generate_barcode_image(product.barcode)
         buf = BytesIO()
         image.save(buf, format="PNG")
@@ -136,7 +135,7 @@ def print_product_barcode_view(request, pk):
 
 
 @require_POST
-@csrf_exempt  # Temporarily exempt for testing, remove in production
+@csrf_exempt  # REMOVE in production
 def bind_rfid_view(request, pk):
     pending_pk = request.session.get('pending_print_pk')
     qty = request.session.get('pending_print_qty', 0)
@@ -151,22 +150,33 @@ def bind_rfid_view(request, pk):
         return JsonResponse({'status': 'error', 'message': 'No RFID received.'}, status=400)
 
     if rfid_code in bound_rfids:
-        return JsonResponse({'status': 'error', 'message': 'RFID already bound.'}, status=400)
+        return JsonResponse({'status': 'error', 'message': 'RFID already bound in session.'}, status=400)
+
+    if ProductInstance.objects.filter(RFID=rfid_code).exists():
+        return JsonResponse({'status': 'error', 'message': 'RFID already exists in database.'}, status=400)
 
     try:
         product = get_object_or_404(Product, pk=pk)
+
+        # ✅ Create RFID and associate
         ProductInstance.objects.create(product=product, RFID=rfid_code)
+
+        # ✅ Update has_rfid field if not already True
+        if not product.has_rfid:
+            product.has_rfid = True
+            product.save(update_fields=['has_rfid'])
 
         bound_rfids.append(rfid_code)
         request.session['bound_rfids'] = bound_rfids
-        request.session.modified = True  # Ensure session is saved
+        request.session.modified = True
 
         remaining = qty - len(bound_rfids)
         if remaining <= 0:
-            # Clear session when done
+            # ✅ Clear session when all bound
             request.session.pop('pending_print_pk', None)
             request.session.pop('pending_print_qty', None)
             request.session.pop('bound_rfids', None)
+
             return JsonResponse({
                 'status': 'done',
                 'message': 'All RFIDs bound.',
@@ -196,6 +206,7 @@ def bind_rfid_page_view(request, pk):
 
     product = get_object_or_404(Product, pk=pk)
     remaining = qty - len(bound_rfids)
+
     return render(request, 'bind_rfids.html', {
         'product': product,
         'remaining': remaining

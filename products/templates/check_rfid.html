@@ -1,106 +1,93 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Check Product by RFID</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 2rem;
-        }
+{% extends "base.html" %}
 
-        .product-item {
-            border: 1px solid #ddd;
-            padding: 1rem;
-            border-radius: 5px;
-            margin-bottom: 1rem;
-            background-color: #f9f9f9;
-        }
+{% block title %}Check Product by RFID{% endblock %}
+{% block page_title %}RFID Lookup{% endblock %}
 
-        #productList {
-            margin-top: 2rem;
-        }
+{% block content %}
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h3 class="card-title">🔍 Scan RFID to Lookup Product</h3>
+                </div>
+                <div class="card-body">
+                    <input id="rfidInput" type="text" class="form-control" style="opacity:0; position:absolute;"
+                           autocomplete="off">
 
-        #notFound {
-            margin-top: 1rem;
-            color: red;
-            font-weight: bold;
-            display: none;
-        }
-    </style>
-</head>
-<body>
-<h2>🔍 Scan Products by RFID</h2>
+                    <div id="notFound" class="alert alert-danger mt-3" style="display: none;">
+                        ❌ Product not found or unavailable.
+                    </div>
 
-<input id="rfidInput" style="opacity:0; position:absolute;" autocomplete="off">
+                    <div id="productList" class="mt-4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
 
-<div id="productList"></div>
+{% block extra_js %}
+    <script>
+        const scannedRFIDs = new Map();
 
-<div id="notFound">❌ Product not found.</div>
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('rfidInput');
+            input.focus();
 
-<script>
-    const scannedRFIDs = new Map();  // Use a Map to preserve order & uniqueness
+            input.addEventListener('keydown', async (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const rfid = input.value.trim();
+                    if (!rfid) return;
 
-    window.onload = () => {
-        const input = document.getElementById('rfidInput');
-        input.focus();
+                    const response = await fetch("{% url 'lookup_rfid' %}", {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: new URLSearchParams({rfid})
+                    });
 
-        input.addEventListener('keydown', async (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const rfid = input.value.trim();
-                if (!rfid) return;
+                    const data = await response.json();
 
-                const response = await fetch("{% url 'lookup_rfid' %}", {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    },
-                    body: new URLSearchParams({ rfid })
-                });
-
-                const data = await response.json();
-
-                if (data.status === 'success') {
-                    // Remove if already exists
-                    if (scannedRFIDs.has(rfid)) {
-                        scannedRFIDs.delete(rfid);
+                    if (data.status === 'success') {
+                        if (scannedRFIDs.has(rfid)) {
+                            scannedRFIDs.delete(rfid);
+                        }
+                        scannedRFIDs.set(rfid, data.product);
+                        renderProductList();
+                        document.getElementById('notFound').style.display = 'none';
+                    } else {
+                        document.getElementById('notFound').innerText = data.message || "❌ Product not found.";
+                        document.getElementById('notFound').style.display = 'block';
                     }
 
-                    scannedRFIDs.set(rfid, data.product);  // Add to the top
-
-                    renderProductList();
-                    document.getElementById('notFound').style.display = 'none';
-                } else {
-                    document.getElementById('notFound').style.display = 'block';
+                    input.value = '';
+                    input.focus();
                 }
-
-                input.value = '';
-                input.focus();
-            }
+            });
         });
-    };
 
-    function renderProductList() {
-        const container = document.getElementById('productList');
-        container.innerHTML = '';
+        function renderProductList() {
+            const container = document.getElementById('productList');
+            container.innerHTML = '';
 
-        // Render in reverse (newest first)
-        const items = Array.from(scannedRFIDs.entries()).reverse();
+            const items = Array.from(scannedRFIDs.entries()).reverse();
 
-        for (const [rfid, product] of items) {
-            const div = document.createElement('div');
-            div.className = 'product-item';
-            div.innerHTML = `
-                <p><strong>Name:</strong> ${product.name}</p>
-                <p><strong>Price:</strong> ${product.price} UZS</p>
-                <p><strong>Barcode:</strong> ${product.barcode}</p>
-                <p><strong>RFID:</strong> ${rfid}</p>
+            for (const [rfid, product] of items) {
+                const card = document.createElement('div');
+                card.className = 'card mb-3 shadow-sm';
+
+                card.innerHTML = `
+                <div class="card-body">
+                    <h5 class="card-title">${product.name}</h5>
+                    <p class="card-text"><strong>Price:</strong> ${product.price} UZS</p>
+                    <p class="card-text"><strong>Barcode:</strong> ${product.barcode}</p>
+                    <p class="card-text"><strong>RFID:</strong> ${rfid}</p>
+                </div>
             `;
-            container.appendChild(div);
+                container.appendChild(card);
+            }
         }
-    }
-</script>
-</body>
-</html>
+    </script>
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Product Detail{% endblock %}
+{% block page_title %}Product: {{ product.name }}{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Product Details</h3>
+            <div class="card-tools">
+                <a href="{% url 'product-list' %}" class="btn btn-sm btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <dl class="row text-sm">
+                <dt class="col-sm-4">Name</dt>
+                <dd class="col-sm-8">{{ product.name }}</dd>
+
+                <dt class="col-sm-4">Barcode</dt>
+                <dd class="col-sm-8">{{ product.barcode }}</dd>
+
+                <dt class="col-sm-4">RFID</dt>
+                <dd class="col-sm-8">{{ product.RFID|default:"-" }}</dd>
+
+                <dt class="col-sm-4">Has RFID?</dt>
+                <dd class="col-sm-8">
+                    {% if product.has_rfid %}
+                        <span class="badge bg-success">Yes</span>
+                    {% else %}
+                        <span class="badge bg-secondary">No</span>
+                    {% endif %}
+                </dd>
+
+                <dt class="col-sm-4">Bought Price</dt>
+                <dd class="col-sm-8">{{ product.bought_price }} UZS</dd>
+
+                <dt class="col-sm-4">Selling Price</dt>
+                <dd class="col-sm-8">{{ product.selling_price }} UZS</dd>
+
+                <dt class="col-sm-4">Quantity</dt>
+                <dd class="col-sm-8">{{ product.quantity }}</dd>
+
+                <dt class="col-sm-4">Shop</dt>
+                <dd class="col-sm-8">{{ product.shop.name }}</dd>
+
+                <dt class="col-sm-4">Created At</dt>
+                <dd class="col-sm-8">{{ product.created_at|date:"Y-m-d H:i" }}</dd>
+            </dl>
+        </div>
+        <div class="card-footer text-end">
+            <a href="{% url 'print_barcode' product.pk %}" class="btn btn-outline-primary">
+                <i class="bi bi-printer"></i> Print Tags
+            </a>
+            <a href="{% url 'edit-product' product.pk %}" class="btn btn-outline-warning">
+                <i class="bi bi-pencil-square"></i> Edit
+            </a>
+            <form method="post" action="{% url 'delete-product' product.pk %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Are you sure?');">
+                    <i class="bi bi-trash"></i> Delete
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {% if product.has_rfid %}
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title">RFID Instances</h5>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-striped table-sm mb-0">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>RFID Code</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for instance in product.instances.all %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ instance.RFID }}</td>
+                            <td>
+                        <span class="badge bg-{{ instance.status|lower|yesno:'success,secondary,danger,warning' }}">
+                            {{ instance.status }}
+                        </span>
+                            </td>
+                            <td>{{ instance.created_at|date:"Y-m-d H:i" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">No RFID instances found.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

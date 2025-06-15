@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Confirm Delete{% endblock %}
+{% block page_title %}Delete Product{% endblock %}
+
+{% block content %}
+    <div class="alert alert-danger">
+        <h4>Are you sure you want to delete the product "{{ object.name }}"?</h4>
+        <form method="post">
+            {% csrf_token %}
+            <a href="{% url 'product-detail' object.pk %}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+        </form>
+    </div>
+{% endblock %}

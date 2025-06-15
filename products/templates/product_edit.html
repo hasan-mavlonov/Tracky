@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Product{% endblock %}
+{% block page_title %}Edit Product: {{ form.instance.name }}{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Edit Product</h3>
+            <div class="card-tools">
+                <a href="{% url 'product-detail' form.instance.pk %}" class="btn btn-sm btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Product
+                </a>
+            </div>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="card-body">
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="id_name" class="form-label">Product Name</label>
+                            {{ form.name|as_widget:class="form-control" }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_barcode" class="form-label">Barcode</label>
+                            {{ form.barcode|as_widget:class="form-control" }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_RFID" class="form-label">RFID</label>
+                            {{ form.RFID|as_widget:class="form-control" }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_quantity" class="form-label">Quantity</label>
+                            {{ form.quantity|as_widget:class="form-control" }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="id_bought_price" class="form-label">Bought Price</label>
+                            {{ form.bought_price|as_widget:class="form-control" }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_selling_price" class="form-label">Selling Price</label>
+                            {{ form.selling_price|as_widget:class="form-control" }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_shop" class="form-label">Shop</label>
+                            {{ form.shop|as_widget:class="form-select" }}
+                        </div>
+                        <div class="form-check mt-4">
+                            {{ form.has_rfid }}
+                            <label class="form-check-label" for="id_has_rfid">Has RFID</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer text-end">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-save"></i> Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
