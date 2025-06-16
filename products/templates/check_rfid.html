@@ -4,90 +4,98 @@
 {% block page_title %}RFID Lookup{% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h3 class="card-title">🔍 Scan RFID to Lookup Product</h3>
-                </div>
-                <div class="card-body">
-                    <input id="rfidInput" type="text" class="form-control" style="opacity:0; position:absolute;"
-                           autocomplete="off">
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h3 class="card-title">🔍 Scan RFID to Lookup Product</h3>
+            </div>
+            <div class="card-body">
+                <input id="rfidInput" type="text" class="form-control" style="opacity:0; position:absolute;"
+                    autocomplete="off" />
 
-                    <div id="notFound" class="alert alert-danger mt-3" style="display: none;">
-                        ❌ Product not found or unavailable.
-                    </div>
-
-                    <div id="productList" class="mt-4"></div>
+                <div id="notFound" class="alert alert-danger mt-3" style="display: none;">
+                    ❌ Product not found or unavailable.
                 </div>
+
+                <div id="productList" class="mt-4"></div>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
-    <script>
-        const scannedRFIDs = new Map();
+<script>
+    const scannedRFIDs = new Map();
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const input = document.getElementById('rfidInput');
-            input.focus();
+    document.addEventListener('DOMContentLoaded', () => {
+        const input = document.getElementById('rfidInput');
+        input.focus();
 
-            input.addEventListener('keydown', async (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    const rfid = input.value.trim();
-                    if (!rfid) return;
+        input.addEventListener('keydown', async (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const rfid = input.value.trim();
+                if (!rfid) return;
 
-                    const response = await fetch("{% url 'lookup_rfid' %}", {
-                        method: "POST",
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                            'X-CSRFToken': '{{ csrf_token }}'
-                        },
-                        body: new URLSearchParams({rfid})
-                    });
+                const response = await fetch("{% url 'lookup_rfid' %}", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: new URLSearchParams({ rfid })
+                });
 
-                    const data = await response.json();
+                const data = await response.json();
 
-                    if (data.status === 'success') {
-                        if (scannedRFIDs.has(rfid)) {
-                            scannedRFIDs.delete(rfid);
-                        }
-                        scannedRFIDs.set(rfid, data.product);
-                        renderProductList();
-                        document.getElementById('notFound').style.display = 'none';
-                    } else {
-                        document.getElementById('notFound').innerText = data.message || "❌ Product not found.";
-                        document.getElementById('notFound').style.display = 'block';
-                    }
-
-                    input.value = '';
-                    input.focus();
+                if (data.status === 'success') {
+                    scannedRFIDs.set(rfid, data.product);
+                    renderProductList();
+                    document.getElementById('notFound').style.display = 'none';
+                } else {
+                    document.getElementById('notFound').innerText = data.message || "❌ Product not found.";
+                    document.getElementById('notFound').style.display = 'block';
                 }
-            });
+
+                input.value = '';
+                input.focus();
+            }
         });
+    });
 
-        function renderProductList() {
-            const container = document.getElementById('productList');
-            container.innerHTML = '';
+    function renderProductList() {
+        const container = document.getElementById('productList');
+        container.innerHTML = '';
 
-            const items = Array.from(scannedRFIDs.entries()).reverse();
+        const items = Array.from(scannedRFIDs.entries()).reverse();
 
-            for (const [rfid, product] of items) {
-                const card = document.createElement('div');
-                card.className = 'card mb-3 shadow-sm';
+        for (const [rfid, product] of items) {
+            const card = document.createElement('div');
+            card.className = 'card mb-3 shadow-sm';
 
-                card.innerHTML = `
+            const statusClass =
+                product.status === 'IN_STOCK' ? 'bg-success' :
+                product.status === 'SOLD' ? 'bg-secondary' :
+                product.status === 'DAMAGED' ? 'bg-warning text-dark' :
+                product.status === 'LOST' ? 'bg-danger' : 'bg-light';
+
+            const statusLabel = product.status?.replace('_', ' ') || 'Unknown';
+
+            card.innerHTML = `
                 <div class="card-body">
                     <h5 class="card-title">${product.name}</h5>
                     <p class="card-text"><strong>Price:</strong> ${product.price} UZS</p>
                     <p class="card-text"><strong>Barcode:</strong> ${product.barcode}</p>
                     <p class="card-text"><strong>RFID:</strong> ${rfid}</p>
+                    <p class="card-text"><strong>Status:</strong>
+                        <span class="badge ${statusClass}">${statusLabel}</span>
+                    </p>
                 </div>
             `;
-                container.appendChild(card);
-            }
+            container.appendChild(card);
         }
-    </script>
+    }
+</script>
 {% endblock %}
