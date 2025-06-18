@@ -17,6 +17,8 @@ from django.views.decorators.http import require_POST
 from .models import Product, ProductInstance
 import base64
 from io import BytesIO
+from django.contrib import messages
+from django.db.models import F
 
 
 class ProductCreateAPIView(generics.CreateAPIView):
@@ -109,7 +111,17 @@ def print_product_barcode_view(request, pk):
     if request.method == 'POST':
         qty = int(request.POST.get('quantity', 1))
 
-        # Clear previous session data
+        remaining_capacity = product.quantity - product.rfid_count
+
+        # ✅ Check if requested quantity is allowed
+        if qty > remaining_capacity:
+            messages.error(
+                request,
+                f"Only {remaining_capacity} unbound items available. Cannot print {qty} barcodes."
+            )
+            return render(request, 'choose_quantity.html', {'product': product})
+
+        # ✅ Clear previous session data
         request.session.pop('pending_print_pk', None)
         request.session.pop('pending_print_qty', None)
         request.session.pop('bound_rfids', None)
@@ -119,7 +131,7 @@ def print_product_barcode_view(request, pk):
         request.session['bound_rfids'] = []
         request.session.modified = True
 
-        # Generate barcode image
+        # ✅ Generate barcode image
         image = generate_barcode_image(product.barcode)
         buf = BytesIO()
         image.save(buf, format="PNG")
@@ -158,21 +170,28 @@ def bind_rfid_view(request, pk):
     try:
         product = get_object_or_404(Product, pk=pk)
 
-        # ✅ Create RFID and associate
+        # ✅ Check RFID slot availability
+        if not product.has_available_rfid_slots():
+            return JsonResponse({
+                'status': 'error',
+                'message': 'All RFIDs already assigned to this product. Cannot exceed quantity.'
+            }, status=400)
+
+        # ✅ Create the ProductInstance
         ProductInstance.objects.create(product=product, RFID=rfid_code)
 
-        # ✅ Update has_rfid field if not already True
-        if not product.has_rfid:
-            product.has_rfid = True
-            product.save(update_fields=['has_rfid'])
+        # ✅ Increment the rfid_count
+        product.rfid_count = F('rfid_count') + 1
+        product.save(update_fields=['rfid_count'])
 
+        # ✅ Update session
         bound_rfids.append(rfid_code)
         request.session['bound_rfids'] = bound_rfids
         request.session.modified = True
 
         remaining = qty - len(bound_rfids)
         if remaining <= 0:
-            # ✅ Clear session when all bound
+            # ✅ Clear session when done
             request.session.pop('pending_print_pk', None)
             request.session.pop('pending_print_qty', None)
             request.session.pop('bound_rfids', None)
