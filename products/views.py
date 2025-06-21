@@ -105,6 +105,14 @@ def generate_barcode_view(request):
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
 
 
+LABEL_PRESETS = {
+    "Default (44x18mm)": {"width": 44, "height": 18},
+    "Small (58x30mm)": {"width": 58, "height": 30},
+    "Medium (70x35mm)": {"width": 70, "height": 35},
+    "Large (100x50mm)": {"width": 100, "height": 50},
+}
+
+
 def print_product_barcode_view(request, pk):
     product = get_object_or_404(Product, pk=pk)
 
@@ -112,16 +120,17 @@ def print_product_barcode_view(request, pk):
         qty = int(request.POST.get('quantity', 1))
 
         remaining_capacity = product.quantity - product.rfid_count
-
-        # ✅ Check if requested quantity is allowed
         if qty > remaining_capacity:
             messages.error(
                 request,
                 f"Only {remaining_capacity} unbound items available. Cannot print {qty} barcodes."
             )
-            return render(request, 'choose_quantity.html', {'product': product})
+            return render(request, 'choose_quantity.html', {
+                'product': product,
+                'label_presets': LABEL_PRESETS
+            })
 
-        # ✅ Clear previous session data
+        # Clear previous session data
         request.session.pop('pending_print_pk', None)
         request.session.pop('pending_print_qty', None)
         request.session.pop('bound_rfids', None)
@@ -131,19 +140,35 @@ def print_product_barcode_view(request, pk):
         request.session['bound_rfids'] = []
         request.session.modified = True
 
-        # ✅ Generate barcode image
+        # Generate barcode image
         image = generate_barcode_image(product.barcode)
         buf = BytesIO()
         image.save(buf, format="PNG")
         img_b64 = base64.b64encode(buf.getvalue()).decode()
 
+        # Get label customization from POST
+        label_params = {
+            'width': int(request.POST.get('width', 44)),
+            'height': int(request.POST.get('height', 18)),
+            'font_size_product_name': int(request.POST.get('font_name', 6)),
+            'font_size_product_price': int(request.POST.get('font_price', 7)),
+            'font_size_barcode': int(request.POST.get('font_barcode', 6)),
+            'barcode_width': int(request.POST.get('barcode_width', 90)),
+            'barcode_height': int(request.POST.get('barcode_height', 8)),
+            'product_name_max_width': request.POST.get('name_max_width'),
+        }
+
         return render(request, 'print_barcode.html', {
             'product': product,
             'quantity_range': range(qty),
             'img_b64': img_b64,
+            **label_params,
         })
 
-    return render(request, 'choose_quantity.html', {'product': product})
+    return render(request, 'choose_quantity.html', {
+        'product': product,
+        'label_presets': LABEL_PRESETS
+    })
 
 
 @require_POST
