@@ -282,42 +282,27 @@ def check_rfid_view(request):
     return render(request, "check_rfid.html")
 
 def current_products(request):
-    try:
-        rfids = cache.get('current_rfids', []) or []
-        logger.debug(f"Current RFIDs from reader: {rfids}")
+    raw_rfids = cache.get('current_rfids', [])
 
-        qs = (
-            ProductInstance.objects
-            .select_related("product")
-            .filter(RFID__in=rfids)
-            .exclude(status__in=['SOLD', 'LOST', 'DAMAGED'])
-        )
-
-        found = []
-        result = []
-        for inst in qs:
-            db_rfid = inst.RFID.strip().upper()
-            found.append(db_rfid)
-            prod = inst.product
-            result.append({
-                "rfid": db_rfid,
-                "name": prod.name,
-                "price": float(prod.selling_price),
-                "barcode": prod.barcode,
-                "status": inst.status,
+    products = []
+    for rfid in raw_rfids:
+        try:
+            instance = ProductInstance.objects.select_related('product').get(RFID=rfid)
+            product = instance.product
+            products.append({
+                'rfid': rfid,
+                'name': product.name,
+                'price': product.selling_price,
+                'barcode': product.barcode,
+                'status': getattr(instance, 'status', 'UNKNOWN'),  # optional
             })
+        except ProductInstance.DoesNotExist:
+            continue
 
-        # Mark not-found tags
-        for tag in rfids:
-            tag_norm = tag.strip().upper()
-            if tag_norm not in found:
-                result.append({"rfid": tag_norm, "not_found": True})
-
-        logger.debug(f"Returning products: {result}")
-        return JsonResponse({"products": result})
-    except Exception as e:
-        logger.error(f"Error in current_products: {e}")
-        return JsonResponse({"products": []})
+    return JsonResponse({
+        "products": products,
+        "raw_rfids": raw_rfids  # ✅ this is what your JS expects
+    })
 
 @csrf_exempt
 def lookup_rfid_view(request):

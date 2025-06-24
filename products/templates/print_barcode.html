@@ -2,92 +2,55 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Print Barcode</title>
+    <title>Print &amp; Bind RFID</title>
     <style>
-        @page {
-            size: 58mm 30mm;
-            margin: 0;
-        }
-
+        @page { size: 58mm 30mm; margin: 0; }
         body {
-            margin: 0;
-            width: 58mm;
-            height: 30mm;
+            margin: 0; width: 58mm; height: 30mm;
             font-family: 'Source Sans 3', Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
+            display: flex; flex-direction: column;
             align-items: center;
         }
-
         .label {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
         }
-
         .product-name {
-            font-size: 10pt;
-            font-weight: bold;
-            text-transform: uppercase;
-            text-align: center;
-            margin: 1mm 0 0.5mm 0;
+            font-size: 10pt; font-weight: bold;
+            text-transform: uppercase; text-align: center;
+            margin: 1mm 0 .5mm;
         }
-
         .product-price {
-            font-size: 11pt;
-            font-weight: bold;
-            text-align: center;
-            margin: 0.5mm 0;
+            font-size: 11pt; font-weight: bold;
+            text-align: center; margin-bottom: .5mm;
         }
-
         .barcode-container {
-            text-align: center;
-            width: 100%;
-            margin-top: 0.5mm;
+            text-align: center; width: 100%;
+            margin-top: .5mm;
         }
-
         .barcode {
-            width: 90%;
-            height: auto;
-            max-height: 15mm;
+            width: 90%; max-height: 15mm;
         }
-
         .barcode-number {
-            font-size: 9pt;
-            font-family: 'Courier New';
-            letter-spacing: 0.8px;
-            text-align: center;
-            margin-top: 0.5mm;
+            font-size: 9pt; font-family: 'Courier New';
+            letter-spacing: .8px; text-align: center;
+            margin-top: .5mm;
         }
-
-        @media print {
-            button, #rfidInput, .binding-info {
-                display: none;
-            }
-        }
-
         .binding-info {
-            position: fixed;
-            bottom: 10px;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 5px;
-            font-size: 10pt;
-            text-align: center;
-            font-family: Arial, sans-serif;
+            position: fixed; bottom: 5px; left: 0; right: 0;
+            background: rgba(255,255,255,.9); padding: 4px;
+            font-size: 10pt; text-align: center;
             z-index: 1000;
         }
+        @media print {
+            .binding-info { display: none; }
+        }
     </style>
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-{% for i in quantity_range %}
+    {% for i in quantity_range %}
     <div class="label">
         <p class="product-name">{{ product.name }}</p>
         <p class="product-price">{{ product.selling_price }} UZS</p>
@@ -96,94 +59,85 @@
             <p class="barcode-number">{{ product.barcode }}</p>
         </div>
     </div>
-{% endfor %}
+    {% endfor %}
 
-<div class="binding-info">
-    <p>Scan RFID tags (<span class="remaining-count">{{ quantity_range|length }}</span> remaining)</p>
-    <button id="cancelBtn" class="btn btn-danger btn-sm mt-2">
-        <i class="bi bi-x-circle"></i> Cancel Binding
-    </button>
-</div>
-
-<input id="rfidInput" type="text" style="opacity:0;position:absolute;left:-1000px;" autocomplete="off">
+    <div class="binding-info">
+        Remaining to bind: <strong id="remaining">{{ quantity_range|length }}</strong>
+    </div>
 
 <script>
-    $(document).ready(function () {
-        window.print();
-        $('#rfidInput').focus();
+$(function(){
+    // Keep track of which tags we've already bound
+    const boundThisSession = new Set();
+    let remaining = {{ quantity_range|length }};
+    let ready = true;
 
-        const timeoutId = setTimeout(() => {
-            window.location.href = "{% url 'bind_rfid_page' product.pk %}";
-        }, 20000);
+    // Immediately fire print dialog
+    window.print();
 
-        $('#rfidInput').on('input', function () {
-            clearTimeout(timeoutId);
-        });
+    // Poll every 200ms for all active tags
+    const poller = setInterval(async () => {
+        if (!ready) return;
 
-        let rfidBuffer = '';
-        let processing = false;
+        try {
+            const resp = await fetch("{% url 'current_products' %}");
+            const json = await resp.json();
+            console.debug("POLLED:", json);
 
-        $('#rfidInput').on('keydown', function (e) {
-            if (processing) return;
+            // raw_rfids should be an array of tag strings
+            const raw = Array.isArray(json.raw_rfids)
+                ? json.raw_rfids
+                : (json.raw_rfids || []);
 
-            if (e.which === 13) {
-                processing = true;
-                const rfidCode = rfidBuffer;
-                rfidBuffer = '';
-                if (rfidCode.length > 0) {
-                    processRFID(rfidCode);
-                }
-                return;
-            }
+            // pick the first tag we haven't yet bound
+            const fresh = raw.find(r => !boundThisSession.has(r));
+            if (fresh) bindTag(fresh);
 
-            if (e.which >= 16 && e.which <= 20) return;
-            if (e.which >= 112 && e.which <= 123) return;
-
-            rfidBuffer += String.fromCharCode(e.which);
-        });
-
-        function processRFID(rfidCode) {
-            $.ajax({
-                url: "{% url 'bind_rfid' product.pk %}",
-                method: "POST",
-                data: {
-                    rfid: rfidCode,
-                    csrfmiddlewaretoken: '{{ csrf_token }}'
-                },
-                success: function (response) {
-                    $('#rfidInput').val('');
-                    $('.remaining-count').text(response.remaining);
-
-                    if (response.status === 'done') {
-                        setTimeout(() => {
-                            window.location.href = "{% url 'product-list' %}";
-                        }, 1000);
-                    } else {
-                        processing = false;
-                        $('#rfidInput').focus();
-                    }
-                },
-                error: function (xhr) {
-                    alert('Error processing RFID: ' + (xhr.responseJSON?.message || 'Unknown error'));
-                    processing = false;
-                    $('#rfidInput').focus();
-                }
-            });
+        } catch (err) {
+            console.error("Polling error:", err);
         }
+    }, 200);
 
-        $('#cancelBtn').click(function () {
-            $.ajax({
-                url: "{% url 'cancel_print_session' %}",
-                method: "POST",
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
-                },
-                success: function () {
-                    window.location.href = "{% url 'product-list' %}";
+    function bindTag(rfid) {
+        ready = false;
+        console.info("Binding:", rfid);
+
+        $.ajax({
+            url: "{% url 'bind_rfid' product.pk %}",
+            method: "POST",
+            dataType: "json",
+            data: {
+                rfid: rfid,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+        })
+        .done(data => {
+            console.debug("BIND RESPONSE:", data);
+            if (data.status === 'success' || data.status === 'done') {
+                boundThisSession.add(rfid);
+                remaining = data.remaining;
+                $('#remaining').text(remaining);
+
+                if (data.status === 'done' || remaining <= 0) {
+                    clearInterval(poller);
+                    // give user time to see final count
+                    setTimeout(()=>{
+                        window.location.href = "{% url 'product-list' %}";
+                    }, 800);
                 }
-            });
+            } else {
+                console.warn("Bind failed:", data.message);
+            }
+        })
+        .fail((xhr, status, err) => {
+            console.error("Bind AJAX error:", status, err, xhr.responseText);
+        })
+        .always(() => {
+            // debounce 500ms to avoid re-binding the same tag from the fast HID stream
+            setTimeout(() => ready = true, 500);
         });
-    });
+    }
+});
 </script>
 </body>
 </html>

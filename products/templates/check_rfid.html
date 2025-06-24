@@ -1,4 +1,3 @@
-<!-- ====== products/templates/check_rfid.html ====== -->
 {% extends "base.html" %}
 
 {% block title %}Check Product by RFID{% endblock %}
@@ -44,12 +43,21 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch("{% url 'current_products' %}");
             const { products } = await response.json();
+            const now = Date.now();
 
             products.forEach(p => {
-                if (!scannedRFIDs.has(p.rfid)) {
-                    scannedRFIDs.set(p.rfid, p);
-                }
+                scannedRFIDs.set(p.rfid, {
+                    ...p,
+                    lastSeen: now
+                });
             });
+
+            // Clean up tags older than 5 seconds
+            for (const [rfid, obj] of scannedRFIDs.entries()) {
+                if (now - obj.lastSeen > 5000) {
+                    scannedRFIDs.delete(rfid);
+                }
+            }
 
             renderProductList();
         } catch (error) {
@@ -73,9 +81,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const data = await response.json();
+            const now = Date.now();
 
             if (data.status === 'success') {
-                scannedRFIDs.set(rfid, data.product);
+                scannedRFIDs.set(rfid, {
+                    ...data.product,
+                    lastSeen: now
+                });
                 notFoundAlert.style.display = 'none';
             } else {
                 notFoundAlert.textContent = data.message || "❌ Product not found.";

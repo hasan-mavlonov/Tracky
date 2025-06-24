@@ -1,18 +1,26 @@
-# ====== products/rfid_reader.py ======
 import ctypes
 import time
 import threading
 import logging
 from ctypes import c_int, byref, create_string_buffer
-from django.core.cache import cache
 from collections import defaultdict
+
+from django.core.cache import cache
+from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+
+from .models import ProductInstance, Product
+from django.db.models import F
 
 logger = logging.getLogger(__name__)
 
 class RFIDReader:
     def __init__(self):
         try:
-            self.dll = ctypes.windll.LoadLibrary('C:\\Users\\user\\PycharmProjects\\Tracky\\products\\SWHidApi.dll')
+            self.dll = ctypes.windll.LoadLibrary(
+                'C:\\Users\\user\\PycharmProjects\\Tracky\\products\\SWHidApi.dll'
+            )
             self.initialize_reader()
             self.tag_timestamps = defaultdict(float)
             self.last_cleanup = time.time()
@@ -51,11 +59,11 @@ class RFIDReader:
     def run(self):
         while True:
             try:
-                arrBuffer = create_string_buffer(9182)
+                buffer = create_string_buffer(9182)
                 iTagLength = c_int(0)
                 iTagNumber = c_int(0)
 
-                ret = self.dll.SWHid_GetTagBuf(arrBuffer, byref(iTagLength), byref(iTagNumber))
+                ret = self.dll.SWHid_GetTagBuf(buffer, byref(iTagLength), byref(iTagNumber))
                 now = time.time()
 
                 if ret and iTagNumber.value > 0:
@@ -63,7 +71,7 @@ class RFIDReader:
                     current_tags = set()
 
                     for _ in range(iTagNumber.value):
-                        tag_id, bPackLength, ant, rssi = self.parse_tag_data(arrBuffer, iLength)
+                        tag_id, bPackLength, ant, rssi = self.parse_tag_data(buffer, iLength)
                         current_tags.add(tag_id)
                         self.tag_timestamps[tag_id] = now
 
@@ -78,13 +86,15 @@ class RFIDReader:
                     if now - self.last_cleanup > 1:
                         self.cleanup_old_tags()
 
-                    active_tags = [tag for tag in current_tags if self.tag_timestamps[tag] >= now - 5]
-                    cache.set('current_rfids', active_tags, timeout=1)
+                    # Filter out empty strings and stale tags
+                    active = [tag for tag in current_tags if tag and self.tag_timestamps[tag] >= now - 5]
+                    cache.set('current_rfids', active, timeout=1)
 
             except Exception as e:
                 logger.error(f"Reader loop error: {e}")
                 time.sleep(1)
             time.sleep(0.05)
+
 
 def start_rfid_reader():
     try:
@@ -95,3 +105,68 @@ def start_rfid_reader():
     except Exception as e:
         logger.error(f"Failed to start RFID: {e}")
         return False
+
+
+def current_products(request):
+    """
+    Returns DB-matched products and the raw RFID tag list.
+    """
+    try:
+        raw_rfids = cache.get('current_rfids', []) or []
+        logger.debug(f"Current RFIDs from reader: {raw_rfids}")
+
+        # Filter out empty strings
+        raw_rfids = [r for r in raw_rfids if r]
+
+        qs = (
+            ProductInstance.objects
+            .select_related("product")
+            .filter(RFID__in=raw_rfids)
+            .exclude(status__in=['SOLD', 'LOST', 'DAMAGED'])
+        )
+
+        products = []
+        for inst in qs:
+            r = inst.RFID.strip().upper()
+            products.append({
+                "rfid": r,
+                "name": inst.product.name,
+                "price": float(inst.product.selling_price),
+                "barcode": inst.product.barcode,
+                "status": inst.status,
+            })
+
+        return JsonResponse({
+            "products": products,
+            "raw_rfids": raw_rfids
+        })
+    except Exception as e:
+        logger.error(f"Error in current_products: {e}")
+        return JsonResponse({"products": [], "raw_rfids": []})
+
+
+@csrf_exempt
+def lookup_rfid_view(request):
+    if request.method == "POST":
+        try:
+            rfid = request.POST.get("rfid", "").strip().upper()
+            if not rfid:
+                return JsonResponse({"status": "error", "message": "No RFID provided"})
+
+            inst = ProductInstance.objects.select_related("product").filter(RFID=rfid).first()
+            if inst:
+                prod = inst.product
+                return JsonResponse({
+                    "status": "success",
+                    "product": {
+                        "name": prod.name,
+                        "price": float(prod.selling_price),
+                        "barcode": prod.barcode,
+                        "status": inst.status,
+                    }
+                })
+            return JsonResponse({"status": "not_found", "message": "RFID not found"})
+        except Exception as e:
+            logger.error(f"Error in lookup_rfid_view: {e}")
+            return JsonResponse({"status": "error", "message": "Server error"})
+    return JsonResponse({"status": "error", "message": "Invalid request method"})
