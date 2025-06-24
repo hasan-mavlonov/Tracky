@@ -1,111 +1,111 @@
 {% extends "base.html" %}
 
 {% block title %}Sell Products{% endblock %}
-
 {% block page_title %}Sell Products by RFID{% endblock %}
 
 {% block content %}
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
 
-                <div class="card card-success card-outline">
-                    <div class="card-header">
-                        <h3 class="card-title">🛒 RFID Product Selling</h3>
-                    </div>
-                    <div class="card-body">
-                        <input id="rfidInput" style="opacity:0; position:absolute;" autocomplete="off">
-                        <div id="productList" class="mt-3"></div>
-                        <div id="notFound" class="alert alert-danger mt-3" style="display:none;">
-                            ❌ RFID not found or already sold.
-                        </div>
-                        <button id="sellBtn" class="btn btn-success mt-3">
-                            💸 Sell All
-                        </button>
-                    </div>
+            <div class="card card-success card-outline">
+                <div class="card-header">
+                    <h3 class="card-title">🛒 RFID Product Selling</h3>
                 </div>
-
+                <div class="card-body">
+                    <div id="productList" class="mt-3"></div>
+                    <div id="notFound" class="alert alert-danger mt-3" style="display:none;">
+                        ❌ No RFID tags or products not found.
+                    </div>
+                    <button id="sellBtn" class="btn btn-success mt-3">
+                        💸 Sell All
+                    </button>
+                </div>
             </div>
+
         </div>
     </div>
+</div>
 
-    <script>
-        const scannedRFIDs = new Map();
+<script>
+    const scannedRFIDs = new Map();
 
-        window.onload = () => {
-            const input = document.getElementById('rfidInput');
-            input.focus();
+    async function fetchRFIDs() {
+        try {
+            const res = await fetch("{% url 'current_products' %}");
+            const { products } = await res.json();
+            const now = Date.now();
 
-            input.addEventListener('keydown', async (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    const rfid = input.value.trim();
-                    if (!rfid) return;
-
-                    const response = await fetch("{% url 'lookup_rfid' %}", {
-                        method: "POST",
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                            'X-CSRFToken': '{{ csrf_token }}'
-                        },
-                        body: new URLSearchParams({rfid})
-                    });
-
-                    const data = await response.json();
-                    if (data.status === 'success') {
-                        if (scannedRFIDs.has(rfid)) scannedRFIDs.delete(rfid);
-                        scannedRFIDs.set(rfid, data.product);
-                        renderProductList();
-                        document.getElementById('notFound').style.display = 'none';
-                    } else {
-                        document.getElementById('notFound').style.display = 'block';
-                    }
-
-                    input.value = '';
-                    input.focus();
-                }
-            });
-
-            document.getElementById("sellBtn").addEventListener("click", async () => {
-                if (scannedRFIDs.size === 0) return alert("Nothing to sell!");
-
-                const rfids = Array.from(scannedRFIDs.keys());
-                const response = await fetch("{% url 'sell_scanned_products' %}", {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    },
-                    body: JSON.stringify({rfids})
+            products.forEach(p => {
+                scannedRFIDs.set(p.rfid, {
+                    ...p,
+                    lastSeen: now
                 });
-
-                const result = await response.json();
-                if (result.status === 'success') {
-                    alert(`✅ Sold ${result.sold.length} product(s)!`);
-                    scannedRFIDs.clear();
-                    renderProductList();
-                } else {
-                    alert("❌ Error: " + result.message);
-                }
             });
-        };
 
-        function renderProductList() {
-            const container = document.getElementById('productList');
-            container.innerHTML = '';
-            const items = Array.from(scannedRFIDs.entries()).reverse();
-
-            for (const [rfid, product] of items) {
-                const div = document.createElement('div');
-                div.className = 'card card-body mb-2 bg-light border border-secondary';
-                div.innerHTML = `
-        <p><strong>Name:</strong> ${product.name}</p>
-        <p><strong>Price:</strong> ${product.price} UZS</p>
-        <p><strong>Barcode:</strong> ${product.barcode}</p>
-        <p><strong>RFID:</strong> ${rfid}</p>
-      `;
-                container.appendChild(div);
+            // Remove stale ones (older than 5s)
+            for (const [rfid, obj] of scannedRFIDs.entries()) {
+                if (now - obj.lastSeen > 5000) {
+                    scannedRFIDs.delete(rfid);
+                }
             }
+
+            renderProductList();
+        } catch (err) {
+            console.error("Failed to fetch current RFIDs", err);
         }
-    </script>
+    }
+
+    function renderProductList() {
+        const container = document.getElementById('productList');
+        container.innerHTML = '';
+
+        const entries = Array.from(scannedRFIDs.entries()).reverse();
+        if (entries.length === 0) {
+            document.getElementById('notFound').style.display = 'block';
+            return;
+        } else {
+            document.getElementById('notFound').style.display = 'none';
+        }
+
+        entries.forEach(([rfid, product]) => {
+            const card = document.createElement('div');
+            card.className = 'card card-body mb-2 bg-light border border-secondary';
+            card.innerHTML = `
+                <p><strong>Name:</strong> ${product.name}</p>
+                <p><strong>Price:</strong> ${product.price} UZS</p>
+                <p><strong>Barcode:</strong> ${product.barcode}</p>
+                <p><strong>RFID:</strong> ${rfid}</p>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setInterval(fetchRFIDs, 500);  // Fetch every 0.5s
+
+        document.getElementById("sellBtn").addEventListener("click", async () => {
+            if (scannedRFIDs.size === 0) return alert("Nothing to sell!");
+
+            const rfids = Array.from(scannedRFIDs.keys());
+            const res = await fetch("{% url 'sell_scanned_products' %}", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ rfids })
+            });
+
+            const result = await res.json();
+            if (result.status === 'success') {
+                alert(`✅ Sold ${result.sold.length} product(s)!`);
+                rfids.forEach(r => scannedRFIDs.delete(r));
+                renderProductList();
+            } else {
+                alert("❌ Error: " + result.message);
+            }
+        });
+    });
+</script>
 {% endblock %}

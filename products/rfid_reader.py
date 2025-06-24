@@ -127,7 +127,40 @@ def current_products(request):
         logger.error(f"Error in current_products: {e}")
         return JsonResponse({"products": [], "raw_rfids": []})
 
+def current_sold_products(request):
+    """
+    Returns currently scanned products that are marked as SOLD in the DB.
+    Used in refund flow to identify refundable products within RFID range.
+    """
+    try:
+        tag_dict = cache.get('current_rfids_dict', {}) or {}
+        raw_rfids = list(tag_dict.keys())
 
+        logger.debug(f"Current SOLD RFIDs in range: {raw_rfids}")
+
+        queryset = (
+            ProductInstance.objects
+            .select_related("product")
+            .filter(RFID__in=raw_rfids, status="SOLD")
+        )
+
+        products = []
+        for inst in queryset:
+            products.append({
+                "rfid": inst.RFID.strip().upper(),
+                "name": inst.product.name,
+                "price": float(inst.product.selling_price),
+                "barcode": inst.product.barcode,
+                "status": inst.status,
+            })
+
+        return JsonResponse({
+            "products": products,
+            "raw_rfids": raw_rfids
+        })
+    except Exception as e:
+        logger.error(f"Error in current_sold_products: {e}")
+        return JsonResponse({"products": [], "raw_rfids": []})
 @csrf_exempt
 def lookup_rfid_view(request):
     if request.method == "POST":

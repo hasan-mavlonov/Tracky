@@ -8,8 +8,13 @@ class Sale(models.Model):
 
 class SoldItem(models.Model):
     sale = models.ForeignKey(Sale, on_delete=models.CASCADE, related_name="items")
-    product_instance = models.OneToOneField(ProductInstance, on_delete=models.PROTECT)
+    product_instance = models.ForeignKey(ProductInstance, on_delete=models.PROTECT)
     sold_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["product_instance"]),
+        ]
 
 
 class Refund(models.Model):

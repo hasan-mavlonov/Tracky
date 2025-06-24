@@ -22,18 +22,35 @@ def sell_scanned_products_view(request):
             sold_items = []
 
             for rfid in rfids:
-                instance = ProductInstance.objects.select_related("product").filter(RFID=rfid,
-                                                                                    status="IN_STOCK").first()
-                if instance:
-                    instance.status = "SOLD"
-                    instance.save()
+                instance = ProductInstance.objects.select_related("product").filter(RFID=rfid, status="IN_STOCK").first()
+                if not instance:
+                    continue
 
-                    product = instance.product
-                    product.quantity = max(product.quantity - 1, 0)
-                    product.save()
+                # Check last sale and if it's refunded
+                last_sale = (
+                    SoldItem.objects
+                    .filter(product_instance=instance)
+                    .order_by('-sold_at')
+                    .first()
+                )
 
-                    SoldItem.objects.create(sale=sale, product_instance=instance)
-                    sold_items.append(rfid)
+                already_sold_unrefunded = (
+                    last_sale and not RefundedItem.objects.filter(sold_item=last_sale).exists()
+                )
+
+                if already_sold_unrefunded:
+                    continue  # Still sold, not refunded yet
+
+                # Proceed to sell
+                instance.status = "SOLD"
+                instance.save()
+
+                product = instance.product
+                product.quantity = max(product.quantity - 1, 0)
+                product.save()
+
+                SoldItem.objects.create(sale=sale, product_instance=instance)
+                sold_items.append(rfid)
 
             return JsonResponse({"status": "success", "sold": sold_items})
         except Exception as e:
@@ -106,17 +123,23 @@ def refund_scanned_products(request):
 
             for rfid in rfids:
                 try:
-                    product_instance = ProductInstance.objects.select_related("product").get(RFID=rfid, status="SOLD")
-                    sold_item = SoldItem.objects.get(product_instance=product_instance)
+                    instance = ProductInstance.objects.select_related("product").get(RFID=rfid, status="SOLD")
 
-                    if not RefundedItem.objects.filter(sold_item=sold_item).exists():
+                    last_sale = (
+                        SoldItem.objects
+                        .filter(product_instance=instance)
+                        .order_by('-sold_at')
+                        .first()
+                    )
+
+                    if last_sale and not RefundedItem.objects.filter(sold_item=last_sale).exists():
                         refund = Refund.objects.create()
-                        RefundedItem.objects.create(refund=refund, sold_item=sold_item)
+                        RefundedItem.objects.create(refund=refund, sold_item=last_sale)
 
-                        product_instance.status = "IN_STOCK"
-                        product_instance.save()
+                        instance.status = "IN_STOCK"
+                        instance.save()
 
-                        product = product_instance.product
+                        product = instance.product
                         product.quantity += 1
                         product.save()
 
