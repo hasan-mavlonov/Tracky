@@ -1,3 +1,4 @@
+<!-- ====== products/templates/check_rfid.html ====== -->
 {% extends "base.html" %}
 
 {% block title %}Check Product by RFID{% endblock %}
@@ -8,11 +9,17 @@
     <div class="col-md-8 offset-md-2">
         <div class="card shadow-sm">
             <div class="card-header">
-                <h3 class="card-title">🔍 Scan RFID to Lookup Product</h3>
+                <h3 class="card-title">🔍 RFID Product Scanner</h3>
             </div>
             <div class="card-body">
-                <input id="rfidInput" type="text" class="form-control" style="opacity:0; position:absolute;"
-                    autocomplete="off" />
+                <div class="alert alert-info">
+                    <strong>Scan Mode:</strong> Products will appear automatically when scanned.
+                    <br>
+                    <strong>Manual Entry:</strong> Click below and type RFID, then press Enter.
+                </div>
+
+                <input id="rfidInput" type="text" class="form-control mb-3"
+                       placeholder="Or type RFID here and press Enter" autocomplete="off" />
 
                 <div id="notFound" class="alert alert-danger mt-3" style="display: none;">
                     ❌ Product not found or unavailable.
@@ -27,75 +34,127 @@
 
 {% block extra_js %}
 <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('productList');
+    const input = document.getElementById('rfidInput');
+    const notFoundAlert = document.getElementById('notFound');
     const scannedRFIDs = new Map();
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const input = document.getElementById('rfidInput');
-        input.focus();
+    async function refreshProducts() {
+        try {
+            const response = await fetch("{% url 'current_products' %}");
+            const { products } = await response.json();
 
-        input.addEventListener('keydown', async (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const rfid = input.value.trim();
-                if (!rfid) return;
-
-                const response = await fetch("{% url 'lookup_rfid' %}", {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    },
-                    body: new URLSearchParams({ rfid })
-                });
-
-                const data = await response.json();
-
-                if (data.status === 'success') {
-                    scannedRFIDs.set(rfid, data.product);
-                    renderProductList();
-                    document.getElementById('notFound').style.display = 'none';
-                } else {
-                    document.getElementById('notFound').innerText = data.message || "❌ Product not found.";
-                    document.getElementById('notFound').style.display = 'block';
+            products.forEach(p => {
+                if (!scannedRFIDs.has(p.rfid)) {
+                    scannedRFIDs.set(p.rfid, p);
                 }
+            });
 
-                input.value = '';
-                input.focus();
+            renderProductList();
+        } catch (error) {
+            console.error("Error fetching products:", error);
+        }
+    }
+
+    input.addEventListener('keydown', async (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const rfid = input.value.trim().toUpperCase();
+            if (!rfid) return;
+
+            const response = await fetch("{% url 'lookup_rfid' %}", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: new URLSearchParams({ rfid })
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                scannedRFIDs.set(rfid, data.product);
+                notFoundAlert.style.display = 'none';
+            } else {
+                notFoundAlert.textContent = data.message || "❌ Product not found.";
+                notFoundAlert.style.display = 'block';
             }
-        });
+
+            input.value = '';
+            renderProductList();
+        }
     });
 
     function renderProductList() {
-        const container = document.getElementById('productList');
         container.innerHTML = '';
+
+        if (scannedRFIDs.size === 0) {
+            container.innerHTML = `
+                <div class="alert alert-warning">
+                    No products detected. Scan an RFID tag or enter one manually.
+                </div>
+            `;
+            return;
+        }
 
         const items = Array.from(scannedRFIDs.entries()).reverse();
 
-        for (const [rfid, product] of items) {
+        items.forEach(([rfid, product]) => {
             const card = document.createElement('div');
             card.className = 'card mb-3 shadow-sm';
 
-            const statusClass =
-                product.status === 'IN_STOCK' ? 'bg-success' :
-                product.status === 'SOLD' ? 'bg-secondary' :
-                product.status === 'DAMAGED' ? 'bg-warning text-dark' :
-                product.status === 'LOST' ? 'bg-danger' : 'bg-light';
+            if (product.not_found) {
+                card.innerHTML = `
+                    <div class="card-body bg-light">
+                        <h5 class="card-title">Unknown Tag</h5>
+                        <p class="mb-1"><strong>RFID:</strong> ${rfid}</p>
+                        <p class="text-danger">No matching product in database.</p>
+                    </div>
+                `;
+                container.appendChild(card);
+                return;
+            }
 
-            const statusLabel = product.status?.replace('_', ' ') || 'Unknown';
+            const statusClass = getStatusClass(product.status);
+            const statusLabel = product.status?.replace(/_/g, ' ') || 'Unknown';
 
             card.innerHTML = `
                 <div class="card-body">
-                    <h5 class="card-title">${product.name}</h5>
-                    <p class="card-text"><strong>Price:</strong> ${product.price} UZS</p>
-                    <p class="card-text"><strong>Barcode:</strong> ${product.barcode}</p>
-                    <p class="card-text"><strong>RFID:</strong> ${rfid}</p>
-                    <p class="card-text"><strong>Status:</strong>
+                    <div class="d-flex justify-content-between">
+                        <h5 class="card-title">${product.name}</h5>
                         <span class="badge ${statusClass}">${statusLabel}</span>
-                    </p>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Price:</strong> ${product.price} UZS</p>
+                            <p class="mb-1"><strong>Barcode:</strong> ${product.barcode}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>RFID:</strong> ${rfid}</p>
+                        </div>
+                    </div>
                 </div>
             `;
             container.appendChild(card);
-        }
+        });
     }
+
+    function getStatusClass(status) {
+        status = (status || '').toUpperCase();
+        return {
+            'IN_STOCK': 'bg-success',
+            'SOLD': 'bg-secondary',
+            'DAMAGED': 'bg-warning text-dark',
+            'LOST': 'bg-danger',
+            'RESERVED': 'bg-primary'
+        }[status] || 'bg-light text-dark';
+    }
+
+    refreshProducts();
+    setInterval(refreshProducts, 500);
+    input.focus();
+});
 </script>
 {% endblock %}

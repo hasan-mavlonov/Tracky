@@ -7,6 +7,7 @@ from .forms import ProductForm
 from .serializers import ProductSerializer
 from .utils import generate_barcode
 import json
+from django.core.cache import cache
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from django.shortcuts import redirect
 from .utils import generate_barcode_image
@@ -20,7 +21,7 @@ from io import BytesIO
 from django.contrib import messages
 from django.db.models import F
 
-
+import logging
 class ProductCreateAPIView(generics.CreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
@@ -275,36 +276,74 @@ def cancel_print_session(request):
     return JsonResponse({'status': 'error'}, status=405)
 
 
+logger = logging.getLogger(__name__)
+
 def check_rfid_view(request):
     return render(request, "check_rfid.html")
 
+def current_products(request):
+    try:
+        rfids = cache.get('current_rfids', []) or []
+        logger.debug(f"Current RFIDs from reader: {rfids}")
+
+        qs = (
+            ProductInstance.objects
+            .select_related("product")
+            .filter(RFID__in=rfids)
+            .exclude(status__in=['SOLD', 'LOST', 'DAMAGED'])
+        )
+
+        found = []
+        result = []
+        for inst in qs:
+            db_rfid = inst.RFID.strip().upper()
+            found.append(db_rfid)
+            prod = inst.product
+            result.append({
+                "rfid": db_rfid,
+                "name": prod.name,
+                "price": float(prod.selling_price),
+                "barcode": prod.barcode,
+                "status": inst.status,
+            })
+
+        # Mark not-found tags
+        for tag in rfids:
+            tag_norm = tag.strip().upper()
+            if tag_norm not in found:
+                result.append({"rfid": tag_norm, "not_found": True})
+
+        logger.debug(f"Returning products: {result}")
+        return JsonResponse({"products": result})
+    except Exception as e:
+        logger.error(f"Error in current_products: {e}")
+        return JsonResponse({"products": []})
 
 @csrf_exempt
 def lookup_rfid_view(request):
     if request.method == "POST":
-        rfid = request.POST.get("rfid", "").strip()
+        try:
+            rfid = request.POST.get("rfid", "").strip().upper()
+            if not rfid:
+                return JsonResponse({"status": "error", "message": "No RFID provided"})
 
-        if not rfid:
-            return JsonResponse({"status": "error", "message": "No RFID provided"})
-
-        instance = ProductInstance.objects.select_related("product").filter(RFID=rfid).first()
-
-        if instance:
-            product = instance.product
-            return JsonResponse({
-                "status": "success",
-                "product": {
-                    "name": product.name,
-                    "price": float(product.selling_price),
-                    "barcode": product.barcode,
-                    "status": instance.status,
-                }
-            })
-
-        return JsonResponse({"status": "not_found", "message": "RFID not found"})
-
+            inst = ProductInstance.objects.select_related("product").filter(RFID=rfid).first()
+            if inst:
+                prod = inst.product
+                return JsonResponse({
+                    "status": "success",
+                    "product": {
+                        "name": prod.name,
+                        "price": float(prod.selling_price),
+                        "barcode": prod.barcode,
+                        "status": inst.status,
+                    }
+                })
+            return JsonResponse({"status": "not_found", "message": "RFID not found"})
+        except Exception as e:
+            logger.error(f"Error in lookup_rfid_view: {e}")
+            return JsonResponse({"status": "error", "message": "Server error"})
     return JsonResponse({"status": "error", "message": "Invalid request method"})
-
 
 @require_POST
 def cancel_print_session_view(request):
@@ -312,3 +351,4 @@ def cancel_print_session_view(request):
     request.session.pop('pending_print_qty', None)
     request.session.pop('bound_rfids', None)
     return JsonResponse({'status': 'success'})
+
