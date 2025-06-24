@@ -20,7 +20,7 @@ import base64
 from io import BytesIO
 from django.contrib import messages
 from django.db.models import F
-
+import time
 import logging
 class ProductCreateAPIView(generics.CreateAPIView):
     queryset = Product.objects.all()
@@ -282,27 +282,41 @@ def check_rfid_view(request):
     return render(request, "check_rfid.html")
 
 def current_products(request):
-    raw_rfids = cache.get('current_rfids', [])
+    try:
+        now = time.time()
+        tag_dict = cache.get('current_rfids_dict', {})
 
-    products = []
-    for rfid in raw_rfids:
-        try:
-            instance = ProductInstance.objects.select_related('product').get(RFID=rfid)
-            product = instance.product
+        # Only use tags seen in the last 1 second
+        recent_tags = [tag for tag, ts in tag_dict.items() if now - ts <= 1.0]
+        logger.debug(f"Current RFIDs from reader: {recent_tags}")
+
+        qs = (
+            ProductInstance.objects
+            .select_related("product")
+            .filter(RFID__in=recent_tags)
+            .exclude(status__in=['SOLD', 'LOST', 'DAMAGED'])
+        )
+
+        products = []
+        for inst in qs:
+            r = inst.RFID.strip().upper()
             products.append({
-                'rfid': rfid,
-                'name': product.name,
-                'price': product.selling_price,
-                'barcode': product.barcode,
-                'status': getattr(instance, 'status', 'UNKNOWN'),  # optional
+                "rfid": r,
+                "name": inst.product.name,
+                "price": float(inst.product.selling_price),
+                "barcode": inst.product.barcode,
+                "status": inst.status,
             })
-        except ProductInstance.DoesNotExist:
-            continue
 
-    return JsonResponse({
-        "products": products,
-        "raw_rfids": raw_rfids  # ✅ this is what your JS expects
-    })
+        return JsonResponse({
+            "products": products,
+            "raw_rfids": recent_tags
+        })
+
+    except Exception as e:
+        logger.error(f"Error in current_products: {e}")
+        return JsonResponse({"products": [], "raw_rfids": []})
+
 
 @csrf_exempt
 def lookup_rfid_view(request):
