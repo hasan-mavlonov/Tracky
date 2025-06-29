@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: tracky-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn Tracky.wsgi:application
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: Tracky.settings
+      - key: SECRET_KEY
+        value: your-django-secret
+      - key: DATABASE_URL
+        fromDatabase:
+          name: tracky-db
+          property: connectionString
