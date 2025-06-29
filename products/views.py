@@ -85,7 +85,7 @@ class ProductDeleteView(DeleteView):
     success_url = reverse_lazy("product-list")  # or wherever you want to redirect
 
 
-@csrf_exempt
+
 def generate_barcode_view(request):
     if request.method == 'POST':
         try:
@@ -173,7 +173,7 @@ def print_product_barcode_view(request, pk):
 
 
 @require_POST
-@csrf_exempt  # REMOVE in production
+  # REMOVE in production
 def bind_rfid_view(request, pk):
     pending_pk = request.session.get('pending_print_pk')
     qty = request.session.get('pending_print_qty', 0)
@@ -266,7 +266,7 @@ def choose_quantity_view(request, pk):
     return render(request, 'choose_quantity.html', {'product': product})
 
 
-@csrf_exempt
+
 def cancel_print_session(request):
     if request.method == 'POST':
         request.session.pop('pending_print_pk', None)
@@ -318,7 +318,7 @@ def current_products(request):
         return JsonResponse({"products": [], "raw_rfids": []})
 
 
-@csrf_exempt
+
 def lookup_rfid_view(request):
     if request.method == "POST":
         try:

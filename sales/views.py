@@ -11,7 +11,7 @@ def sell_products_view(request):
     return render(request, "sell_products.html")
 
 
-@csrf_exempt
+
 def sell_scanned_products_view(request):
     if request.method == "POST":
         try:
@@ -59,7 +59,7 @@ def sell_scanned_products_view(request):
     return JsonResponse({"status": "error", "message": "Invalid request"})
 
 
-@csrf_exempt
+
 def refund_product_view(request):
     if request.method == 'POST':
         rfid_code = request.POST.get('rfid')
@@ -92,7 +92,7 @@ def refund_product_view(request):
     return render(request, 'refund_products.html')
 
 
-@csrf_exempt
+
 def lookup_refund_rfid(request):
     if request.method == "POST":
         rfid_code = request.POST.get('rfid')
@@ -113,7 +113,7 @@ def lookup_refund_rfid(request):
     return JsonResponse({'status': 'invalid'})
 
 
-@csrf_exempt
+
 def refund_scanned_products(request):
     if request.method == 'POST':
         try:
