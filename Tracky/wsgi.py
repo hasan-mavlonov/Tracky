@@ -14,3 +14,13 @@ from django.core.wsgi import get_wsgi_application
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Tracky.settings')
 
 application = get_wsgi_application()
+
+import platform
+
+if platform.system() != "Windows":
+    print("RFID not supported on Render (Linux). Skipping init.")
+else:
+    try:
+        import your_rfid_module  # or run init here
+    except Exception as e:
+        print("RFID Init Error:", e)
