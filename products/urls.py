@@ -1,10 +1,8 @@
 from django.urls import path
-
-from .rfid_reader import current_sold_products
 from .views import ProductCreateAPIView, ProductListAPIView, ProductDetailView, generate_barcode_view, \
     print_product_barcode_view, bind_rfid_view, choose_quantity_view, cancel_print_session, check_rfid_view, \
     lookup_rfid_view, cancel_print_session_view, bind_rfid_page_view, ProductUpdateView, ProductDeleteView, \
-    current_products, store_rfids_view
+    current_products, store_rfids_view, current_sold_products
 
 urlpatterns = [
     path('create/', ProductCreateAPIView.as_view(), name='product-create'),

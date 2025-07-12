@@ -6,8 +6,4 @@ class ProductsConfig(AppConfig):
     name = 'products'
 
     def ready(self):
-        # Start RFID reader when Django starts
-        if not cache.get('rfid_reader_started'):
-            from .rfid_reader import start_rfid_reader
-            if start_rfid_reader():
-                cache.set('rfid_reader_started', True, timeout=None)
+        pass

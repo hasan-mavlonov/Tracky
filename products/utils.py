@@ -1,3 +1,4 @@
+# products/utils.py
 import random
 import string
 import barcode
