@@ -42,14 +42,26 @@ document.addEventListener('DOMContentLoaded', () => {
     async function refreshProducts() {
         try {
             const response = await fetch("{% url 'current_products' %}");
-            const { products } = await response.json();
+            const { products, raw_rfids } = await response.json();
             const now = Date.now();
 
+            // Store found products
             products.forEach(p => {
                 scannedRFIDs.set(p.rfid, {
                     ...p,
                     lastSeen: now
                 });
+            });
+
+            // Store unknown tags
+            raw_rfids.forEach(tag => {
+                if (!scannedRFIDs.has(tag)) {
+                    scannedRFIDs.set(tag, {
+                        rfid: tag,
+                        not_found: true,
+                        lastSeen: now
+                    });
+                }
             });
 
             // Clean up tags older than 5 seconds
@@ -90,6 +102,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 notFoundAlert.style.display = 'none';
             } else {
+                scannedRFIDs.set(rfid, {
+                    rfid,
+                    not_found: true,
+                    lastSeen: now
+                });
                 notFoundAlert.textContent = data.message || "❌ Product not found.";
                 notFoundAlert.style.display = 'block';
             }

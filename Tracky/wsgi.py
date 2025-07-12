@@ -21,6 +21,6 @@ if platform.system() != "Windows":
     print("RFID not supported on Render (Linux). Skipping init.")
 else:
     try:
-        import your_rfid_module  # or run init here
+        import your_rfid_module
     except Exception as e:
         print("RFID Init Error:", e)
