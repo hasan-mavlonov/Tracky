@@ -19,10 +19,10 @@ from django.urls import path, include
 from .views import BaseView, LandingView
 
 urlpatterns = [
-    path('', BaseView, name='base_view'),
+    path('dashboard/', BaseView, name='base_view'),
     path('admin/', admin.site.urls),
     path('products/', include('products.urls')),
     path('shops/', include('shops.urls')),
     path('sales/', include('sales.urls')),
-    path('landing/', LandingView, name='landing_view'),
+    path('', LandingView, name='landing_view'),
 ]
