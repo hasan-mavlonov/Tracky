@@ -1,10 +1,11 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Tracky</title>
-    <meta name="description" content=""/>
+    <meta name="description"
+          content="Tracky – система отслеживания запасов в реальном времени для современного ритейла. Знайте, где ваши товары – всегда и везде."/>
     <link
             rel="shortcut icon"
             href="../static/images/logo-color.png"
@@ -12,14 +13,13 @@
     />
 
     <!-- Open Graph / Facebook -->
-    <meta property="og:title" content="Title of the project"/>
-    <meta property="og:description" content=""/>
+    <meta property="og:title" content="Tracky – Отслеживание запасов в реальном времени"/>
+    <meta property="og:description"
+          content="Tracky предотвращает потери товаров и ошибки в учёте. Инвентаризация – до 15 раз быстрее с RFID-технологией."/>
     <meta property="og:type" content="website"/>
-    <meta property="og:url" content="https://github.com/PaulleDemon"/>
-    <!--Replace with the current website url-->
-    <meta property="og:image" content=""/>
+    <meta property="og:url" content="https://tracky.io"/>
+    <meta property="og:image" content="../static/images/dashboard.png"/>
 
-    <!-- <link rel="stylesheet" href="../../tailwind-css/tailwind-runtime.css" /> -->
     <link rel="stylesheet" href="../static/landing/css/tailwind-build.css">
     <link rel="stylesheet" href="../static/landing/css/index.css"/>
 
@@ -37,13 +37,14 @@
 <header
         class="tw-max-w-lg:tw-px-4 tw-max-w-lg:tw-mr-auto tw-absolute tw-top-0 tw-z-20 tw-flex tw-h-[60px] tw-w-full tw-bg-opacity-0 tw-px-[5%] lg:tw-justify-around"
 >
-    <a class="tw-h-[50px] tw-w-[50px] tw-p-[4px]" href="">
+    <a class="tw-h-[60px] tw-w-[60px] tw-p-[6px]" href="">
         <img
                 src="../static/images/image.png"
-                alt="logo"
+                alt="Логотип Tracky"
                 class="tw-object tw-h-full tw-w-full"
         />
     </a>
+
     <div
             class="collapsible-header animated-collapse max-lg:tw-shadow-md"
             id="collapsed-header-items"
@@ -51,10 +52,10 @@
         <div
                 class="tw-flex tw-h-full tw-w-max tw-gap-5 tw-text-base max-lg:tw-mt-[30px] max-lg:tw-flex-col max-lg:tw-place-items-end max-lg:tw-gap-5 lg:tw-mx-auto lg:tw-place-items-center"
         >
-            <a class="header-links" href=""> Про нас </a>
+            <a class="header-links" href=""> О нас </a>
             <a class="header-links" href="#pricing"> Цены </a>
-            <a class="header-links" href=""> Решения</a>
-            <a class="header-links" href=""> Функции </a>
+            <a class="header-links" href=""> Решения </a>
+            <a class="header-links" href="#features"> Функции </a>
             <a class="header-links" href=""> Компания </a>
         </div>
         <div
@@ -62,7 +63,7 @@
         >
             <a
                     href="https://tally.so/r/3x1dRk"
-                    aria-label="signup"
+                    aria-label="Получить демо"
                     class="tw-rounded-full tw-bg-white tw-px-3 tw-py-2 tw-text-black tw-transition-transform tw-duration-[0.3s] hover:tw-translate-x-2"
             >
                 <span>Получить демо</span>
@@ -73,7 +74,7 @@
     <button
             class="bi bi-list tw-absolute tw-right-3 tw-top-3 tw-z-50 tw-text-3xl tw-text-white lg:tw-hidden"
             onclick="toggleHeader()"
-            aria-label="menu"
+            aria-label="Меню"
             id="collapse-btn"
     ></button>
 </header>
@@ -98,8 +99,8 @@
             <div
                     class="reveal-up tw-mt-10 tw-max-w-[450px] tw-p-2 tw-text-center tw-text-gray-300 max-lg:tw-max-w-full"
             >
-                Tracky предотвращает потери товаров и ошибки в учёте.
-                Инвентаризация — до 15 раз быстрее.
+                Tracky предотвращает потери товаров и ошибки в учёте. Инвентаризация – до 15 раз быстрее с
+                RFID-технологией.
             </div>
 
             <div
@@ -131,7 +132,7 @@
             >
                 <img
                         src="../static/images/dashboard.png"
-                        alt="dashboard"
+                        alt="Панель управления Tracky"
                         class="tw-h-full tw-w-full tw-object-cover tw-opacity-90 max-lg:tw-object-contain"
                 />
             </div>
@@ -147,60 +148,53 @@
         class="tw-relative tw-flex tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-8"
 >
     <h2 class="reveal-up tw-text-3xl max-md:tw-text-xl">
-        Trusted by brands you know
+        Компании, ожидающие подключения к Tracky
     </h2>
 
     <div class="reveal-up carousel-container">
         <div
                 class="carousel lg:w-place-content-center tw-mt-6 tw-flex tw-w-full tw-gap-5 max-md:tw-gap-2"
         >
-            <!-- add the brands using your app  -->
-            <div class="carousel-img tw-h-[30px] tw-w-[150px]">
+            <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
                 <img
-                        src="../static/images/google.svg"
-                        alt="Google"
-                        class="tw-h-full tw-w-full tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"
-                        srcset=""
+                        src="../static/images/skechers.svg"
+                        alt="Skechers"
+                        class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"
                 />
             </div>
-            <div class="carousel-img tw-h-[30px] tw-w-[150px]">
+            <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
                 <img
-                        src="../static/images/microsoft.svg"
-                        alt="Microsoft"
-                        class="tw-h-full tw-w-full tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"
-                        srcset=""
+                        src="../static/images/nike.svg"
+                        alt="Nike"
+                        class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"
                 />
             </div>
-            <div class="carousel-img tw-h-[30px] tw-w-[150px]">
+            <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[140px]">
                 <img
-                        src="../static/images/adobe.svg"
-                        alt="Adobe"
-                        class="tw-h-full tw-w-full tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"
-                        srcset=""
+                        src="../static/images/crocs.svg"
+                        alt="Crocs"
+                        class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"
                 />
             </div>
-            <div class="carousel-img tw-h-[30px] tw-w-[150px]">
+            <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
                 <img
-                        src="../static/images/airbnb.svg"
-                        alt="Adobe"
-                        class="tw-h-full tw-w-full tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"
-                        srcset=""
+                        src="../static/images/calvinklein.svg"
+                        alt="Calvin Klein"
+                        class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"
                 />
             </div>
-            <div class="carousel-img tw-h-[30px] tw-w-[150px]">
+            <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
                 <img
-                        src="../static/images/stripe.svg"
-                        alt="Adobe"
-                        class="tw-h-full tw-w-full tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"
-                        srcset=""
+                        src="../static/images/armani_exchange.svg"
+                        alt="Armani Exchange"
+                        class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"
                 />
             </div>
-            <div class="carousel-img tw-h-[30px] tw-w-[150px]">
+            <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
                 <img
-                        src="../static/images/reddit.svg"
-                        alt="Adobe"
-                        class="tw-h-full tw-w-full tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"
-                        srcset=""
+                        src="../static/images/thenorthface.svg"
+                        alt="The North Face"
+                        class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"
                 />
             </div>
         </div>
@@ -219,7 +213,7 @@
             <h2
                     class="tw-text-4xl tw-font-medium tw-text-gray-200 max-md:tw-text-3xl"
             >
-                Key benifits
+                Ключевые преимущества Tracky
             </h2>
         </div>
         <div
@@ -243,11 +237,10 @@
                     <h3
                             class="tw-mt-8 tw-text-2xl tw-font-normal max-md:tw-text-xl"
                     >
-                        Minimize hours spent
+                        Сокращение времени инвентаризации
                     </h3>
                     <div class="tw-text-gray-300">
-                        Lorem ipsum dolor sit amet consectetur,
-                        adipisicing elit.
+                        Инвентаризация до 15 раз быстрее благодаря RFID-технологии, минимизирующей ручной труд.
                     </div>
                 </div>
             </div>
@@ -269,11 +262,10 @@
                     <h3
                             class="tw-mt-8 tw-text-2xl tw-font-normal max-md:tw-text-xl"
                     >
-                        Simple to use
+                        Простота использования
                     </h3>
                     <div class="tw-text-gray-300">
-                        Lorem ipsum dolor sit amet consectetur,
-                        adipisicing elit.
+                        Веб-панель управления работает в любом браузере без установки дополнительного ПО.
                     </div>
                 </div>
             </div>
@@ -295,11 +287,10 @@
                     <h3
                             class="tw-mt-8 tw-text-2xl tw-font-normal max-md:tw-text-xl"
                     >
-                        Speed up your development
+                        Нулевые потери при возвратах
                     </h3>
                     <div class="tw-text-gray-300">
-                        Lorem ipsum dolor sit amet consectetur,
-                        adipisicing elit.
+                        Точное отслеживание возвратов предотвращает путаницу и потери на складе.
                     </div>
                 </div>
             </div>
@@ -309,6 +300,7 @@
 
 <section
         class="tw-relative tw-flex tw-min-h-[80vh] tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-6"
+        id="features"
 >
     <div
             class="tw-mt-8 tw-flex tw-flex-col tw-place-items-center tw-gap-5"
@@ -319,7 +311,7 @@
             <h2
                     class="tw-text-4xl tw-font-medium tw-text-gray-200 max-md:tw-text-2xl"
             >
-                Features loved by everyone
+                Функции, которые ценят все
             </h2>
         </div>
         <div
@@ -334,12 +326,11 @@
 
                 <div class="tw-flex tw-flex-col tw-gap-4">
                     <h3 class="tw-text-2xl max-md:tw-text-xl">
-                        Global
+                        Отслеживание на уровне продукта
                     </h3>
                     <p class="tw-text-gray-300 max-md:tw-text-sm">
-                        Lorem ipsum dolor sit amet consectetur
-                        adipisicing elit. Animi quasi consequuntur,
-                        distinctio
+                        Каждый товар имеет уникальный RFID-тег, позволяющий отслеживать отдельные единицы, а не только
+                        категории.
                     </p>
                 </div>
             </div>
@@ -353,12 +344,11 @@
 
                 <div class="tw-flex tw-flex-col tw-gap-4">
                     <h3 class="tw-text-2xl max-md:tw-text-xl">
-                        Insights
+                        Аналитика в реальном времени
                     </h3>
                     <p class="tw-text-gray-300 max-md:tw-text-sm">
-                        Lorem ipsum dolor sit amet consectetur
-                        adipisicing elit. Animi quasi consequuntur,
-                        distinctio laboriosam
+                        RFID-ридеры обнаруживают товары каждую миллисекунду, предоставляя актуальные данные о наличии и
+                        перемещении.
                     </p>
                 </div>
             </div>
@@ -372,12 +362,10 @@
 
                 <div class="tw-flex tw-flex-col tw-gap-4">
                     <h3 class="tw-text-2xl max-md:tw-text-xl">
-                        Cloud backup
+                        Веб-панель управления
                     </h3>
                     <p class="tw-text-gray-300 max-md:tw-text-sm">
-                        Lorem ipsum dolor sit amet consectetur
-                        adipisicing elit. Animi quasi consequuntur,
-                        distinctio laboriosam
+                        Управляйте запасами и просматривайте данные с любого устройства через браузер.
                     </p>
                 </div>
             </div>
@@ -391,12 +379,10 @@
 
                 <div class="tw-flex tw-flex-col tw-gap-4">
                     <h3 class="tw-text-2xl max-md:tw-text-xl">
-                        2 Factor Authentication
+                        Интеграция штрихкодов и RFID
                     </h3>
                     <p class="tw-text-gray-300 max-md:tw-text-sm">
-                        Lorem ipsum dolor sit amet consectetur
-                        adipisicing elit. Animi quasi consequuntur,
-                        distinctio laboriosam
+                        Автоматическое сопоставление RFID-тегов с товарами для точного учёта.
                     </p>
                 </div>
             </div>
@@ -410,12 +396,10 @@
 
                 <div class="tw-flex tw-flex-col tw-gap-4">
                     <h3 class="tw-text-2xl max-md:tw-text-xl">
-                        3rd party integrations
+                        Поддержка возвратов
                     </h3>
                     <p class="tw-text-gray-300 max-md:tw-text-sm">
-                        Lorem ipsum dolor sit amet consectetur
-                        adipisicing elit. Animi quasi consequuntur,
-                        distinctio laboriosam
+                        Точное управление возвратами предотвращает путаницу в учёте.
                     </p>
                 </div>
             </div>
@@ -429,12 +413,10 @@
 
                 <div class="tw-flex tw-flex-col tw-gap-4">
                     <h3 class="tw-text-2xl max-md:tw-text-xl">
-                        Advanced configurations
+                        Простая установка
                     </h3>
                     <p class="tw-text-sm tw-text-gray-300">
-                        Lorem ipsum dolor sit amet consectetur
-                        adipisicing elit. Animi quasi consequuntur,
-                        distinctio laboriosam
+                        Лёгкое приложение для Windows синхронизирует RFID-ридер с веб-панелью.
                     </p>
                 </div>
             </div>
@@ -454,7 +436,7 @@
             >
                 <img
                         src="../static/images/dash.png"
-                        alt="coding"
+                        alt="Панель управления"
                         class="tw-h-full tw-w-full tw-object-cover"
                 />
             </div>
@@ -463,34 +445,30 @@
                 class="tw-mt-6 tw-flex tw-max-w-[450px] tw-flex-col tw-gap-4"
         >
             <h3 class="tw-text-4xl tw-font-medium max-md:tw-text-2xl">
-                Simple to use plugins
+                Простые в использовании плагины
             </h3>
 
             <div class="tw-mt-4 tw-flex tw-flex-col tw-gap-3">
                 <h4 class="tw-text-xl tw-font-medium">
                     <i class="bi bi-check-all !tw-text-2xl"></i>
-                    AI powered
+                    Поддержка ИИ
                 </h4>
                 <span
                         class="tw-text-lg tw-text-gray-300 max-md:tw-text-base"
                 >
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Reiciendis commodi temporibus at? Aspernatur,
-                            a necessitatibus?
-                        </span>
+                    Интеллектуальная аналитика помогает оптимизировать управление запасами.
+                </span>
             </div>
             <div class="tw-mt-4 tw-flex tw-flex-col tw-gap-3">
                 <h4 class="tw-text-xl tw-font-medium">
                     <i class="bi bi-check-all !tw-text-2xl"></i>
-                    Locally run
+                    Локальная работа
                 </h4>
                 <span
                         class="tw-text-lg tw-text-gray-300 max-md:tw-text-base"
                 >
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Reiciendis commodi temporibus at? Aspernatur,
-                            a necessitatibus?
-                        </span>
+                    Работает с недорогими RFID-ридерами, не требуя сложной инфраструктуры.
+                </span>
             </div>
         </div>
     </div>
@@ -506,34 +484,30 @@
                 class="tw-mt-6 tw-flex tw-max-w-[450px] tw-flex-col tw-gap-4"
         >
             <h3 class="tw-text-4xl tw-font-medium max-md:tw-text-2xl">
-                Powerful Insights
+                Мощная аналитика
             </h3>
 
             <div class="tw-mt-4 tw-flex tw-flex-col tw-gap-3">
                 <h4 class="tw-text-xl tw-font-medium">
                     <i class="bi bi-check-all !tw-text-2xl"></i>
-                    Easy to use
+                    Простота использования
                 </h4>
                 <span
                         class="tw-text-lg tw-text-gray-300 max-md:tw-text-base"
                 >
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Reiciendis commodi temporibus at? Aspernatur,
-                            a necessitatibus?
-                        </span>
+                    Интуитивно понятный интерфейс для быстрого анализа данных.
+                </span>
             </div>
             <div class="tw-mt-4 tw-flex tw-flex-col tw-gap-3">
                 <h4 class="tw-text-xl tw-font-medium">
                     <i class="bi bi-check-all !tw-text-2xl"></i>
-                    All in one panel
+                    Всё в одной панели
                 </h4>
                 <span
                         class="tw-text-lg tw-text-gray-300 max-md:tw-text-base"
                 >
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Reiciendis commodi temporibus at? Aspernatur,
-                            a necessitatibus?
-                        </span>
+                    Все данные о запасах и перемещениях доступны в едином интерфейсе.
+                </span>
             </div>
         </div>
 
@@ -543,7 +517,7 @@
             >
                 <img
                         src="../static/images/insights.png"
-                        alt="coding"
+                        alt="Аналитика Tracky"
                         class="tw-h-full tw-w-full tw-object-cover"
                 />
             </div>
@@ -557,9 +531,8 @@
     <h3
             class="tw-text-4xl tw-font-medium tw-text-gray-200 max-md:tw-text-2xl"
     >
-        You're in good hands
+        Отзывы наших клиентов
     </h3>
-    <!-- Testimonials -->
     <div
             class="tw-mt-8 tw-gap-10 tw-space-y-8 max-md:tw-columns-1 lg:tw-columns-2 xl:tw-columns-3"
     >
@@ -567,8 +540,8 @@
                 class="reveal-up tw-flex tw-h-fit tw-w-[350px] tw-break-inside-avoid tw-flex-col tw-gap-4 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-4 max-lg:tw-w-[320px]"
         >
             <p class="tw-mt-4 tw-text-gray-300">
-                Lorem ipsum dolor sit amet consectetur, adipisicing
-                elit. Beatae, vero.
+                Tracky сократил время инвентаризации в наших магазинах в 10 раз. Теперь мы точно знаем, где каждый
+                товар!
             </p>
 
             <div class="tw-flex tw-place-items-center tw-gap-3">
@@ -578,12 +551,12 @@
                     <img
                             src="../static/images/women.jpg"
                             class="tw-h-full tw-w-full tw-object-cover"
-                            alt="women"
+                            alt="Екатерина"
                     />
                 </div>
                 <div class="tw-flex tw-flex-col tw-gap-1">
-                    <div class="tw-font-semibold">Trich B</div>
-                    <div class="tw-text-gray-400">AMI, ceo</div>
+                    <div class="tw-font-semibold">Екатерина</div>
+                    <div class="tw-text-gray-400">Директор, Fashion Retail</div>
                 </div>
             </div>
         </div>
@@ -591,9 +564,7 @@
                 class="reveal-up tw-flex tw-h-fit tw-w-[350px] tw-break-inside-avoid tw-flex-col tw-gap-4 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-4 max-lg:tw-w-[320px]"
         >
             <p class="tw-mt-4 tw-text-gray-300">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Inventore deserunt delectus consectetur enim cupiditate
-                ab nemo voluptas repellendus qui quas..
+                Благодаря Tracky мы устранили ошибки при возвратах. Система проста в использовании и экономит нам время.
             </p>
 
             <div class="tw-flex tw-place-items-center tw-gap-3">
@@ -603,12 +574,12 @@
                     <img
                             src="../static/images/man.jpg"
                             class="tw-h-full tw-w-full tw-object-cover"
-                            alt="man"
+                            alt="Иван"
                     />
                 </div>
                 <div class="tw-flex tw-flex-col tw-gap-1">
-                    <div class="tw-font-semibold">John B</div>
-                    <div class="tw-text-gray-400">ABC, cto</div>
+                    <div class="tw-font-semibold">Иван</div>
+                    <div class="tw-text-gray-400">Менеджер, Электроника</div>
                 </div>
             </div>
         </div>
@@ -616,8 +587,7 @@
                 class="reveal-up tw-flex tw-h-fit tw-w-[350px] tw-break-inside-avoid tw-flex-col tw-gap-4 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-4 max-lg:tw-w-[320px]"
         >
             <p class="tw-mt-4 tw-text-gray-300">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Quidem, numquam.
+                Tracky интегрировался с нашими процессами за день. Теперь мы экономим на дорогостоящем оборудовании!
             </p>
 
             <div class="tw-flex tw-place-items-center tw-gap-3">
@@ -627,12 +597,12 @@
                     <img
                             src="../static/images/man2.jpg"
                             class="tw-h-full tw-w-full tw-object-cover"
-                            alt="man"
+                            alt="Алексей"
                     />
                 </div>
                 <div class="tw-flex tw-flex-col tw-gap-1">
-                    <div class="tw-font-semibold">Mante</div>
-                    <div class="tw-text-gray-400">xyz, cto</div>
+                    <div class="tw-font-semibold">Алексей</div>
+                    <div class="tw-text-gray-400">Операционный директор, Обувь</div>
                 </div>
             </div>
         </div>
@@ -640,9 +610,7 @@
                 class="reveal-up tw-flex tw-h-fit tw-w-[350px] tw-break-inside-avoid tw-flex-col tw-gap-4 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-4 max-lg:tw-w-[320px]"
         >
             <p class="tw-mt-4 tw-text-gray-300">
-                Lorem ipsum dolor, sit amet consectetur adipisicing
-                elit. Soluta, saepe illum. Dicta quisquam praesentium
-                quod!
+                С Tracky мы забыли о потерях товаров. RFID-теги и веб-панель изменили наш подход к учёту.
             </p>
 
             <div class="tw-flex tw-place-items-center tw-gap-3">
@@ -652,12 +620,12 @@
                     <img
                             src="../static/images/women.jpg"
                             class="tw-h-full tw-w-full tw-object-cover"
-                            alt="man"
+                            alt="Мария"
                     />
                 </div>
                 <div class="tw-flex tw-flex-col tw-gap-1">
-                    <div class="tw-font-semibold">Lara</div>
-                    <div class="tw-text-gray-400">xz, cto</div>
+                    <div class="tw-font-semibold">Мария</div>
+                    <div class="tw-text-gray-400">Руководитель склада</div>
                 </div>
             </div>
         </div>
@@ -665,9 +633,7 @@
                 class="reveal-up tw-flex tw-h-fit tw-w-[350px] tw-break-inside-avoid tw-flex-col tw-gap-4 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-4 max-lg:tw-w-[320px]"
         >
             <p class="tw-mt-4 tw-text-gray-300">
-                Lorem ipsum dolor sit amet, consectetur adipisicing
-                elit. Fuga accusamus non enim debitis rem neque beatae
-                explicabo corrupti porro ullam?
+                Простота установки и поддержка недорогих RFID-ридеров сделали Tracky идеальным решением для нас.
             </p>
 
             <div class="tw-flex tw-place-items-center tw-gap-3">
@@ -677,12 +643,12 @@
                     <img
                             src="../static/images/man.jpg"
                             class="tw-h-full tw-w-full tw-object-cover"
-                            alt="man"
+                            alt="Дмитрий"
                     />
                 </div>
                 <div class="tw-flex tw-flex-col tw-gap-1">
-                    <div class="tw-font-semibold">James</div>
-                    <div class="tw-text-gray-400">app, cto</div>
+                    <div class="tw-font-semibold">Дмитрий</div>
+                    <div class="tw-text-gray-400">ИТ-директор, Ритейл</div>
                 </div>
             </div>
         </div>
@@ -690,9 +656,7 @@
                 class="reveal-up tw-flex tw-h-fit tw-w-[350px] tw-break-inside-avoid tw-flex-col tw-gap-4 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-4 max-lg:tw-w-[320px]"
         >
             <p class="tw-mt-4 tw-text-gray-300">
-                Lorem ipsum dolor sit amet, consectetur adipisicing
-                elit. Fuga accusamus non enim debitis rem neque beatae
-                explicabo corrupti porro ullam?
+                Tracky помог нам оптимизировать управление запасами. Теперь всё под контролем!
             </p>
 
             <div class="tw-flex tw-place-items-center tw-gap-3">
@@ -702,12 +666,12 @@
                     <img
                             src="../static/images/man2.jpg"
                             class="tw-h-full tw-w-full tw-object-cover"
-                            alt="man"
+                            alt="Сергей"
                     />
                 </div>
                 <div class="tw-flex tw-flex-col tw-gap-1">
-                    <div class="tw-font-semibold">Ron</div>
-                    <div class="tw-text-gray-400">marketplace, cto</div>
+                    <div class="tw-font-semibold">Сергей</div>
+                    <div class="tw-text-gray-400">Менеджер, Магазин одежды</div>
                 </div>
             </div>
         </div>
@@ -721,9 +685,8 @@
     <h3
             class="tw-text-3xl tw-font-medium tw-text-gray-300 max-md:tw-text-2xl"
     >
-        Simple pricing
+        Простые тарифы
     </h3>
-    <!-- pricing -->
     <div
             class="tw-mt-10 tw-flex tw-flex-wrap tw-place-content-center tw-gap-8 max-lg:tw-flex-col"
     >
@@ -731,81 +694,78 @@
                 class="reveal-up tw-flex tw-w-[380px] tw-flex-col tw-place-items-center tw-gap-2 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-8 tw-shadow-xl max-lg:tw-w-[320px]"
         >
             <h3 class="">
-                <span class="tw-text-5xl tw-font-semibold">$9</span>
-                <span class="tw-text-2xl tw-text-gray-400">/mo</span>
+                <span class="tw-text-5xl tw-font-semibold">990 ₽</span>
+                <span class="tw-text-2xl tw-text-gray-400">/мес</span>
             </h3>
             <p class="tw-mt-3 tw-text-center tw-text-gray-300">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Ab, explicabo!
+                Идеально для небольших магазинов с базовыми потребностями в отслеживании.
             </p>
             <hr/>
             <ul
                     class="tw-mt-4 tw-flex tw-flex-col tw-gap-2 tw-text-center tw-text-lg tw-text-gray-200"
             >
-                <li>Lorem ipsum dolor sit amet.</li>
-                <li>Lorem, ipsum.</li>
-                <li>Lorem, ipsum dolor.</li>
-                <li>Lorem ipsum dolor sit.</li>
+                <li>Отслеживание до 500 товаров</li>
+                <li>Веб-панель управления</li>
+                <li>Поддержка одного RFID-ридера</li>
+                <li>Базовая аналитика</li>
             </ul>
             <a
-                    href="http://"
+                    href="https://tally.so/r/3x1dRk"
                     class="btn tw-mt-8 !tw-w-full tw-transition-transform tw-duration-[0.3s] hover:tw-scale-x-[1.02]"
             >
-                Get now
+                Начать
             </a>
         </div>
         <div
                 class="reveal-up tw-flex tw-w-[380px] tw-flex-col tw-place-items-center tw-gap-2 tw-rounded-lg tw-border-2 tw-border-primary tw-bg-secondary tw-p-8 tw-shadow-xl max-lg:tw-w-[320px]"
         >
             <h3 class="">
-                <span class="tw-text-5xl tw-font-semibold">$19</span>
-                <span class="tw-text-2xl tw-text-gray-400">/mo</span>
+                <span class="tw-text-5xl tw-font-semibold">1990 ₽</span>
+                <span class="tw-text-2xl tw-text-gray-400">/мес</span>
             </h3>
             <p class="tw-mt-3 tw-text-center tw-text-gray-300">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Ab, explicabo!
+                Подходит для средних ритейлеров с расширенными функциями.
             </p>
             <hr/>
             <ul
                     class="tw-mt-4 tw-flex tw-flex-col tw-gap-2 tw-text-center tw-text-lg tw-text-gray-200"
             >
-                <li>Lorem ipsum dolor sit amet.</li>
-                <li>Lorem, ipsum.</li>
-                <li>Lorem, ipsum dolor.</li>
-                <li>Lorem ipsum dolor sit.</li>
+                <li>Отслеживание до 2000 товаров</li>
+                <li>Расширенная аналитика</li>
+                <li>Поддержка до 3 RFID-ридеров</li>
+                <li>Интеграция с возвратами</li>
             </ul>
             <a
-                    href="http://"
+                    href="https://tally.so/r/3x1dRk"
                     class="btn tw-mt-8 !tw-w-full tw-transition-transform tw-duration-[0.3s] hover:tw-scale-x-[1.02]"
             >
-                Get now
+                Начать
             </a>
         </div>
         <div
                 class="reveal-up tw-flex tw-w-[380px] tw-flex-col tw-place-items-center tw-gap-2 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-8 tw-shadow-xl max-lg:tw-w-[320px]"
         >
             <h3 class="">
-                <span class="tw-text-5xl tw-font-semibold">$49</span>
-                <span class="tw-text-2xl tw-text-gray-400">/mo</span>
+                <span class="tw-text-5xl tw-font-semibold">4990 ₽</span>
+                <span class="tw-text-2xl tw-text-gray-400">/мес</span>
             </h3>
             <p class="tw-mt-3 tw-text-center tw-text-gray-300">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Ab, explicabo!
+                Полный доступ ко всем функциям для крупных ритейлеров.
             </p>
             <hr/>
             <ul
                     class="tw-mt-4 tw-flex tw-flex-col tw-gap-2 tw-text-center tw-text-lg tw-text-gray-200"
             >
-                <li>Lorem ipsum dolor sit amet.</li>
-                <li>Lorem, ipsum.</li>
-                <li>Lorem, ipsum dolor.</li>
-                <li>Lorem ipsum dolor sit.</li>
+                <li>Неограниченное отслеживание товаров</li>
+                <li>Полная аналитика</li>
+                <li>Поддержка множества RFID-ридеров</li>
+                <li>Интеграции с внешними системами</li>
             </ul>
             <a
-                    href="http://"
+                    href="https://tally.so/r/3x1dRk"
                     class="btn tw-mt-8 !tw-w-full tw-transition-transform tw-duration-[0.3s] hover:tw-scale-x-[1.02]"
             >
-                Get now
+                Начать
             </a>
         </div>
     </div>
@@ -817,9 +777,8 @@
     <h3
             class="reveal-up tw-text-center tw-text-4xl tw-font-medium max-md:tw-text-2xl"
     >
-        Read our articles ✨
+        Читайте наши статьи ✨
     </h3>
-    <!-- articles -->
     <div
             class="reveal-up tw-mt-10 tw-flex tw-flex-wrap tw-place-content-center tw-gap-10 max-lg:tw-flex-col"
     >
@@ -832,7 +791,7 @@
             >
                 <img
                         src="../static/images/forest.jpg"
-                        alt="article image"
+                        alt="Статья о RFID"
                         class="tw-h-full tw-w-full tw-object-cover tw-transition-transform tw-duration-[0.3s] hover:tw-scale-[1.04]"
                         srcset=""
                 />
@@ -840,14 +799,13 @@
             <h3
                     class="tw-mt-2 tw-text-2xl tw-font-semibold max-md:tw-text-xl"
             >
-                Article 1
+                Как RFID меняет ритейл
             </h3>
             <p class="tw-text-gray-400">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Ab, explicabo!
+                Узнайте, как технология RFID повышает точность учёта и сокращает потери.
             </p>
             <span>
-                        <span>Learn more</span>
+                        <span>Узнать больше</span>
                         <i class="bi bi-arrow-right"></i>
                     </span>
         </a>
@@ -860,7 +818,7 @@
             >
                 <img
                         src="../static/images/mountain.jpg"
-                        alt="article image"
+                        alt="Статья об инвентаризации"
                         class="tw-h-full tw-w-full tw-object-cover tw-transition-transform tw-duration-[0.3s] hover:tw-scale-[1.04]"
                         srcset=""
                 />
@@ -868,14 +826,13 @@
             <h3
                     class="tw-mt-2 tw-text-2xl tw-font-semibold max-md:tw-text-xl"
             >
-                Article 2
+                5 советов для быстрой инвентаризации
             </h3>
             <p class="tw-text-gray-400">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Ab, explicabo!
+                Простые шаги для оптимизации учёта в вашем магазине.
             </p>
             <span>
-                        <span>Learn more</span>
+                        <span>Узнать больше</span>
                         <i class="bi bi-arrow-right"></i>
                     </span>
         </a>
@@ -888,7 +845,7 @@
             >
                 <img
                         src="../static/images/photography.jpg"
-                        alt="article image"
+                        alt="Статья о возвратах"
                         class="tw-h-full tw-w-full tw-object-cover tw-transition-transform tw-duration-[0.3s] hover:tw-scale-[1.04]"
                         srcset=""
                 />
@@ -896,14 +853,13 @@
             <h3
                     class="tw-mt-2 tw-text-2xl tw-font-semibold max-md:tw-text-xl"
             >
-                Article 3
+                Управление возвратами без потерь
             </h3>
             <p class="tw-text-gray-400">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Ab, explicabo!
+                Как Tracky помогает избежать ошибок при обработке возвратов.
             </p>
             <span>
-                        <span>Learn more</span>
+                        <span>Узнать больше</span>
                         <i class="bi bi-arrow-right"></i>
                     </span>
         </a>
@@ -916,7 +872,7 @@
     <h3
             class="tw-text-4xl tw-font-medium tw-text-gray-300 max-md:tw-text-2xl"
     >
-        Faq
+        Часто задаваемые вопросы
     </h3>
     <div
             class="tw-mt-5 tw-flex tw-min-h-[300px] tw-w-full tw-max-w-[850px] tw-flex-col tw-gap-4"
@@ -927,11 +883,11 @@
             <div
                     class="faq-accordion tw-flex tw-w-full tw-select-none tw-text-xl max-md:tw-text-lg"
             >
-                <span>What license are the source code?</span>
+                <span>Какой тип RFID-ридеров поддерживает Tracky?</span>
                 <i class="bi bi-plus tw-ml-auto tw-font-semibold"></i>
             </div>
             <div class="content">
-                All the templates are under MIT license
+                Tracky совместим с большинством недорогих USB RFID-ридеров, включая китайские модели.
             </div>
         </div>
 
@@ -941,20 +897,12 @@
             <div
                     class="faq-accordion tw-flex tw-w-full tw-select-none tw-text-xl max-md:tw-text-lg"
             >
-                <span>Can I request new templates?</span>
+                <span>Могу ли я интегрировать Tracky с другими системами?</span>
                 <i class="bi bi-plus tw-ml-auto tw-font-semibold"></i>
             </div>
             <div class="content">
-                you can request a generic template from
-                <a
-                        href="https://github.com/PaulleDemon/landing-pages/issues/new/choose"
-                        class="tw-underline"
-                >
-                    Github template request</a
-                >. If you are looking for Custom design you should
-                <a href="https://tally.so/r/woO0Kx" class="tw-underline"
-                >contact here</a
-                >
+                Да, Tracky поддерживает интеграцию с внешними системами. Свяжитесь с нами через <a
+                    href="https://tally.so/r/woO0Kx" class="tw-underline">форму</a> для индивидуальных решений.
             </div>
         </div>
 
@@ -964,14 +912,11 @@
             <div
                     class="faq-accordion tw-flex tw-w-full tw-select-none tw-text-xl max-md:tw-text-lg"
             >
-                <span>I need a custom template?</span>
+                <span>Требуется ли специальное оборудование?</span>
                 <i class="bi bi-plus tw-ml-auto tw-font-semibold"></i>
             </div>
             <div class="content">
-                If you are looking for Custom design you can
-                <a href="https://tally.so/r/woO0Kx" class="tw-underline"
-                >contact here</a
-                >
+                Tracky работает с недорогими RFID-ридерами и не требует дорогостоящей инфраструктуры.
             </div>
         </div>
 
@@ -981,16 +926,11 @@
             <div
                     class="faq-accordion tw-flex tw-w-full tw-select-none tw-text-xl max-md:tw-text-lg"
             >
-                <span>Will you add new templates?</span>
+                <span>Как быстро можно начать использовать Tracky?</span>
                 <i class="bi bi-plus tw-ml-auto tw-font-semibold"></i>
             </div>
             <div class="content">
-                New templates are added every Friday. So star ⭐️
-                <a
-                        href="https://github.com/PaulleDemon/awesome-landing-pages"
-                        class="tw-underline"
-                >Github</a
-                >
+                Установка занимает менее дня. Просто подключите RFID-ридер и установите наше приложение для Windows.
             </div>
         </div>
     </div>
@@ -999,13 +939,13 @@
             class="tw-mt-20 tw-flex tw-flex-col tw-place-items-center tw-gap-4"
     >
         <div class="tw-text-3xl max-md:tw-text-2xl">
-            Still have questions?
+            Остались вопросы?
         </div>
         <a
-                href="http://"
+                href="https://tally.so/r/woO0Kx"
                 class="btn !tw-rounded-full !tw-border-[1px] !tw-border-solid !tw-border-gray-300 !tw-bg-transparent tw-transition-colors tw-duration-[0.3s]"
         >
-            Contact
+            Связаться
         </a>
     </div>
 </section>
@@ -1018,9 +958,9 @@
     >
         <div class="tw-flex tw-flex-col tw-gap-1">
             <h2 class="tw-text-3xl tw-text-gray-300 max-md:tw-text-xl">
-                Join our newsletter
+                Подпишитесь на нашу рассылку
             </h2>
-            <div class="tw-text-gray-300">Lorem ipsum dolor sit.</div>
+            <div class="tw-text-gray-300">Получайте новости и советы по управлению запасами.</div>
         </div>
 
         <div
@@ -1029,13 +969,13 @@
             <input
                     type="email"
                     class="input tw-h-full tw-w-full !tw-border-gray-600 tw-p-2 tw-outline-none"
-                    placeholder="email"
+                    placeholder="Ваш email"
             />
             <a
                     class="btn !tw-rounded-full !tw-border-[1px] !tw-border-solid !tw-border-gray-300 !tw-bg-transparent tw-transition-colors tw-duration-[0.3s]"
                     href=""
             >
-                Signup
+                Подписаться
             </a>
         </div>
     </div>
@@ -1049,18 +989,18 @@
     >
         <img
                 src="../static/images/image.png"
-                alt="logo"
+                alt="Логотип Tracky"
                 srcset=""
                 class="tw-max-w-[120px]"
         />
         <div>
-            2 Lord Edward St,
+            ул. Лорда Эдварда, 2,
             <br/>
             D02 P634,
             <br/>
-            United States
+            США
         </div>
-        <div class="tw-mt-3 tw-text-lg tw-font-semibold">Follow us</div>
+        <div class="tw-mt-3 tw-text-lg tw-font-semibold">Следите за нами</div>
         <div class="tw-flex tw-gap-4 tw-text-2xl">
             <a href="" aria-label="Facebook">
                 <i class="bi bi-facebook"></i>
@@ -1082,20 +1022,20 @@
     </div>
 
     <div class="tw-flex tw-h-full tw-w-[250px] tw-flex-col tw-gap-4">
-        <h2 class="tw-text-3xl max-md:tw-text-xl">Company</h2>
+        <h2 class="tw-text-3xl max-md:tw-text-xl">Компания</h2>
         <div class="tw-flex tw-flex-col tw-gap-3 max-md:tw-text-sm">
-            <a href="" class="footer-link">Use cases</a>
-            <a href="" class="footer-link">Integrations</a>
-            <a href="" class="footer-link">Change logs</a>
-            <a href="" class="footer-link">Blogs</a>
-            <a href="" class="footer-link">Contact</a>
+            <a href="" class="footer-link">Кейсы</a>
+            <a href="" class="footer-link">Интеграции</a>
+            <a href="" class="footer-link">Журнал изменений</a>
+            <a href="" class="footer-link">Блог</a>
+            <a href="" class="footer-link">Контакты</a>
         </div>
     </div>
 
     <div class="tw-flex tw-h-full tw-w-[250px] tw-flex-col tw-gap-4">
-        <h2 class="tw-text-3xl max-md:tw-text-xl">Resources</h2>
+        <h2 class="tw-text-3xl max-md:tw-text-xl">Ресурсы</h2>
         <div class="tw-flex tw-flex-col tw-gap-3 max-md:tw-text-sm">
-            <a href="" class="footer-link">Про нас</a>
+            <a href="" class="footer-link">О нас</a>
             <a href="" class="footer-link">Часто задаваемые вопросы</a>
             <a href="" class="footer-link">Контакты</a>
             <a href="" class="footer-link">Блог</a>
