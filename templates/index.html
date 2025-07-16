@@ -41,20 +41,16 @@
                 <span>{% trans "Get Demo" %}</span>
                 <i class="bi bi-arrow-right"></i>
             </a>
-            <form action="{% url 'set_language' %}" method="post" class="tw-flex tw-gap-2">
+            <form action="{% url 'set_language' %}" method="post">
                 {% csrf_token %}
-                <input name="next" type="hidden" value="{{ request.path }}">
-                <button type="submit" name="language" value="en"
-                        class="{% if LANGUAGE_CODE == 'en' %}tw-font-bold{% endif %}">EN
-                </button>
-                <button type="submit" name="language" value="uz"
-                        class="{% if LANGUAGE_CODE == 'uz' %}tw-font-bold{% endif %}">UZ
-                </button>
-                <button type="submit" name="language" value="ru"
-                        class="{% if LANGUAGE_CODE == 'ru' %}tw-font-bold{% endif %}">RU
-                </button>
+                <input type="hidden" name="next" value="{{ request.path }}">
+                <select name="language" onchange="this.form.submit()"
+                        class="tw-rounded-md tw-border tw-bg-secondary tw-px-3 tw-py-1 tw-text-white tw-outline-none tw-transition-all tw-duration-200 hover:tw-border-white focus:tw-border-white">
+                    <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+                    <option value="uz" {% if LANGUAGE_CODE == 'uz' %}selected{% endif %}>O‘zbek</option>
+                    <option value="ru" {% if LANGUAGE_CODE == 'ru' %}selected{% endif %}>Русский</option>
+                </select>
             </form>
-
         </div>
     </div>
     <button class="bi bi-list tw-absolute tw-right-3 tw-top-3 tw-z-50 tw-text-3xl tw-text-white lg:tw-hidden"

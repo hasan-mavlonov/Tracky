@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tracky 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-16 15:28+0500\n"
+"POT-Creation-Date: 2025-07-16 15:58+0500\n"
 "PO-Revision-Date: 2025-07-16 15:30+0500\n"
 "Last-Translator: Your Name <your.email@example.com>\n"
 "Language-Team: Uzbek <uz@li.org>\n"
@@ -21,547 +21,580 @@ msgstr ""
 msgid "Tracky"
 msgstr "Tracky"
 
-#: .\templates\index.html:8
+#: .\templates\index.html:9
 msgid ""
 "Tracky – real-time inventory tracking system for modern retail. Know where "
 "your inventory is – always and everywhere."
 msgstr ""
-"Tracky – zamonaviy chakana savdo uchun real vaqtda inventarni kuzatish tizimi. Inventaringiz qayerda ekanligini doimo va hamma joyda biling."
+"Tracky – zamonaviy chakana savdo uchun real vaqtda inventarni kuzatish "
+"tizimi. Inventaringiz qayerda ekanligini doimo va hamma joyda biling."
 
-#: .\templates\index.html:11
+#: .\templates\index.html:12
 msgid "Tracky – Real-time inventory tracking"
 msgstr "Tracky – Real vaqtda inventarni kuzatish"
 
-#: .\templates\index.html:12 .\templates\index.html:56
+#: .\templates\index.html:14 .\templates\index.html:70
 msgid ""
 "Tracky prevents inventory loss and accounting errors. Inventory counts up to "
 "15 times faster with RFID technology."
 msgstr ""
-"Tracky inventar yo‘qotilishini va hisob xatolarini oldini oladi. RFID texnologiyasi yordamida inventarni hisoblash 15 baravar tezroq."
+"Tracky inventar yo‘qotilishini va hisob xatolarini oldini oladi. RFID "
+"texnologiyasi yordamida inventarni hisoblash 15 baravar tezroq."
 
-#: .\templates\index.html:23 .\templates\index.html:624
+#: .\templates\index.html:28 .\templates\index.html:1274
 msgid "Tracky Logo"
 msgstr "Tracky logotipi"
 
-#: .\templates\index.html:27 .\templates\index.html:656
+#: .\templates\index.html:32 .\templates\index.html:1306
 msgid "About Us"
 msgstr "Biz haqimizda"
 
-#: .\templates\index.html:28
+#: .\templates\index.html:33
 msgid "Advantages"
 msgstr "Afzalliklar"
 
-#: .\templates\index.html:29
+#: .\templates\index.html:34
 msgid "Features"
 msgstr "Xususiyatlar"
 
-#: .\templates\index.html:30
+#: .\templates\index.html:35
 msgid "Reviews"
 msgstr "Sharhlar"
 
-#: .\templates\index.html:31
+#: .\templates\index.html:36
 msgid "Pricing"
 msgstr "Narxlar"
 
-#: .\templates\index.html:34 .\templates\index.html:35
-#: .\templates\index.html:60
+#: .\templates\index.html:39 .\templates\index.html:41
+#: .\templates\index.html:75
 msgid "Get Demo"
 msgstr "Demo olish"
 
-#: .\templates\index.html:45
+#: .\templates\index.html:57
 msgid "Menu"
 msgstr "Menyu"
 
-#: .\templates\index.html:51
+#: .\templates\index.html:65
 msgid "Know where your inventory is"
 msgstr "Inventaringiz qayerda ekanligini biling"
 
-#: .\templates\index.html:53
+#: .\templates\index.html:67
 msgid "always and everywhere"
 msgstr "doimo va hamma joyda"
 
-#: .\templates\index.html:64 .\templates\index.html:517
-#: .\templates\index.html:532 .\templates\index.html:547
+#: .\templates\index.html:81 .\templates\index.html:1154
+#: .\templates\index.html:1172 .\templates\index.html:1190
 msgid "Learn More"
 msgstr "Ko‘proq bilib oling"
 
-#: .\templates\index.html:83
+#: .\templates\index.html:102
 msgid "Tracky Dashboard"
 msgstr "Tracky boshqaruv paneli"
 
-#: .\templates\index.html:91
+#: .\templates\index.html:112
 msgid "Companies waiting to connect with Tracky"
 msgstr "Tracky bilan bog‘lanishni kutayotgan kompaniyalar"
 
-#: .\templates\index.html:138
+#: .\templates\index.html:173
 msgid "Key Advantages of Tracky"
 msgstr "Tracky’ning asosiy afzalliklari"
 
-#: .\templates\index.html:150
+#: .\templates\index.html:185
 msgid "Reduced Inventory Time"
 msgstr "Inventarni hisoblash vaqti qisqartirildi"
 
-#: .\templates\index.html:153
+#: .\templates\index.html:188
 msgid ""
 "Inventory counts up to 15 times faster with RFID technology, minimizing "
 "manual labor."
 msgstr ""
-"RFID texnologiyasi yordamida inventarni hisoblash 15 baravar tezroq, qo‘l mehnatini minimallashtiradi."
+"RFID texnologiyasi yordamida inventarni hisoblash 15 baravar tezroq, qo‘l "
+"mehnatini minimallashtiradi."
 
-#: .\templates\index.html:165 .\templates\index.html:320
+#: .\templates\index.html:200 .\templates\index.html:941
 msgid "Ease of Use"
 msgstr "Foydalanish qulayligi"
 
-#: .\templates\index.html:168
+#: .\templates\index.html:203
 msgid "Web dashboard works in any browser without additional software."
-msgstr "Veb-boshqaruv paneli har qanday brauzerda qo‘shimcha dasturiy ta’minotsiz ishlaydi."
+msgstr ""
+"Veb-boshqaruv paneli har qanday brauzerda qo‘shimcha dasturiy ta’minotsiz "
+"ishlaydi."
 
-#: .\templates\index.html:180
+#: .\templates\index.html:215
 msgid "Zero Loss on Returns"
 msgstr "Qaytarilmalarda yo‘qotish yo‘q"
 
-#: .\templates\index.html:183
+#: .\templates\index.html:218
 msgid "Accurate return tracking prevents warehouse confusion and losses."
-msgstr "Aniq qaytarilish kuzatuvi omborda chalkashlik va yo‘qotishlarni oldini oladi."
+msgstr ""
+"Aniq qaytarilish kuzatuvi omborda chalkashlik va yo‘qotishlarni oldini oladi."
 
-#: .\templates\index.html:194
+#: .\templates\index.html:231
 msgid "Features Everyone Values"
 msgstr "Hamma qadrlaydigan xususiyatlar"
 
-#: .\templates\index.html:204
+#: .\templates\index.html:241
 msgid "Product-Level Tracking"
 msgstr "Mahsulot darajasida kuzatish"
 
-#: .\templates\index.html:207
+#: .\templates\index.html:244
 msgid ""
 "Each product has a unique RFID tag, enabling tracking of individual items, "
 "not just categories."
 msgstr ""
-"Har bir mahsulotda noyob RFID yorlig‘i mavjud bo‘lib, u alohida mahsulotlarni, nafaqat toifalarni kuzatish imkonini beradi."
+"Har bir mahsulotda noyob RFID yorlig‘i mavjud bo‘lib, u alohida "
+"mahsulotlarni, nafaqat toifalarni kuzatish imkonini beradi."
 
-#: .\templates\index.html:217
+#: .\templates\index.html:254
 msgid "Real-Time Analytics"
 msgstr "Real vaqtda tahlil"
 
-#: .\templates\index.html:220
+#: .\templates\index.html:257
 msgid ""
 "RFID readers detect products every millisecond, providing up-to-date "
 "inventory and movement data."
 msgstr ""
-"RFID o‘quvchilari har millisekundda mahsulotlarni aniqlaydi, inventar va harakat ma’lumotlarini yangilab turadi."
+"RFID o‘quvchilari har millisekundda mahsulotlarni aniqlaydi, inventar va "
+"harakat ma’lumotlarini yangilab turadi."
 
-#: .\templates\index.html:230
+#: .\templates\index.html:267
 msgid "Web Dashboard"
 msgstr "Veb-boshqaruv paneli"
 
-#: .\templates\index.html:233
+#: .\templates\index.html:270
 msgid "Manage inventory and view data from any device via a browser."
-msgstr "Inventarni boshqaring va har qanday qurilmadan brauzer orqali ma’lumotlarni ko‘ring."
+msgstr ""
+"Inventarni boshqaring va har qanday qurilmadan brauzer orqali ma’lumotlarni "
+"ko‘ring."
 
-#: .\templates\index.html:243
+#: .\templates\index.html:280
 msgid "Barcode and RFID Integration"
 msgstr "Shtrix-kod va RFID integratsiyasi"
 
-#: .\templates\index.html:246
+#: .\templates\index.html:283
 msgid "Automatic matching of RFID tags with products for accurate accounting."
-msgstr "RFID yorliqlarni mahsulotlar bilan avtomatik moslashtirish aniq hisob uchun."
+msgstr ""
+"RFID yorliqlarni mahsulotlar bilan avtomatik moslashtirish aniq hisob uchun."
 
-#: .\templates\index.html:256
+#: .\templates\index.html:293
 msgid "Return Support"
 msgstr "Qaytarilishni qo‘llab-quvvatlash"
 
-#: .\templates\index.html:259
+#: .\templates\index.html:296
 msgid "Accurate return management prevents accounting confusion."
 msgstr "Aniq qaytarilish boshqaruvi hisobdagi chalkashliklarni oldini oladi."
 
-#: .\templates\index.html:269
+#: .\templates\index.html:306
 msgid "Easy Setup"
 msgstr "Oson sozlash"
 
-#: .\templates\index.html:272
+#: .\templates\index.html:309
 msgid "Simple Windows app syncs RFID reader with the web dashboard."
-msgstr "Oddiy Windows ilovasi RFID o‘quvchini veb-boshqaruv paneli bilan sinxronlashtiradi."
+msgstr ""
+"Oddiy Windows ilovasi RFID o‘quvchini veb-boshqaruv paneli bilan "
+"sinxronlashtiradi."
 
-#: .\templates\index.html:283
+#: .\templates\index.html:321
 msgid "Dashboard"
 msgstr "Boshqaruv paneli"
 
-#: .\templates\index.html:288
+#: .\templates\index.html:327
 msgid "Easy-to-Use Plugins"
 msgstr "Foydalanish uchun qulay plaginlar"
 
-#: .\templates\index.html:293
+#: .\templates\index.html:332
 msgid "AI Support"
 msgstr "Sun’iy intellekt yordami"
 
-#: .\templates\index.html:296
+#: .\templates\index.html:335
 msgid "Intelligent analytics help optimize inventory management."
-msgstr "Aqlli tahlillar inventarni boshqarishni optimallashtirishga yordam beradi."
+msgstr ""
+"Aqlli tahlillar inventarni boshqarishni optimallashtirishga yordam beradi."
 
-#: .\templates\index.html:302
+#: .\templates\index.html:341
 msgid "Local Operation"
 msgstr "Mahalliy ishlash"
 
-#: .\templates\index.html:305
+#: .\templates\index.html:925
 msgid ""
 "Works with affordable RFID readers, requiring no complex infrastructure."
 msgstr ""
-"Arzon RFID o‘quvchilar bilan ishlaydi, murakkab infratuzilma talab qilinmaydi."
+"Arzon RFID o‘quvchilar bilan ishlaydi, murakkab infratuzilma talab "
+"qilinmaydi."
 
-#: .\templates\index.html:315
+#: .\templates\index.html:936
 msgid "Powerful Analytics"
 msgstr "Kuchli tahlillar"
 
-#: .\templates\index.html:323
+#: .\templates\index.html:944
 msgid "Intuitive interface for quick data analysis."
 msgstr "Ma’lumotlarni tezkor tahlil qilish uchun intuitiv interfeys."
 
-#: .\templates\index.html:329
+#: .\templates\index.html:950
 msgid "All-in-One Dashboard"
 msgstr "Hammasi birda boshqaruv paneli"
 
-#: .\templates\index.html:332
+#: .\templates\index.html:953
 msgid "All inventory and movement data available in a single interface."
 msgstr "Barcha inventar va harakat ma’lumotlari yagona interfeysda mavjud."
 
-#: .\templates\index.html:338
+#: .\templates\index.html:959
 msgid "Tracky Analytics"
 msgstr "Tracky tahlillari"
 
-#: .\templates\index.html:345
+#: .\templates\index.html:969
 msgid "What Our Early Users Say"
 msgstr "Ilk foydalanuvchilarimiz nima deydi"
 
-#: .\templates\index.html:348
+#: .\templates\index.html:972
 msgid ""
 "Reviews from companies that tested Tracky during its closed beta. Thank you "
 "for helping us improve the product!"
 msgstr ""
-"Tracky’ni yopiq beta sinovida sinab ko‘rgan kompaniyalardan sharhlar. Mahsulotni yaxshilashga yordam berganingiz uchun rahmat!"
+"Tracky’ni yopiq beta sinovida sinab ko‘rgan kompaniyalardan sharhlar. "
+"Mahsulotni yaxshilashga yordam berganingiz uchun rahmat!"
 
-#: .\templates\index.html:353
+#: .\templates\index.html:977
 msgid ""
 "We tested Tracky in our store — inventory became 10 times faster. It's "
 "amazing how accurately every item is tracked."
 msgstr ""
-"Biz Tracky’ni do‘konimizda sinab ko‘rdik — inventarni hisoblash 10 baravar tezroq bo‘ldi. Har bir mahsulotning aniq kuzatilishi hayratlanarli."
+"Biz Tracky’ni do‘konimizda sinab ko‘rdik — inventarni hisoblash 10 baravar "
+"tezroq bo‘ldi. Har bir mahsulotning aniq kuzatilishi hayratlanarli."
 
-#: .\templates\index.html:357 .\templates\index.html:360
+#: .\templates\index.html:982 .\templates\index.html:985
 msgid "Ekaterina"
 msgstr "Ekaterina"
 
-#: .\templates\index.html:361
+#: .\templates\index.html:986
 msgid "Beta Tester, Fashion Retail"
 msgstr "Beta sinovchisi, Moda chakana savdosi"
 
-#: .\templates\index.html:367
+#: .\templates\index.html:992
 msgid ""
 "The system felt simple and clear. Return issues decreased thanks to RFID "
 "tracking."
 msgstr ""
-"Tizim oddiy va tushunarli bo‘lib tuyuldi. RFID kuzatuvi tufayli qaytarilish muammolari kamaydi."
+"Tizim oddiy va tushunarli bo‘lib tuyuldi. RFID kuzatuvi tufayli qaytarilish "
+"muammolari kamaydi."
 
-#: .\templates\index.html:371 .\templates\index.html:374
+#: .\templates\index.html:997 .\templates\index.html:1000
 msgid "Ivan"
 msgstr "Ivan"
 
-#: .\templates\index.html:375
+#: .\templates\index.html:1001
 msgid "Beta Tester, Electronics"
 msgstr "Beta sinovchisi, Elektronika"
 
-#: .\templates\index.html:381
+#: .\templates\index.html:1007
 msgid ""
 "Tracky adapted quickly to our warehouse. I especially liked that we didn’t "
 "need to replace equipment."
 msgstr ""
-"Tracky omborimizga tez moslashdi. Ayniqsa, uskunani almashtirishga hojat qolmaganligi yoqdi."
+"Tracky omborimizga tez moslashdi. Ayniqsa, uskunani almashtirishga hojat "
+"qolmaganligi yoqdi."
 
-#: .\templates\index.html:385 .\templates\index.html:388
+#: .\templates\index.html:1012 .\templates\index.html:1015
 msgid "Aleksey"
 msgstr "Aleksey"
 
-#: .\templates\index.html:389
+#: .\templates\index.html:1016
 msgid "Beta Tester, Footwear"
 msgstr "Beta sinovchisi, Poyabzal"
 
-#: .\templates\index.html:395
+#: .\templates\index.html:1022
 msgid ""
 "RFID + web dashboard is the perfect combo. Finally, a solution that really "
 "helps with inventory."
 msgstr ""
-"RFID + veb-boshqaruv paneli — mukammal kombinatsiya. Nihoyat, inventarni haqiqatda yordam beradigan yechim."
+"RFID + veb-boshqaruv paneli — mukammal kombinatsiya. Nihoyat, inventarni "
+"haqiqatda yordam beradigan yechim."
 
-#: .\templates\index.html:399 .\templates\index.html:402
+#: .\templates\index.html:1027 .\templates\index.html:1030
 msgid "Maria"
 msgstr "Maria"
 
-#: .\templates\index.html:403
+#: .\templates\index.html:1031
 msgid "Beta Tester, Warehouse"
 msgstr "Beta sinovchisi, Ombor"
 
-#: .\templates\index.html:409
+#: .\templates\index.html:1037
 msgid ""
 "The system works even with budget RFID readers. A big plus for startups."
 msgstr ""
-"Tizim hatto byudjetli RFID o‘quvchilar bilan ham ishlaydi. Startaplar uchun katta afzallik."
+"Tizim hatto byudjetli RFID o‘quvchilar bilan ham ishlaydi. Startaplar uchun "
+"katta afzallik."
 
-#: .\templates\index.html:413 .\templates\index.html:416
+#: .\templates\index.html:1042 .\templates\index.html:1045
 msgid "Dmitry"
 msgstr "Dmitry"
 
-#: .\templates\index.html:417
+#: .\templates\index.html:1046
 msgid "Beta Tester, Retail"
 msgstr "Beta sinovchisi, Chakana savdo"
 
-#: .\templates\index.html:423
+#: .\templates\index.html:1052
 msgid ""
 "Simple interface, clear reports, everything works. A great start for a "
 "solution of this level."
 msgstr ""
-"Oddiy interfeys, aniq hisobotlar, hamma narsa ishlaydi. Bunday darajadagi yechim uchun ajoyib boshlanish."
+"Oddiy interfeys, aniq hisobotlar, hamma narsa ishlaydi. Bunday darajadagi "
+"yechim uchun ajoyib boshlanish."
 
-#: .\templates\index.html:427 .\templates\index.html:430
+#: .\templates\index.html:1057 .\templates\index.html:1060
 msgid "Sergey"
 msgstr "Sergey"
 
-#: .\templates\index.html:431
+#: .\templates\index.html:1061
 msgid "Beta Tester, Clothing Store"
 msgstr "Beta sinovchisi, Kiyim do‘koni"
 
-#: .\templates\index.html:439
+#: .\templates\index.html:1069
 msgid "Simple Pricing Plans"
 msgstr "Oddiy narx rejalari"
 
-#: .\templates\index.html:445 .\templates\index.html:464
-#: .\templates\index.html:483
+#: .\templates\index.html:1075 .\templates\index.html:1095
+#: .\templates\index.html:1115
 msgid "/month"
 msgstr "/oy"
 
-#: .\templates\index.html:448
+#: .\templates\index.html:1078
 msgid "Ideal for small stores with basic tracking needs."
 msgstr "Kichik do‘konlar uchun asosiy kuzatish ehtiyojlari uchun ideal."
 
-#: .\templates\index.html:452
+#: .\templates\index.html:1082
 msgid "Track up to 500 items"
 msgstr "500 tagacha mahsulotni kuzatish"
 
-#: .\templates\index.html:453
+#: .\templates\index.html:1083
 msgid "Web dashboard"
 msgstr "Veb-boshqaruv paneli"
 
-#: .\templates\index.html:454
+#: .\templates\index.html:1084
 msgid "Support for one RFID reader"
 msgstr "Bitta RFID o‘quvchi uchun qo‘llab-quvvatlash"
 
-#: .\templates\index.html:455
+#: .\templates\index.html:1085
 msgid "Basic analytics"
 msgstr "Asosiy tahlillar"
 
-#: .\templates\index.html:458 .\templates\index.html:477
-#: .\templates\index.html:496
+#: .\templates\index.html:1089 .\templates\index.html:1109
+#: .\templates\index.html:1129
 msgid "Get Started"
 msgstr "Boshlash"
 
-#: .\templates\index.html:467
+#: .\templates\index.html:1098
 msgid "Suitable for medium retailers with advanced features."
 msgstr "Kengaytirilgan xususiyatlarga ega o‘rta chakana savdogarlar uchun mos."
 
-#: .\templates\index.html:471
+#: .\templates\index.html:1102
 msgid "Track up to 2000 items"
 msgstr "2000 tagacha mahsulotni kuzatish"
 
-#: .\templates\index.html:472
+#: .\templates\index.html:1103
 msgid "Advanced analytics"
 msgstr "Kengaytirilgan tahlillar"
 
-#: .\templates\index.html:473
+#: .\templates\index.html:1104
 msgid "Support for up to 3 RFID readers"
 msgstr "3 tagacha RFID o‘quvchilar uchun qo‘llab-quvvatlash"
 
-#: .\templates\index.html:474
+#: .\templates\index.html:1105
 msgid "Return integration"
 msgstr "Qaytarilish integratsiyasi"
 
-#: .\templates\index.html:486
+#: .\templates\index.html:1118
 msgid "Full access to all features for large retailers."
 msgstr "Katta chakana savdogarlar uchun barcha xususiyatlarga to‘liq kirish."
 
-#: .\templates\index.html:490
+#: .\templates\index.html:1122
 msgid "Unlimited item tracking"
 msgstr "Cheksiz mahsulot kuzatuvi"
 
-#: .\templates\index.html:491
+#: .\templates\index.html:1123
 msgid "Full analytics"
 msgstr "To‘liq tahlillar"
 
-#: .\templates\index.html:492
+#: .\templates\index.html:1124
 msgid "Support for multiple RFID readers"
 msgstr "Bir nechta RFID o‘quvchilar uchun qo‘llab-quvvatlash"
 
-#: .\templates\index.html:493
+#: .\templates\index.html:1125
 msgid "External system integrations"
 msgstr "Tashqi tizimlar bilan integratsiya"
 
-#: .\templates\index.html:503
+#: .\templates\index.html:1137
 msgid "Read Our Articles"
 msgstr "Maqolalarimizni o‘qing"
 
-#: .\templates\index.html:508
+#: .\templates\index.html:1143
 msgid "RFID Article"
 msgstr "RFID maqolasi"
 
-#: .\templates\index.html:511
+#: .\templates\index.html:1148
 msgid "How RFID is Changing Retail"
 msgstr "RFID chakana savdoni qanday o‘zgartirmoqda"
 
-#: .\templates\index.html:514
+#: .\templates\index.html:1151
 msgid ""
 "Learn how RFID technology improves inventory accuracy and reduces losses."
 msgstr ""
-"RFID texnologiyasi inventar aniqligini qanday yaxshilaydi va yo‘qotishlarni kamaytiradi, bilib oling."
+"RFID texnologiyasi inventar aniqligini qanday yaxshilaydi va yo‘qotishlarni "
+"kamaytiradi, bilib oling."
 
-#: .\templates\index.html:523
+#: .\templates\index.html:1161
 msgid "Inventory Article"
 msgstr "Inventar maqolasi"
 
-#: .\templates\index.html:526
+#: .\templates\index.html:1166
 msgid "5 Tips for Faster Inventory"
 msgstr "Inventarni tezlashtirish uchun 5 maslahat"
 
-#: .\templates\index.html:529
+#: .\templates\index.html:1169
 msgid "Simple steps to optimize inventory in your store."
 msgstr "Do‘koningizda inventarni optimallashtirish uchun oddiy qadamlar."
 
-#: .\templates\index.html:538
+#: .\templates\index.html:1179
 msgid "Returns Article"
 msgstr "Qaytarilish maqolasi"
 
-#: .\templates\index.html:541
+#: .\templates\index.html:1184
 msgid "Managing Returns Without Losses"
 msgstr "Yo‘qotishsiz qaytarilishlarni boshqarish"
 
-#: .\templates\index.html:544
+#: .\templates\index.html:1187
 msgid "How Tracky helps avoid errors in return processing."
 msgstr "Tracky qaytarilish jarayonidagi xatolarni qanday oldini oladi."
 
-#: .\templates\index.html:555 .\templates\index.html:657
+#: .\templates\index.html:1199 .\templates\index.html:1307
 msgid "Frequently Asked Questions"
 msgstr "Tez-tez so‘raladigan savollar"
 
-#: .\templates\index.html:560
+#: .\templates\index.html:1204
 msgid "What types of RFID readers does Tracky support?"
 msgstr "Tracky qanday RFID o‘quvchilarni qo‘llab-quvvatlaydi?"
 
-#: .\templates\index.html:564
+#: .\templates\index.html:1208
 msgid ""
 "Tracky is compatible with most affordable USB RFID readers, including "
 "Chinese models."
 msgstr ""
-"Tracky ko‘pgina arzon USB RFID o‘quvchilar bilan mos keladi, shu jumladan Xitoy modellar."
+"Tracky ko‘pgina arzon USB RFID o‘quvchilar bilan mos keladi, shu jumladan "
+"Xitoy modellar."
 
-#: .\templates\index.html:569
+#: .\templates\index.html:1213
 msgid "Can I integrate Tracky with other systems?"
 msgstr "Tracky’ni boshqa tizimlar bilan integratsiya qilish mumkinmi?"
 
-#: .\templates\index.html:573
+#: .\templates\index.html:1217
+#, fuzzy
+#| msgid ""
+#| "Yes, Tracky supports integration with external systems. Contact us via <a "
+#| "href=\"https://tally.so/r/woO0Kx\" class=\"tw-underline\">form</a> for "
+#| "custom solutions."
 msgid ""
-"Yes, Tracky supports integration with external systems. Contact us via <a "
-"href=\"https://tally.so/r/woO0Kx\" class=\"tw-underline\">form</a> for "
-"custom solutions."
+"Yes, Tracky supports integration with external systems. Contact us via\n"
+"                    <a href=\"https://tally.so/r/woO0Kx\" class=\"tw-"
+"underline\">form</a> for custom\n"
+"                    solutions."
 msgstr ""
-"Ha, Tracky tashqi tizimlar bilan integratsiyani qo‘llab-quvvatlaydi. Maxsus yechimlar uchun <a "
-"href=\"https://tally.so/r/woO0Kx\" class=\"tw-underline\">forma</a> orqali biz bilan bog‘laning."
+"Ha, Tracky tashqi tizimlar bilan integratsiyani qo‘llab-quvvatlaydi. Maxsus "
+"yechimlar uchun <a href=\"https://tally.so/r/woO0Kx\" class=\"tw-"
+"underline\">forma</a> orqali biz bilan bog‘laning."
 
-#: .\templates\index.html:578
+#: .\templates\index.html:1224
 msgid "Does Tracky require special equipment?"
 msgstr "Tracky maxsus uskunani talab qiladimi?"
 
-#: .\templates\index.html:582
+#: .\templates\index.html:1228
 msgid ""
 "Tracky works with affordable RFID readers and does not require expensive "
 "infrastructure."
 msgstr ""
-"Tracky arzon RFID o‘quvchilar bilan ishlaydi va qimmat infratuzilma talab qilmaydi."
+"Tracky arzon RFID o‘quvchilar bilan ishlaydi va qimmat infratuzilma talab "
+"qilmaydi."
 
-#: .\templates\index.html:587
+#: .\templates\index.html:1233
 msgid "How quickly can I start using Tracky?"
 msgstr "Tracky’ni qanchalik tez ishlatishni boshlashim mumkin?"
 
-#: .\templates\index.html:591
+#: .\templates\index.html:1237
 msgid ""
 "Setup takes less than a day. Just connect an RFID reader and install our "
 "Windows app."
 msgstr ""
-"Sozlash bir kundan kam vaqt oladi. Faqat RFID o‘quvchini ulang va Windows ilovamizni o‘rnating."
+"Sozlash bir kundan kam vaqt oladi. Faqat RFID o‘quvchini ulang va Windows "
+"ilovamizni o‘rnating."
 
-#: .\templates\index.html:597
+#: .\templates\index.html:1243
 msgid "Have More Questions?"
 msgstr "Yana savollaringiz bormi?"
 
-#: .\templates\index.html:600
+#: .\templates\index.html:1247
 msgid "Contact Us"
 msgstr "Biz bilan bog‘laning"
 
-#: .\templates\index.html:608
+#: .\templates\index.html:1256
 msgid "Subscribe to Our Newsletter"
 msgstr "Yangiliklarimizga obuna bo‘ling"
 
-#: .\templates\index.html:610
+#: .\templates\index.html:1258
 msgid "Get news and tips on inventory management."
 msgstr "Inventarni boshqarish bo‘yicha yangiliklar va maslahatlarni oling."
 
-#: .\templates\index.html:614
+#: .\templates\index.html:1263
 msgid "Your email"
 msgstr "Sizning emailingiz"
 
-#: .\templates\index.html:617
+#: .\templates\index.html:1267
 msgid "Subscribe"
 msgstr "Obuna bo‘lish"
 
-#: .\templates\index.html:626
+#: .\templates\index.html:1276
 msgid "Lord Edward St, 2,"
 msgstr "Lord Eduard ko‘chasi, 2,"
 
-#: .\templates\index.html:627
+#: .\templates\index.html:1277
 msgid "D02 P634,"
 msgstr "D02 P634,"
 
-#: .\templates\index.html:628
+#: .\templates\index.html:1278
 msgid "USA"
 msgstr "AQSh"
 
-#: .\templates\index.html:630
+#: .\templates\index.html:1280
 msgid "Follow Us"
 msgstr "Bizni kuzating"
 
-#: .\templates\index.html:644
+#: .\templates\index.html:1294
 msgid "Company"
 msgstr "Kompaniya"
 
-#: .\templates\index.html:646
+#: .\templates\index.html:1296
 msgid "Case Studies"
 msgstr "Keylar"
 
-#: .\templates\index.html:647
+#: .\templates\index.html:1297
 msgid "Integrations"
 msgstr "Integratsiyalar"
 
-#: .\templates\index.html:648
+#: .\templates\index.html:1298
 msgid "Changelog"
 msgstr "O‘zgarishlar jurnali"
 
-#: .\templates\index.html:649 .\templates\index.html:659
+#: .\templates\index.html:1299 .\templates\index.html:1309
 msgid "Blog"
 msgstr "Blog"
 
-#: .\templates\index.html:650 .\templates\index.html:658
+#: .\templates\index.html:1300 .\templates\index.html:1308
 msgid "Contacts"
 msgstr "Kontaktlar"
 
-#: .\templates\index.html:654
+#: .\templates\index.html:1304
 msgid "Resources"
 msgstr "Resurslar"
 
-#: .\templates\index.html:660
+#: .\templates\index.html:1310
 msgid "Privacy Policy"
 msgstr "Maxfiylik siyosati"
