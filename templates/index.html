@@ -113,12 +113,32 @@
                     Получить демо
                 </a>
                 <a
+                        id="openVideo"
                         class="btn tw-flex tw-gap-2 !tw-bg-black !tw-text-white tw-transition-colors tw-duration-[0.3s] hover:!tw-bg-white hover:!tw-text-black"
-                        href=""
+                        href="#"
                 >
                     <i class="bi bi-play-circle-fill"></i>
                     <span>Узнать больше</span>
                 </a>
+                <script>
+                    document.getElementById('openVideo').addEventListener('click', function (e) {
+                        e.preventDefault();
+
+                        const videoId = 'RTgV4AjKnTs';
+                        const url = `https://www.youtube.com/embed/${videoId}?autoplay=1&fs=1`;
+
+                        // Open popup window that's nearly fullscreen
+                        const width = screen.width;
+                        const height = screen.height;
+                        const left = 0;
+                        const top = 0;
+
+                        const options = `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=no,status=no,fullscreen=yes`;
+
+                        window.open(url, 'Tracky Video', options);
+                    });
+                </script>
+
             </div>
         </div>
 
@@ -152,58 +172,66 @@
     </h2>
 
     <div class="reveal-up carousel-container">
-        <div
-                class="carousel lg:w-place-content-center tw-mt-6 tw-flex tw-w-full tw-gap-5 max-md:tw-gap-2"
-        >
+        <div class="carousel lg:w-place-content-center tw-mt-6 tw-flex tw-w-full tw-gap-5 max-md:tw-gap-2">
+            <!-- ORIGINAL logos -->
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img
-                        src="../static/images/skechers.svg"
-                        alt="Skechers"
-                        class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"
-                />
+                <img src="../static/images/skechers.svg" alt="Skechers"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img
-                        src="../static/images/nike.svg"
-                        alt="Nike"
-                        class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"
-                />
+                <img src="../static/images/nike.svg" alt="Nike"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[140px]">
-                <img
-                        src="../static/images/crocs.svg"
-                        alt="Crocs"
-                        class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"
-                />
+                <img src="../static/images/crocs.svg" alt="Crocs"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img
-                        src="../static/images/calvinklein.svg"
-                        alt="Calvin Klein"
-                        class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"
-                />
+                <img src="../static/images/calvinklein.svg" alt="Calvin Klein"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img
-                        src="../static/images/armani_exchange.svg"
-                        alt="Armani Exchange"
-                        class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"
-                />
+                <img src="../static/images/armani_exchange.svg" alt="Armani Exchange"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img
-                        src="../static/images/thenorthface.svg"
-                        alt="The North Face"
-                        class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"
-                />
+                <img src="../static/images/thenorthface.svg" alt="The North Face"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+            </div>
+
+            <!-- DUPLICATED logos to create loop effect -->
+            <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
+                <img src="../static/images/skechers.svg" alt="Skechers"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+            </div>
+            <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
+                <img src="../static/images/nike.svg" alt="Nike"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+            </div>
+            <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[140px]">
+                <img src="../static/images/crocs.svg" alt="Crocs"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+            </div>
+            <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
+                <img src="../static/images/calvinklein.svg" alt="Calvin Klein"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+            </div>
+            <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
+                <img src="../static/images/armani_exchange.svg" alt="Armani Exchange"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+            </div>
+            <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
+                <img src="../static/images/thenorthface.svg" alt="The North Face"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
         </div>
+
     </div>
 </section>
 
 <section
         class="tw-relative tw-flex tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-6"
-        id = "advantages"
+        id="advantages"
 >
     <div
             class="tw-mt-8 tw-flex tw-flex-col tw-place-items-center tw-gap-5"
@@ -696,7 +724,7 @@
                 class="reveal-up tw-flex tw-w-[380px] tw-flex-col tw-place-items-center tw-gap-2 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-8 tw-shadow-xl max-lg:tw-w-[320px]"
         >
             <h3 class="">
-                <span class="tw-text-5xl tw-font-semibold">990 ₽</span>
+                <span class="tw-text-5xl tw-font-semibold">0 UZS</span>
                 <span class="tw-text-2xl tw-text-gray-400">/мес</span>
             </h3>
             <p class="tw-mt-3 tw-text-center tw-text-gray-300">
@@ -722,7 +750,7 @@
                 class="reveal-up tw-flex tw-w-[380px] tw-flex-col tw-place-items-center tw-gap-2 tw-rounded-lg tw-border-2 tw-border-primary tw-bg-secondary tw-p-8 tw-shadow-xl max-lg:tw-w-[320px]"
         >
             <h3 class="">
-                <span class="tw-text-5xl tw-font-semibold">1990 ₽</span>
+                <span class="tw-text-5xl tw-font-semibold">0 UZS</span>
                 <span class="tw-text-2xl tw-text-gray-400">/мес</span>
             </h3>
             <p class="tw-mt-3 tw-text-center tw-text-gray-300">
@@ -748,7 +776,7 @@
                 class="reveal-up tw-flex tw-w-[380px] tw-flex-col tw-place-items-center tw-gap-2 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-8 tw-shadow-xl max-lg:tw-w-[320px]"
         >
             <h3 class="">
-                <span class="tw-text-5xl tw-font-semibold">4990 ₽</span>
+                <span class="tw-text-5xl tw-font-semibold">0 UZS</span>
                 <span class="tw-text-2xl tw-text-gray-400">/мес</span>
             </h3>
             <p class="tw-mt-3 tw-text-center tw-text-gray-300">
@@ -1006,17 +1034,17 @@
         </div>
         <div class="tw-mt-3 tw-text-lg tw-font-semibold">Следите за нами</div>
         <div class="tw-flex tw-gap-4 tw-text-2xl">
-            <a href="" aria-label="Facebook">
-                <i class="bi bi-facebook"></i>
+            <a href="https://youtube.com/channel/UCVNz4WqUm1tmTL3KrBikPIw?si=Sco3VaEKfawLEzdB" aria-label="Youtube">
+                <i class="bi bi-youtube"></i>
             </a>
             <a
-                    href="https://twitter.com/@pauls_freeman"
-                    aria-label="Twitter"
+                    href="https://www.linkedin.com/company/107507050"
+                    aria-label="LinkedIn"
             >
-                <i class="bi bi-twitter"></i>
+                <i class="bi bi-linkedin"></i>
             </a>
             <a
-                    href="https://instagram.com/"
+                    href="https://www.instagram.com/tracky.pos/"
                     class="tw-h-[40px] tw-w-[40px]"
                     aria-label="Instagram"
             >
