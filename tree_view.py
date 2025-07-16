@@ -1,6 +1,6 @@
 import os
 
-def print_tree(startpath, ignore_dirs={'.venv', '__pycache__', 'migrations','.idea', '.git'}):
+def print_tree(startpath, ignore_dirs={'.venv', '__pycache__', 'migrations','.idea', '.git', 'node_modules', 'js', 'css'}):
     for root, dirs, files in os.walk(startpath):
         # Remove ignored directories
         dirs[:] = [d for d in dirs if d not in ignore_dirs]
