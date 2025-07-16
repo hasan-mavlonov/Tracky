@@ -5,17 +5,22 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>{% trans "Tracky" %}</title>
-    <meta name="description" content="{% trans 'Tracky – real-time inventory tracking system for modern retail. Know where your inventory is – always and everywhere.' %}"/>
+    <meta name="description"
+          content="{% trans 'Tracky – real-time inventory tracking system for modern retail. Know where your inventory is – always and everywhere.' %}"/>
     <link rel="shortcut icon" href="../static/images/logo-color.png" type="image/x-icon"/>
     <!-- Open Graph / Facebook -->
     <meta property="og:title" content="{% trans 'Tracky – Real-time inventory tracking' %}"/>
-    <meta property="og:description" content="{% trans 'Tracky prevents inventory loss and accounting errors. Inventory counts up to 15 times faster with RFID technology.' %}"/>
+    <meta property="og:description"
+          content="{% trans 'Tracky prevents inventory loss and accounting errors. Inventory counts up to 15 times faster with RFID technology.' %}"/>
     <meta property="og:type" content="website"/>
     <meta property="og:url" content="https://tracky.io"/>
     <meta property="og:image" content="../static/images/dashboard.png"/>
     <link rel="stylesheet" href="../static/landing/css/tailwind-build.css"/>
     <link rel="stylesheet" href="../static/landing/css/index.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" integrity="sha512-dPXYcDub/aeb08c63jRq/k6GaKccl256JQy/AnOq7CAnEZ9FzSL9wSbcZkMp4R26vBsMLFYH4kQ67/bbV8XaCQ==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"
+          integrity="sha512-dPXYcDub/aeb08c63jRq/k6GaKccl256JQy/AnOq7CAnEZ9FzSL9wSbcZkMp4R26vBsMLFYH4kQ67/bbV8XaCQ=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
 </head>
 <body class="tw-flex tw-min-h-[100vh] tw-flex-col tw-bg-black tw-text-white">
 <header class="tw-max-w-lg:tw-px-4 tw-max-w-lg:tw-mr-auto tw-absolute tw-top-0 tw-z-20 tw-flex tw-h-[60px] tw-w-full tw-bg-opacity-0 tw-px-[5%] lg:tw-justify-around">
@@ -31,20 +36,33 @@
             <a class="header-links" href="#pricing">{% trans "Pricing" %}</a>
         </div>
         <div class="tw-mx-4 tw-flex tw-place-items-center tw-gap-[20px] tw-text-base max-md:tw-w-full max-md:tw-flex-col max-md:tw-place-content-center">
-            <a href="https://tally.so/r/3x1dRk" aria-label="{% trans 'Get Demo' %}" class="tw-rounded-full tw-bg-white tw-px-3 tw-py-2 tw-text-black tw-transition-transform tw-duration-[0.3s] hover:tw-translate-x-2">
+            <a href="https://tally.so/r/3x1dRk" aria-label="{% trans 'Get Demo' %}"
+               class="tw-rounded-full tw-bg-white tw-px-3 tw-py-2 tw-text-black tw-transition-transform tw-duration-[0.3s] hover:tw-translate-x-2">
                 <span>{% trans "Get Demo" %}</span>
                 <i class="bi bi-arrow-right"></i>
             </a>
-            <div class="tw-flex tw-gap-2">
-                <a href="{% url 'set_language' %}?lang=en" class="{% if LANGUAGE_CODE == 'en' %}tw-font-bold{% endif %}">EN</a>
-                <a href="{% url 'set_language' %}?lang=uz" class="{% if LANGUAGE_CODE == 'uz' %}tw-font-bold{% endif %}">UZ</a>
-                <a href="{% url 'set_language' %}?lang=ru" class="{% if LANGUAGE_CODE == 'ru' %}tw-font-bold{% endif %}">RU</a>
-            </div>
+            <form action="{% url 'set_language' %}" method="post" class="tw-flex tw-gap-2">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ request.path }}">
+                <button type="submit" name="language" value="en"
+                        class="{% if LANGUAGE_CODE == 'en' %}tw-font-bold{% endif %}">EN
+                </button>
+                <button type="submit" name="language" value="uz"
+                        class="{% if LANGUAGE_CODE == 'uz' %}tw-font-bold{% endif %}">UZ
+                </button>
+                <button type="submit" name="language" value="ru"
+                        class="{% if LANGUAGE_CODE == 'ru' %}tw-font-bold{% endif %}">RU
+                </button>
+            </form>
+
         </div>
     </div>
-    <button class="bi bi-list tw-absolute tw-right-3 tw-top-3 tw-z-50 tw-text-3xl tw-text-white lg:tw-hidden" onclick="toggleHeader()" aria-label="{% trans 'Menu' %}" id="collapse-btn"></button>
+    <button class="bi bi-list tw-absolute tw-right-3 tw-top-3 tw-z-50 tw-text-3xl tw-text-white lg:tw-hidden"
+            onclick="toggleHeader()" aria-label="{% trans 'Menu' %}" id="collapse-btn"></button>
 </header>
-<section class="hero-section tw-relative tw-flex tw-min-h-[100vh] tw-w-full tw-max-w-[100vw] tw-flex-col tw-overflow-hidden max-md:tw-mt-[50px]" id="hero-section">
+<section
+        class="hero-section tw-relative tw-flex tw-min-h-[100vh] tw-w-full tw-max-w-[100vw] tw-flex-col tw-overflow-hidden max-md:tw-mt-[50px]"
+        id="hero-section">
     <div class="tw-flex tw-h-full tw-min-h-[100vh] tw-w-full tw-flex-col tw-place-content-center tw-gap-6 tw-p-[5%] max-xl:tw-place-items-center max-lg:tw-p-4">
         <div class="tw-flex tw-flex-col tw-place-content-center tw-items-center">
             <div class="reveal-up gradient-text tw-text-center tw-text-6xl tw-font-semibold tw-uppercase tw-leading-[80px] max-lg:tw-text-4xl max-md:tw-leading-snug">
@@ -56,10 +74,13 @@
                 {% trans "Tracky prevents inventory loss and accounting errors. Inventory counts up to 15 times faster with RFID technology." %}
             </div>
             <div class="reveal-up tw-mt-10 tw-flex tw-place-items-center tw-gap-4">
-                <a class="btn tw-bg-[#7e22ce85] tw-shadow-lg tw-shadow-primary tw-transition-transform tw-duration-[0.3s] hover:tw-scale-x-[1.03]" href="https://tally.so/r/3x1dRk">
+                <a class="btn tw-bg-[#7e22ce85] tw-shadow-lg tw-shadow-primary tw-transition-transform tw-duration-[0.3s] hover:tw-scale-x-[1.03]"
+                   href="https://tally.so/r/3x1dRk">
                     {% trans "Get Demo" %}
                 </a>
-                <a id="openVideo" class="btn tw-flex tw-gap-2 !tw-bg-black !tw-text-white tw-transition-colors tw-duration-[0.3s] hover:!tw-bg-white hover:!tw-text-black" href="#">
+                <a id="openVideo"
+                   class="btn tw-flex tw-gap-2 !tw-bg-black !tw-text-white tw-transition-colors tw-duration-[0.3s] hover:!tw-bg-white hover:!tw-text-black"
+                   href="#">
                     <i class="bi bi-play-circle-fill"></i>
                     <span>{% trans "Learn More" %}</span>
                 </a>
@@ -78,60 +99,78 @@
                 </script>
             </div>
         </div>
-        <div class="reveal-up tw-relative tw-mt-8 tw-flex tw-w-full tw-place-content-center tw-place-items-center" id="dashboard-container">
-            <div class="tw-relative tw-max-w-[80%] tw-overflow-hidden tw-rounded-xl tw-bg-transparent max-md:tw-max-w-full" id="dashboard">
-                <img src="../static/images/dashboard.png" alt="{% trans 'Tracky Dashboard' %}" class="tw-h-full tw-w-full tw-object-cover tw-opacity-90 max-lg:tw-object-contain"/>
+        <div class="reveal-up tw-relative tw-mt-8 tw-flex tw-w-full tw-place-content-center tw-place-items-center"
+             id="dashboard-container">
+            <div class="tw-relative tw-max-w-[80%] tw-overflow-hidden tw-rounded-xl tw-bg-transparent max-md:tw-max-w-full"
+                 id="dashboard">
+                <img src="../static/images/dashboard.png" alt="{% trans 'Tracky Dashboard' %}"
+                     class="tw-h-full tw-w-full tw-object-cover tw-opacity-90 max-lg:tw-object-contain"/>
             </div>
             <div class="hero-img-bg-grad tw-absolute tw-left-[20%] tw-top-5 tw-h-[200px] tw-w-[200px]"></div>
         </div>
     </div>
 </section>
-<section class="tw-relative tw-flex tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-8">
+<section
+        class="tw-relative tw-flex tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-8">
     <h2 class="reveal-up tw-text-3xl max-md:tw-text-xl">
         {% trans "Companies waiting to connect with Tracky" %}
     </h2>
     <div class="reveal-up carousel-container">
         <div class="carousel lg:w-place-content-center tw-mt-6 tw-flex tw-w-full tw-gap-5 max-md:tw-gap-2">
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img src="../static/images/skechers.svg" alt="Skechers" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/skechers.svg" alt="Skechers"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img src="../static/images/nike.svg" alt="Nike" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/nike.svg" alt="Nike"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[140px]">
-                <img src="../static/images/crocs.svg" alt="Crocs" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/crocs.svg" alt="Crocs"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img src="../static/images/calvinklein.svg" alt="Calvin Klein" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/calvinklein.svg" alt="Calvin Klein"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img src="../static/images/armani_exchange.svg" alt="Armani Exchange" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/armani_exchange.svg" alt="Armani Exchange"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img src="../static/images/thenorthface.svg" alt="The North Face" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/thenorthface.svg" alt="The North Face"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img src="../static/images/skechers.svg" alt="Skechers" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/skechers.svg" alt="Skechers"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img src="../static/images/nike.svg" alt="Nike" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/nike.svg" alt="Nike"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[140px]">
-                <img src="../static/images/crocs.svg" alt="Crocs" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/crocs.svg" alt="Crocs"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img src="../static/images/calvinklein.svg" alt="Calvin Klein" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/calvinklein.svg" alt="Calvin Klein"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img src="../static/images/armani_exchange.svg" alt="Armani Exchange" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/armani_exchange.svg" alt="Armani Exchange"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img src="../static/images/thenorthface.svg" alt="The North Face" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/thenorthface.svg" alt="The North Face"
+                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
         </div>
     </div>
 </section>
-<section class="tw-relative tw-flex tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-6" id="advantages">
+<section
+        class="tw-relative tw-flex tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-6"
+        id="advantages">
     <div class="tw-mt-8 tw-flex tw-flex-col tw-place-items-center tw-gap-5">
         <div class="reveal-up tw-mt-5 tw-flex tw-flex-col tw-gap-3 tw-text-center">
             <h2 class="tw-text-4xl tw-font-medium tw-text-gray-200 max-md:tw-text-3xl">
@@ -187,7 +226,9 @@
         </div>
     </div>
 </section>
-<section class="tw-relative tw-flex tw-min-h-[80vh] tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-6" id="features">
+<section
+        class="tw-relative tw-flex tw-min-h-[80vh] tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-6"
+        id="features">
     <div class="tw-mt-8 tw-flex tw-flex-col tw-place-items-center tw-gap-5">
         <div class="reveal-up tw-mt-5 tw-flex tw-flex-col tw-gap-3 tw-text-center">
             <h2 class="tw-text-4xl tw-font-medium tw-text-gray-200 max-md:tw-text-2xl">
@@ -276,11 +317,13 @@
         </div>
     </div>
 </section>
-<section class="tw-relative tw-flex tw-min-h-[80vh] tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-6">
+<section
+        class="tw-relative tw-flex tw-min-h-[80vh] tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-6">
     <div class="reveal-up tw-flex tw-min-h-[60vh] tw-place-content-center tw-place-items-center tw-gap-[10%] max-lg:tw-flex-col max-lg:tw-gap-10">
         <div class="tw-flex">
             <div class="tw-max-h-[650px] tw-max-w-[850px] tw-overflow-hidden tw-rounded-lg tw-shadow-lg tw-shadow-[rgba(170,49,233,0.44021358543417366)]">
-                <img src="../static/images/dash.png" alt="{% trans 'Dashboard' %}" class="tw-h-full tw-w-full tw-object-cover"/>
+                <img src="../static/images/dash.png" alt="{% trans 'Dashboard' %}"
+                     class="tw-h-full tw-w-full tw-object-cover"/>
             </div>
         </div>
         <div class="tw-mt-6 tw-flex tw-max-w-[450px] tw-flex-col tw-gap-4">
@@ -308,7 +351,8 @@
         </div>
     </div>
 </section>
-<section class="tw-relative tw-flex tw-min-h-[80vh] tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-6">
+<section
+        class="tw-relative tw-flex tw-min-h-[80vh] tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-6">
     <div class="reveal-up tw-flex tw-min-h-[60vh] tw-place-content-center tw-place-items-center tw-gap-[10%] max-lg:tw-flex-col max-lg:tw-gap-10">
         <div class="tw-mt-6 tw-flex tw-max-w-[450px] tw-flex-col tw-gap-4">
             <h3 class="tw-text-4xl tw-font-medium max-md:tw-text-2xl">
@@ -335,12 +379,15 @@
         </div>
         <div class="tw-flex">
             <div class="tw-max-h-[650px] tw-max-w-[850px] tw-overflow-hidden tw-rounded-lg tw-shadow-lg tw-shadow-[rgba(170,49,233,0.44021358543417366)]">
-                <img src="../static/images/insights.png" alt="{% trans 'Tracky Analytics' %}" class="tw-h-full tw-w-full tw-object-cover"/>
+                <img src="../static/images/insights.png" alt="{% trans 'Tracky Analytics' %}"
+                     class="tw-h-full tw-w-full tw-object-cover"/>
             </div>
         </div>
     </div>
 </section>
-<section class="tw-mt-5 tw-flex tw-min-h-[80vh] tw-w-full tw-flex-col tw-place-content-center tw-place-items-center tw-p-[2%]" id="reviews">
+<section
+        class="tw-mt-5 tw-flex tw-min-h-[80vh] tw-w-full tw-flex-col tw-place-content-center tw-place-items-center tw-p-[2%]"
+        id="reviews">
     <h3 class="tw-text-4xl tw-font-medium tw-text-gray-200 max-md:tw-text-2xl">
         {% trans "What Our Early Users Say" %}
     </h3>
@@ -354,7 +401,8 @@
             </p>
             <div class="tw-flex tw-place-items-center tw-gap-3">
                 <div class="tw-h-[50px] tw-w-[50px] tw-overflow-hidden tw-rounded-full">
-                    <img src="../static/images/women.jpg" class="tw-h-full tw-w-full tw-object-cover" alt="{% trans 'Ekaterina' %}" />
+                    <img src="../static/images/women.jpg" class="tw-h-full tw-w-full tw-object-cover"
+                         alt="{% trans 'Ekaterina' %}"/>
                 </div>
                 <div class="tw-flex tw-flex-col tw-gap-1">
                     <div class="tw-font-semibold">{% trans "Ekaterina" %}</div>
@@ -368,7 +416,8 @@
             </p>
             <div class="tw-flex tw-place-items-center tw-gap-3">
                 <div class="tw-h-[50px] tw-w-[50px] tw-overflow-hidden tw-rounded-full">
-                    <img src="../static/images/man.jpg" class="tw-h-full tw-w-full tw-object-cover" alt="{% trans 'Ivan' %}" />
+                    <img src="../static/images/man.jpg" class="tw-h-full tw-w-full tw-object-cover"
+                         alt="{% trans 'Ivan' %}"/>
                 </div>
                 <div class="tw-flex tw-flex-col tw-gap-1">
                     <div class="tw-font-semibold">{% trans "Ivan" %}</div>
@@ -382,7 +431,8 @@
             </p>
             <div class="tw-flex tw-place-items-center tw-gap-3">
                 <div class="tw-h-[50px] tw-w-[50px] tw-overflow-hidden tw-rounded-full">
-                    <img src="../static/images/man2.jpg" class="tw-h-full tw-w-full tw-object-cover" alt="{% trans 'Aleksey' %}" />
+                    <img src="../static/images/man2.jpg" class="tw-h-full tw-w-full tw-object-cover"
+                         alt="{% trans 'Aleksey' %}"/>
                 </div>
                 <div class="tw-flex tw-flex-col tw-gap-1">
                     <div class="tw-font-semibold">{% trans "Aleksey" %}</div>
@@ -396,7 +446,8 @@
             </p>
             <div class="tw-flex tw-place-items-center tw-gap-3">
                 <div class="tw-h-[50px] tw-w-[50px] tw-overflow-hidden tw-rounded-full">
-                    <img src="../static/images/women.jpg" class="tw-h-full tw-w-full tw-object-cover" alt="{% trans 'Maria' %}" />
+                    <img src="../static/images/women.jpg" class="tw-h-full tw-w-full tw-object-cover"
+                         alt="{% trans 'Maria' %}"/>
                 </div>
                 <div class="tw-flex tw-flex-col tw-gap-1">
                     <div class="tw-font-semibold">{% trans "Maria" %}</div>
@@ -410,7 +461,8 @@
             </p>
             <div class="tw-flex tw-place-items-center tw-gap-3">
                 <div class="tw-h-[50px] tw-w-[50px] tw-overflow-hidden tw-rounded-full">
-                    <img src="../static/images/man.jpg" class="tw-h-full tw-w-full tw-object-cover" alt="{% trans 'Dmitry' %}" />
+                    <img src="../static/images/man.jpg" class="tw-h-full tw-w-full tw-object-cover"
+                         alt="{% trans 'Dmitry' %}"/>
                 </div>
                 <div class="tw-flex tw-flex-col tw-gap-1">
                     <div class="tw-font-semibold">{% trans "Dmitry" %}</div>
@@ -424,7 +476,8 @@
             </p>
             <div class="tw-flex tw-place-items-center tw-gap-3">
                 <div class="tw-h-[50px] tw-w-[50px] tw-overflow-hidden tw-rounded-full">
-                    <img src="../static/images/man2.jpg" class="tw-h-full tw-w-full tw-object-cover" alt="{% trans 'Sergey' %}" />
+                    <img src="../static/images/man2.jpg" class="tw-h-full tw-w-full tw-object-cover"
+                         alt="{% trans 'Sergey' %}"/>
                 </div>
                 <div class="tw-flex tw-flex-col tw-gap-1">
                     <div class="tw-font-semibold">{% trans "Sergey" %}</div>
@@ -454,7 +507,8 @@
                 <li>{% trans "Support for one RFID reader" %}</li>
                 <li>{% trans "Basic analytics" %}</li>
             </ul>
-            <a href="https://tally.so/r/3x1dRk" class="btn tw-mt-8 !tw-w-full tw-transition-transform tw-duration-[0.3s] hover:tw-scale-x-[1.02]">
+            <a href="https://tally.so/r/3x1dRk"
+               class="btn tw-mt-8 !tw-w-full tw-transition-transform tw-duration-[0.3s] hover:tw-scale-x-[1.02]">
                 {% trans "Get Started" %}
             </a>
         </div>
@@ -473,7 +527,8 @@
                 <li>{% trans "Support for up to 3 RFID readers" %}</li>
                 <li>{% trans "Return integration" %}</li>
             </ul>
-            <a href="https://tally.so/r/3x1dRk" class="btn tw-mt-8 !tw-w-full tw-transition-transform tw-duration-[0.3s] hover:tw-scale-x-[1.02]">
+            <a href="https://tally.so/r/3x1dRk"
+               class="btn tw-mt-8 !tw-w-full tw-transition-transform tw-duration-[0.3s] hover:tw-scale-x-[1.02]">
                 {% trans "Get Started" %}
             </a>
         </div>
@@ -492,20 +547,25 @@
                 <li>{% trans "Support for multiple RFID readers" %}</li>
                 <li>{% trans "External system integrations" %}</li>
             </ul>
-            <a href="https://tally.so/r/3x1dRk" class="btn tw-mt-8 !tw-w-full tw-transition-transform tw-duration-[0.3s] hover:tw-scale-x-[1.02]">
+            <a href="https://tally.so/r/3x1dRk"
+               class="btn tw-mt-8 !tw-w-full tw-transition-transform tw-duration-[0.3s] hover:tw-scale-x-[1.02]">
                 {% trans "Get Started" %}
             </a>
         </div>
     </div>
 </section>
-<section class="tw-mt-5 tw-flex tw-min-h-[80vh] tw-w-full tw-flex-col tw-place-content-center tw-place-items-center tw-p-[2%] max-lg:tw-p-3">
+<section
+        class="tw-mt-5 tw-flex tw-min-h-[80vh] tw-w-full tw-flex-col tw-place-content-center tw-place-items-center tw-p-[2%] max-lg:tw-p-3">
     <h3 class="reveal-up tw-text-center tw-text-4xl tw-font-medium max-md:tw-text-2xl">
         {% trans "Read Our Articles" %} ✨
     </h3>
     <div class="reveal-up tw-mt-10 tw-flex tw-flex-wrap tw-place-content-center tw-gap-10 max-lg:tw-flex-col">
-        <a href="" class="tw-flex tw-h-[400px] tw-w-[400px] tw-flex-col tw-gap-4 tw-overflow-clip tw-rounded-lg tw-p-4 max-lg:tw-w-[300px]">
+        <a href=""
+           class="tw-flex tw-h-[400px] tw-w-[400px] tw-flex-col tw-gap-4 tw-overflow-clip tw-rounded-lg tw-p-4 max-lg:tw-w-[300px]">
             <div class="tw-h-[250px] tw-w-full tw-overflow-hidden tw-rounded-md">
-                <img src="../static/images/forest.jpg" alt="{% trans 'RFID Article' %}" class="tw-h-full tw-w-full tw-object-cover tw-transition-transform tw-duration-[0.3s] hover:tw-scale-[1.04]" srcset=""/>
+                <img src="../static/images/forest.jpg" alt="{% trans 'RFID Article' %}"
+                     class="tw-h-full tw-w-full tw-object-cover tw-transition-transform tw-duration-[0.3s] hover:tw-scale-[1.04]"
+                     srcset=""/>
             </div>
             <h3 class="tw-mt-2 tw-text-2xl tw-font-semibold max-md:tw-text-xl">
                 {% trans "How RFID is Changing Retail" %}
@@ -518,9 +578,12 @@
                 <i class="bi bi-arrow-right"></i>
             </span>
         </a>
-        <a href="" class="tw-flex tw-h-[400px] tw-w-[400px] tw-flex-col tw-gap-4 tw-overflow-clip tw-rounded-lg tw-p-4 max-lg:tw-w-[300px]">
+        <a href=""
+           class="tw-flex tw-h-[400px] tw-w-[400px] tw-flex-col tw-gap-4 tw-overflow-clip tw-rounded-lg tw-p-4 max-lg:tw-w-[300px]">
             <div class="tw-h-[250px] tw-w-full tw-overflow-hidden tw-rounded-md">
-                <img src="../static/images/mountain.jpg" alt="{% trans 'Inventory Article' %}" class="tw-h-full tw-w-full tw-object-cover tw-transition-transform tw-duration-[0.3s] hover:tw-scale-[1.04]" srcset=""/>
+                <img src="../static/images/mountain.jpg" alt="{% trans 'Inventory Article' %}"
+                     class="tw-h-full tw-w-full tw-object-cover tw-transition-transform tw-duration-[0.3s] hover:tw-scale-[1.04]"
+                     srcset=""/>
             </div>
             <h3 class="tw-mt-2 tw-text-2xl tw-font-semibold max-md:tw-text-xl">
                 {% trans "5 Tips for Faster Inventory" %}
@@ -533,9 +596,12 @@
                 <i class="bi bi-arrow-right"></i>
             </span>
         </a>
-        <a href="" class="tw-flex tw-h-[400px] tw-w-[400px] tw-flex-col tw-gap-4 tw-overflow-clip tw-rounded-lg tw-p-4 max-lg:tw-w-[300px]">
+        <a href=""
+           class="tw-flex tw-h-[400px] tw-w-[400px] tw-flex-col tw-gap-4 tw-overflow-clip tw-rounded-lg tw-p-4 max-lg:tw-w-[300px]">
             <div class="tw-h-[250px] tw-w-full tw-overflow-hidden tw-rounded-md">
-                <img src="../static/images/photography.jpg" alt="{% trans 'Returns Article' %}" class="tw-h-full tw-w-full tw-object-cover tw-transition-transform tw-duration-[0.3s] hover:tw-scale-[1.04]" srcset=""/>
+                <img src="../static/images/photography.jpg" alt="{% trans 'Returns Article' %}"
+                     class="tw-h-full tw-w-full tw-object-cover tw-transition-transform tw-duration-[0.3s] hover:tw-scale-[1.04]"
+                     srcset=""/>
             </div>
             <h3 class="tw-mt-2 tw-text-2xl tw-font-semibold max-md:tw-text-xl">
                 {% trans "Managing Returns Without Losses" %}
@@ -550,7 +616,8 @@
         </a>
     </div>
 </section>
-<section class="tw-flex tw-w-full tw-flex-col tw-place-content-center tw-place-items-center tw-gap-[10%] tw-p-[5%] tw-px-[10%]">
+<section
+        class="tw-flex tw-w-full tw-flex-col tw-place-content-center tw-place-items-center tw-gap-[10%] tw-p-[5%] tw-px-[10%]">
     <h3 class="tw-text-4xl tw-font-medium tw-text-gray-300 max-md:tw-text-2xl">
         {% trans "Frequently Asked Questions" %}
     </h3>
@@ -570,7 +637,9 @@
                 <i class="bi bi-plus tw-ml-auto tw-font-semibold"></i>
             </div>
             <div class="content">
-                {% blocktrans %}Yes, Tracky supports integration with external systems. Contact us via <a href="https://tally.so/r/woO0Kx" class="tw-underline">form</a> for custom solutions.{% endblocktrans %}
+                {% blocktrans %}Yes, Tracky supports integration with external systems. Contact us via
+                    <a href="https://tally.so/r/woO0Kx" class="tw-underline">form</a> for custom
+                    solutions.{% endblocktrans %}
             </div>
         </div>
         <div class="faq tw-w-full tw-rounded-md tw-border-[1px] tw-border-solid tw-border-[#1F2123] tw-bg-[#080808]">
@@ -596,12 +665,14 @@
         <div class="tw-text-3xl max-md:tw-text-2xl">
             {% trans "Have More Questions?" %}
         </div>
-        <a href="https://tally.so/r/woO0Kx" class="btn !tw-rounded-full !tw-border-[1px] !tw-border-solid !tw-border-gray-300 !tw-bg-transparent tw-transition-colors tw-duration-[0.3s]">
+        <a href="https://tally.so/r/woO0Kx"
+           class="btn !tw-rounded-full !tw-border-[1px] !tw-border-solid !tw-border-gray-300 !tw-bg-transparent tw-transition-colors tw-duration-[0.3s]">
             {% trans "Contact Us" %}
         </a>
     </div>
 </section>
-<section class="tw-flex tw-w-full tw-flex-col tw-place-content-center tw-place-items-center tw-gap-[10%] tw-p-[5%] tw-px-[10%] max-md:tw-px-2">
+<section
+        class="tw-flex tw-w-full tw-flex-col tw-place-content-center tw-place-items-center tw-gap-[10%] tw-p-[5%] tw-px-[10%] max-md:tw-px-2">
     <div class="tw-flex tw-w-full tw-max-w-[80%] tw-place-content-center tw-place-items-center tw-justify-between tw-gap-3 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-6 max-md:tw-max-w-full max-md:tw-flex-col">
         <div class="tw-flex tw-flex-col tw-gap-1">
             <h2 class="tw-text-3xl tw-text-gray-300 max-md:tw-text-xl">
@@ -611,9 +682,11 @@
         </div>
         <div class="tw-flex tw-h-[60px] tw-place-items-center tw-gap-2 tw-overflow-hidden tw-p-2">
             <label>
-                <input type="email" class="input tw-h-full tw-w-full !tw-border-gray-600 tw-p-2 tw-outline-none" placeholder="{% trans 'Your email' %}"/>
+                <input type="email" class="input tw-h-full tw-w-full !tw-border-gray-600 tw-p-2 tw-outline-none"
+                       placeholder="{% trans 'Your email' %}"/>
             </label>
-            <a class="btn !tw-rounded-full !tw-border-[1px] !tw-border-solid !tw-border-gray-300 !tw-bg-transparent tw-transition-colors tw-duration-[0.3s]" href="">
+            <a class="btn !tw-rounded-full !tw-border-[1px] !tw-border-solid !tw-border-gray-300 !tw-bg-transparent tw-transition-colors tw-duration-[0.3s]"
+               href="">
                 {% trans "Subscribe" %}
             </a>
         </div>
@@ -661,8 +734,12 @@
         </div>
     </div>
 </footer>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.0/gsap.min.js" integrity="sha512-B1lby8cGcAUU3GR+Fd809/ZxgHbfwJMp0jLTVfHiArTuUt++VqSlJpaJvhNtRf3NERaxDNmmxkdx2o+aHd4bvw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.0/ScrollTrigger.min.js" integrity="sha512-AY2+JxnBETJ0wcXnLPCcZJIJx0eimyhz3OJ55k2Jx4RtYC+XdIi2VtJQ+tP3BaTst4otlGG1TtPJ9fKrAUnRdQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.0/gsap.min.js"
+        integrity="sha512-B1lby8cGcAUU3GR+Fd809/ZxgHbfwJMp0jLTVfHiArTuUt++VqSlJpaJvhNtRf3NERaxDNmmxkdx2o+aHd4bvw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.0/ScrollTrigger.min.js"
+        integrity="sha512-AY2+JxnBETJ0wcXnLPCcZJIJx0eimyhz3OJ55k2Jx4RtYC+XdIi2VtJQ+tP3BaTst4otlGG1TtPJ9fKrAUnRdQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="../static/landing/js/index.js"></script>
 </body>
 </html>

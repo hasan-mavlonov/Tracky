@@ -1,0 +1,591 @@
+# English translations for Tracky
+# Copyright (C) 2025 Tracky
+# This file is distributed under the same license as the Tracky package.
+# Your Name <your.email@example.com>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Tracky 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-16 15:28+0500\n"
+"PO-Revision-Date: 2025-07-16 15:30+0500\n"
+"Last-Translator: Your Name <your.email@example.com>\n"
+"Language-Team: English <en@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: .\templates\index.html:7
+msgid "Tracky"
+msgstr "Tracky"
+
+#: .\templates\index.html:8
+msgid ""
+"Tracky – real-time inventory tracking system for modern retail. Know where "
+"your inventory is – always and everywhere."
+msgstr ""
+"Tracky – real-time inventory tracking system for modern retail. Know where "
+"your inventory is – always and everywhere."
+
+#: .\templates\index.html:11
+msgid "Tracky – Real-time inventory tracking"
+msgstr "Tracky – Real-time inventory tracking"
+
+#: .\templates\index.html:12 .\templates\index.html:56
+msgid ""
+"Tracky prevents inventory loss and accounting errors. Inventory counts up to "
+"15 times faster with RFID technology."
+msgstr ""
+"Tracky prevents inventory loss and accounting errors. Inventory counts up to "
+"15 times faster with RFID technology."
+
+#: .\templates\index.html:23 .\templates\index.html:624
+msgid "Tracky Logo"
+msgstr "Tracky Logo"
+
+#: .\templates\index.html:27 .\templates\index.html:656
+msgid "About Us"
+msgstr "About Us"
+
+#: .\templates\index.html:28
+msgid "Advantages"
+msgstr "Advantages"
+
+#: .\templates\index.html:29
+msgid "Features"
+msgstr "Features"
+
+#: .\templates\index.html:30
+msgid "Reviews"
+msgstr "Reviews"
+
+#: .\templates\index.html:31
+msgid "Pricing"
+msgstr "Pricing"
+
+#: .\templates\index.html:34 .\templates\index.html:35
+#: .\templates\index.html:60
+msgid "Get Demo"
+msgstr "Get Demo"
+
+#: .\templates\index.html:45
+msgid "Menu"
+msgstr "Menu"
+
+#: .\templates\index.html:51
+msgid "Know where your inventory is"
+msgstr "Know where your inventory is"
+
+#: .\templates\index.html:53
+msgid "always and everywhere"
+msgstr "always and everywhere"
+
+#: .\templates\index.html:64 .\templates\index.html:517
+#: .\templates\index.html:532 .\templates\index.html:547
+msgid "Learn More"
+msgstr "Learn More"
+
+#: .\templates\index.html:83
+msgid "Tracky Dashboard"
+msgstr "Tracky Dashboard"
+
+#: .\templates\index.html:91
+msgid "Companies waiting to connect with Tracky"
+msgstr "Companies waiting to connect with Tracky"
+
+#: .\templates\index.html:138
+msgid "Key Advantages of Tracky"
+msgstr "Key Advantages of Tracky"
+
+#: .\templates\index.html:150
+msgid "Reduced Inventory Time"
+msgstr "Reduced Inventory Time"
+
+#: .\templates\index.html:153
+msgid ""
+"Inventory counts up to 15 times faster with RFID technology, minimizing "
+"manual labor."
+msgstr ""
+"Inventory counts up to 15 times faster with RFID technology, minimizing "
+"manual labor."
+
+#: .\templates\index.html:165 .\templates\index.html:320
+msgid "Ease of Use"
+msgstr "Ease of Use"
+
+#: .\templates\index.html:168
+msgid "Web dashboard works in any browser without additional software."
+msgstr "Web dashboard works in any browser without additional software."
+
+#: .\templates\index.html:180
+msgid "Zero Loss on Returns"
+msgstr "Zero Loss on Returns"
+
+#: .\templates\index.html:183
+msgid "Accurate return tracking prevents warehouse confusion and losses."
+msgstr "Accurate return tracking prevents warehouse confusion and losses."
+
+#: .\templates\index.html:194
+msgid "Features Everyone Values"
+msgstr "Features Everyone Values"
+
+#: .\templates\index.html:204
+msgid "Product-Level Tracking"
+msgstr "Product-Level Tracking"
+
+#: .\templates\index.html:207
+msgid ""
+"Each product has a unique RFID tag, enabling tracking of individual items, "
+"not just categories."
+msgstr ""
+"Each product has a unique RFID tag, enabling tracking of individual items, "
+"not just categories."
+
+#: .\templates\index.html:217
+msgid "Real-Time Analytics"
+msgstr "Real-Time Analytics"
+
+#: .\templates\index.html:220
+msgid ""
+"RFID readers detect products every millisecond, providing up-to-date "
+"inventory and movement data."
+msgstr ""
+"RFID readers detect products every millisecond, providing up-to-date "
+"inventory and movement data."
+
+#: .\templates\index.html:230
+msgid "Web Dashboard"
+msgstr "Web Dashboard"
+
+#: .\templates\index.html:233
+msgid "Manage inventory and view data from any device via a browser."
+msgstr "Manage inventory and view data from any device via a browser."
+
+#: .\templates\index.html:243
+msgid "Barcode and RFID Integration"
+msgstr "Barcode and RFID Integration"
+
+#: .\templates\index.html:246
+msgid "Automatic matching of RFID tags with products for accurate accounting."
+msgstr "Automatic matching of RFID tags with products for accurate accounting."
+
+#: .\templates\index.html:256
+msgid "Return Support"
+msgstr "Return Support"
+
+#: .\templates\index.html:259
+msgid "Accurate return management prevents accounting confusion."
+msgstr "Accurate return management prevents accounting confusion."
+
+#: .\templates\index.html:269
+msgid "Easy Setup"
+msgstr "Easy Setup"
+
+#: .\templates\index.html:272
+msgid "Simple Windows app syncs RFID reader with the web dashboard."
+msgstr "Simple Windows app syncs RFID reader with the web dashboard."
+
+#: .\templates\index.html:283
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: .\templates\index.html:288
+msgid "Easy-to-Use Plugins"
+msgstr "Easy-to-Use Plugins"
+
+#: .\templates\index.html:293
+msgid "AI Support"
+msgstr "AI Support"
+
+#: .\templates\index.html:296
+msgid "Intelligent analytics help optimize inventory management."
+msgstr "Intelligent analytics help optimize inventory management."
+
+#: .\templates\index.html:302
+msgid "Local Operation"
+msgstr "Local Operation"
+
+#: .\templates\index.html:305
+msgid ""
+"Works with affordable RFID readers, requiring no complex infrastructure."
+msgstr ""
+"Works with affordable RFID readers, requiring no complex infrastructure."
+
+#: .\templates\index.html:315
+msgid "Powerful Analytics"
+msgstr "Powerful Analytics"
+
+#: .\templates\index.html:323
+msgid "Intuitive interface for quick data analysis."
+msgstr "Intuitive interface for quick data analysis."
+
+#: .\templates\index.html:329
+msgid "All-in-One Dashboard"
+msgstr "All-in-One Dashboard"
+
+#: .\templates\index.html:332
+msgid "All inventory and movement data available in a single interface."
+msgstr "All inventory and movement data available in a single interface."
+
+#: .\templates\index.html:338
+msgid "Tracky Analytics"
+msgstr "Tracky Analytics"
+
+#: .\templates\index.html:345
+msgid "What Our Early Users Say"
+msgstr "What Our Early Users Say"
+
+#: .\templates\index.html:348
+msgid ""
+"Reviews from companies that tested Tracky during its closed beta. Thank you "
+"for helping us improve the product!"
+msgstr ""
+"Reviews from companies that tested Tracky during its closed beta. Thank you "
+"for helping us improve the product!"
+
+#: .\templates\index.html:353
+msgid ""
+"We tested Tracky in our store — inventory became 10 times faster. It's "
+"amazing how accurately every item is tracked."
+msgstr ""
+"We tested Tracky in our store — inventory became 10 times faster. It's "
+"amazing how accurately every item is tracked."
+
+#: .\templates\index.html:357 .\templates\index.html:360
+msgid "Ekaterina"
+msgstr "Ekaterina"
+
+#: .\templates\index.html:361
+msgid "Beta Tester, Fashion Retail"
+msgstr "Beta Tester, Fashion Retail"
+
+#: .\templates\index.html:367
+msgid ""
+"The system felt simple and clear. Return issues decreased thanks to RFID "
+"tracking."
+msgstr ""
+"The system felt simple and clear. Return issues decreased thanks to RFID "
+"tracking."
+
+#: .\templates\index.html:371 .\templates\index.html:374
+msgid "Ivan"
+msgstr "Ivan"
+
+#: .\templates\index.html:375
+msgid "Beta Tester, Electronics"
+msgstr "Beta Tester, Electronics"
+
+#: .\templates\index.html:381
+msgid ""
+"Tracky adapted quickly to our warehouse. I especially liked that we didn’t "
+"need to replace equipment."
+msgstr ""
+"Tracky adapted quickly to our warehouse. I especially liked that we didn’t "
+"need to replace equipment."
+
+#: .\templates\index.html:385 .\templates\index.html:388
+msgid "Aleksey"
+msgstr "Aleksey"
+
+#: .\templates\index.html:389
+msgid "Beta Tester, Footwear"
+msgstr "Beta Tester, Footwear"
+
+#: .\templates\index.html:395
+msgid ""
+"RFID + web dashboard is the perfect combo. Finally, a solution that really "
+"helps with inventory."
+msgstr ""
+"RFID + web dashboard is the perfect combo. Finally, a solution that really "
+"helps with inventory."
+
+#: .\templates\index.html:399 .\templates\index.html:402
+msgid "Maria"
+msgstr "Maria"
+
+#: .\templates\index.html:403
+msgid "Beta Tester, Warehouse"
+msgstr "Beta Tester, Warehouse"
+
+#: .\templates\index.html:409
+msgid ""
+"The system works even with budget RFID readers. A big plus for startups."
+msgstr ""
+"The system works even with budget RFID readers. A big plus for startups."
+
+#: .\templates\index.html:413 .\templates\index.html:416
+msgid "Dmitry"
+msgstr "Dmitry"
+
+#: .\templates\index.html:417
+msgid "Beta Tester, Retail"
+msgstr "Beta Tester, Retail"
+
+#: .\templates\index.html:423
+msgid ""
+"Simple interface, clear reports, everything works. A great start for a "
+"solution of this level."
+msgstr ""
+"Simple interface, clear reports, everything works. A great start for a "
+"solution of this level."
+
+#: .\templates\index.html:427 .\templates\index.html:430
+msgid "Sergey"
+msgstr "Sergey"
+
+#: .\templates\index.html:431
+msgid "Beta Tester, Clothing Store"
+msgstr "Beta Tester, Clothing Store"
+
+#: .\templates\index.html:439
+msgid "Simple Pricing Plans"
+msgstr "Simple Pricing Plans"
+
+#: .\templates\index.html:445 .\templates\index.html:464
+#: .\templates\index.html:483
+msgid "/month"
+msgstr "/month"
+
+#: .\templates\index.html:448
+msgid "Ideal for small stores with basic tracking needs."
+msgstr "Ideal for small stores with basic tracking needs."
+
+#: .\templates\index.html:452
+msgid "Track up to 500 items"
+msgstr "Track up to 500 items"
+
+#: .\templates\index.html:453
+msgid "Web dashboard"
+msgstr "Web dashboard"
+
+#: .\templates\index.html:454
+msgid "Support for one RFID reader"
+msgstr "Support for one RFID reader"
+
+#: .\templates\index.html:455
+msgid "Basic analytics"
+msgstr "Basic analytics"
+
+#: .\templates\index.html:458 .\templates\index.html:477
+#: .\templates\index.html:496
+msgid "Get Started"
+msgstr "Get Started"
+
+#: .\templates\index.html:467
+msgid "Suitable for medium retailers with advanced features."
+msgstr "Suitable for medium retailers with advanced features."
+
+#: .\templates\index.html:471
+msgid "Track up to 2000 items"
+msgstr "Track up to 2000 items"
+
+#: .\templates\index.html:472
+msgid "Advanced analytics"
+msgstr "Advanced analytics"
+
+#: .\templates\index.html:473
+msgid "Support for up to 3 RFID readers"
+msgstr "Support for up to 3 RFID readers"
+
+#: .\templates\index.html:474
+msgid "Return integration"
+msgstr "Return integration"
+
+#: .\templates\index.html:486
+msgid "Full access to all features for large retailers."
+msgstr "Full access to all features for large retailers."
+
+#: .\templates\index.html:490
+msgid "Unlimited item tracking"
+msgstr "Unlimited item tracking"
+
+#: .\templates\index.html:491
+msgid "Full analytics"
+msgstr "Full analytics"
+
+#: .\templates\index.html:492
+msgid "Support for multiple RFID readers"
+msgstr "Support for multiple RFID readers"
+
+#: .\templates\index.html:493
+msgid "External system integrations"
+msgstr "External system integrations"
+
+#: .\templates\index.html:503
+msgid "Read Our Articles"
+msgstr "Read Our Articles"
+
+#: .\templates\index.html:508
+msgid "RFID Article"
+msgstr "RFID Article"
+
+#: .\templates\index.html:511
+msgid "How RFID is Changing Retail"
+msgstr "How RFID is Changing Retail"
+
+#: .\templates\index.html:514
+msgid ""
+"Learn how RFID technology improves inventory accuracy and reduces losses."
+msgstr ""
+"Learn how RFID technology improves inventory accuracy and reduces losses."
+
+#: .\templates\index.html:517
+#: .\templates\index.html:532
+#: .\templates\index.html:547
+msgid "Learn More"
+msgstr "Learn More"
+
+#: .\templates\index.html:523
+msgid "Inventory Article"
+msgstr "Inventory Article"
+
+#: .\templates\index.html:526
+msgid "5 Tips for Faster Inventory"
+msgstr "5 Tips for Faster Inventory"
+
+#: .\templates\index.html:529
+msgid "Simple steps to optimize inventory in your store."
+msgstr "Simple steps to optimize inventory in your store."
+
+#: .\templates\index.html:538
+msgid "Returns Article"
+msgstr "Returns Article"
+
+#: .\templates\index.html:541
+msgid "Managing Returns Without Losses"
+msgstr "Managing Returns Without Losses"
+
+#: .\templates\index.html:544
+msgid "How Tracky helps avoid errors in return processing."
+msgstr "How Tracky helps avoid errors in return processing."
+
+#: .\templates\index.html:555
+#: .\templates\index.html:657
+msgid "Frequently Asked Questions"
+msgstr "Frequently Asked Questions"
+
+#: .\templates\index.html:560
+msgid "What types of RFID readers does Tracky support?"
+msgstr "What types of RFID readers does Tracky support?"
+
+#: .\templates\index.html:564
+msgid ""
+"Tracky is compatible with most affordable USB RFID readers, including "
+"Chinese models."
+msgstr ""
+"Tracky is compatible with most affordable USB RFID readers, including "
+"Chinese models."
+
+#: .\templates\index.html:569
+msgid "Can I integrate Tracky with other systems?"
+msgstr "Can I integrate Tracky with other systems?"
+
+#: .\templates\index.html:573
+msgid ""
+"Yes, Tracky supports integration with external systems. Contact us via <a "
+"href=\"https://tally.so/r/woO0Kx\" class=\"tw-underline\">form</a> for "
+"custom solutions."
+msgstr ""
+"Yes, Tracky supports integration with external systems. Contact us via <a "
+"href=\"https://tally.so/r/woO0Kx\" class=\"tw-underline\">form</a> for "
+"custom solutions."
+
+#: .\templates\index.html:578
+msgid "Does Tracky require special equipment?"
+msgstr "Does Tracky require special equipment?"
+
+#: .\templates\index.html:582
+msgid ""
+"Tracky works with affordable RFID readers and does not require expensive "
+"infrastructure."
+msgstr ""
+"Tracky works with affordable RFID readers and does not require expensive "
+"infrastructure."
+
+#: .\templates\index.html:587
+msgid "How quickly can I start using Tracky?"
+msgstr "How quickly can I start using Tracky?"
+
+#: .\templates\index.html:591
+msgid ""
+"Setup takes less than a day. Just connect an RFID reader and install our "
+"Windows app."
+msgstr ""
+"Setup takes less than a day. Just connect an RFID reader and install our "
+"Windows app."
+
+#: .\templates\index.html:597
+msgid "Have More Questions?"
+msgstr "Have More Questions?"
+
+#: .\templates\index.html:600
+msgid "Contact Us"
+msgstr "Contact Us"
+
+#: .\templates\index.html:608
+msgid "Subscribe to Our Newsletter"
+msgstr "Subscribe to Our Newsletter"
+
+#: .\templates\index.html:610
+msgid "Get news and tips on inventory management."
+msgstr "Get news and tips on inventory management."
+
+#: .\templates\index.html:614
+msgid "Your email"
+msgstr "Your email"
+
+#: .\templates\index.html:617
+msgid "Subscribe"
+msgstr "Subscribe"
+
+#: .\templates\index.html:626
+msgid "Lord Edward St, 2,"
+msgstr "Lord Edward St, 2,"
+
+#: .\templates\index.html:627
+msgid "D02 P634,"
+msgstr "D02 P634,"
+
+#: .\templates\index.html:628
+msgid "USA"
+msgstr "USA"
+
+#: .\templates\index.html:630
+msgid "Follow Us"
+msgstr "Follow Us"
+
+#: .\templates\index.html:644
+msgid "Company"
+msgstr "Company"
+
+#: .\templates\index.html:646
+msgid "Case Studies"
+msgstr "Case Studies"
+
+#: .\templates\index.html:647
+msgid "Integrations"
+msgstr "Integrations"
+
+#: .\templates\index.html:648
+msgid "Changelog"
+msgstr "Changelog"
+
+#: .\templates\index.html:649
+#: .\templates\index.html:659
+msgid "Blog"
+msgstr "Blog"
+
+#: .\templates\index.html:650
+#: .\templates\index.html:658
+msgid "Contacts"
+msgstr "Contacts"
+
+#: .\templates\index.html:654
+msgid "Resources"
+msgstr "Resources"
+
+#: .\templates\index.html:660
+msgid "Privacy Policy"
+msgstr "Privacy Policy"
