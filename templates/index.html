@@ -1,1044 +1,668 @@
+{% load i18n %}
 <!doctype html>
-<html lang="ru">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Tracky</title>
-    <meta name="description"
-          content="Tracky – система отслеживания запасов в реальном времени для современного ритейла. Знайте, где ваши товары – всегда и везде."/>
-    <link
-            rel="shortcut icon"
-            href="../static/images/logo-color.png"
-            type="image/x-icon"
-    />
-
+    <title>{% trans "Tracky" %}</title>
+    <meta name="description" content="{% trans 'Tracky – real-time inventory tracking system for modern retail. Know where your inventory is – always and everywhere.' %}"/>
+    <link rel="shortcut icon" href="../static/images/logo-color.png" type="image/x-icon"/>
     <!-- Open Graph / Facebook -->
-    <meta property="og:title" content="Tracky – Отслеживание запасов в реальном времени"/>
-    <meta property="og:description"
-          content="Tracky предотвращает потери товаров и ошибки в учёте. Инвентаризация – до 15 раз быстрее с RFID-технологией."/>
+    <meta property="og:title" content="{% trans 'Tracky – Real-time inventory tracking' %}"/>
+    <meta property="og:description" content="{% trans 'Tracky prevents inventory loss and accounting errors. Inventory counts up to 15 times faster with RFID technology.' %}"/>
     <meta property="og:type" content="website"/>
     <meta property="og:url" content="https://tracky.io"/>
     <meta property="og:image" content="../static/images/dashboard.png"/>
-
-    <link rel="stylesheet" href="../static/landing/css/tailwind-build.css">
+    <link rel="stylesheet" href="../static/landing/css/tailwind-build.css"/>
     <link rel="stylesheet" href="../static/landing/css/index.css"/>
-
-    <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"
-            integrity="sha512-dPXYcDub/aeb08c63jRq/k6GaKccl256JQy/AnOq7CAnEZ9FzSL9wSbcZkMp4R26vBsMLFYH4kQ67/bbV8XaCQ=="
-            crossorigin="anonymous"
-            referrerpolicy="no-referrer"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" integrity="sha512-dPXYcDub/aeb08c63jRq/k6GaKccl256JQy/AnOq7CAnEZ9FzSL9wSbcZkMp4R26vBsMLFYH4kQ67/bbV8XaCQ==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
 </head>
-<body
-        class="tw-flex tw-min-h-[100vh] tw-flex-col tw-bg-black tw-text-white"
->
-<header
-        class="tw-max-w-lg:tw-px-4 tw-max-w-lg:tw-mr-auto tw-absolute tw-top-0 tw-z-20 tw-flex tw-h-[60px] tw-w-full tw-bg-opacity-0 tw-px-[5%] lg:tw-justify-around"
->
+<body class="tw-flex tw-min-h-[100vh] tw-flex-col tw-bg-black tw-text-white">
+<header class="tw-max-w-lg:tw-px-4 tw-max-w-lg:tw-mr-auto tw-absolute tw-top-0 tw-z-20 tw-flex tw-h-[60px] tw-w-full tw-bg-opacity-0 tw-px-[5%] lg:tw-justify-around">
     <a class="tw-h-[60px] tw-w-[60px] tw-p-[6px]" href="">
-        <img
-                src="../static/images/image.png"
-                alt="Логотип Tracky"
-                class="tw-object tw-h-full tw-w-full"
-        />
+        <img src="../static/images/image.png" alt="{% trans 'Tracky Logo' %}" class="tw-object tw-h-full tw-w-full"/>
     </a>
-
-    <div
-            class="collapsible-header animated-collapse max-lg:tw-shadow-md"
-            id="collapsed-header-items"
-    >
-        <div
-                class="tw-flex tw-h-full tw-w-max tw-gap-5 tw-text-base max-lg:tw-mt-[30px] max-lg:tw-flex-col max-lg:tw-place-items-end max-lg:tw-gap-5 lg:tw-mx-auto lg:tw-place-items-center"
-        >
-            <a class="header-links" href=""> О нас </a>
-            <a class="header-links" href="#advantages"> Преимущества </a>
-            <a class="header-links" href="#features"> Функции </a>
-            <a class="header-links" href="#reviews"> Отзывы </a>
-            <a class="header-links" href="#pricing"> Цены </a>
+    <div class="collapsible-header animated-collapse max-lg:tw-shadow-md" id="collapsed-header-items">
+        <div class="tw-flex tw-h-full tw-w-max tw-gap-5 tw-text-base max-lg:tw-mt-[30px] max-lg:tw-flex-col max-lg:tw-place-items-end max-lg:tw-gap-5 lg:tw-mx-auto lg:tw-place-items-center">
+            <a class="header-links" href="">{% trans "About Us" %}</a>
+            <a class="header-links" href="#advantages">{% trans "Advantages" %}</a>
+            <a class="header-links" href="#features">{% trans "Features" %}</a>
+            <a class="header-links" href="#reviews">{% trans "Reviews" %}</a>
+            <a class="header-links" href="#pricing">{% trans "Pricing" %}</a>
         </div>
-        <div
-                class="tw-mx-4 tw-flex tw-place-items-center tw-gap-[20px] tw-text-base max-md:tw-w-full max-md:tw-flex-col max-md:tw-place-content-center"
-        >
-            <a
-                    href="https://tally.so/r/3x1dRk"
-                    aria-label="Получить демо"
-                    class="tw-rounded-full tw-bg-white tw-px-3 tw-py-2 tw-text-black tw-transition-transform tw-duration-[0.3s] hover:tw-translate-x-2"
-            >
-                <span>Получить демо</span>
+        <div class="tw-mx-4 tw-flex tw-place-items-center tw-gap-[20px] tw-text-base max-md:tw-w-full max-md:tw-flex-col max-md:tw-place-content-center">
+            <a href="https://tally.so/r/3x1dRk" aria-label="{% trans 'Get Demo' %}" class="tw-rounded-full tw-bg-white tw-px-3 tw-py-2 tw-text-black tw-transition-transform tw-duration-[0.3s] hover:tw-translate-x-2">
+                <span>{% trans "Get Demo" %}</span>
                 <i class="bi bi-arrow-right"></i>
             </a>
+            <div class="tw-flex tw-gap-2">
+                <a href="{% url 'set_language' %}?lang=en" class="{% if LANGUAGE_CODE == 'en' %}tw-font-bold{% endif %}">EN</a>
+                <a href="{% url 'set_language' %}?lang=uz" class="{% if LANGUAGE_CODE == 'uz' %}tw-font-bold{% endif %}">UZ</a>
+                <a href="{% url 'set_language' %}?lang=ru" class="{% if LANGUAGE_CODE == 'ru' %}tw-font-bold{% endif %}">RU</a>
+            </div>
         </div>
     </div>
-    <button
-            class="bi bi-list tw-absolute tw-right-3 tw-top-3 tw-z-50 tw-text-3xl tw-text-white lg:tw-hidden"
-            onclick="toggleHeader()"
-            aria-label="Меню"
-            id="collapse-btn"
-    ></button>
+    <button class="bi bi-list tw-absolute tw-right-3 tw-top-3 tw-z-50 tw-text-3xl tw-text-white lg:tw-hidden" onclick="toggleHeader()" aria-label="{% trans 'Menu' %}" id="collapse-btn"></button>
 </header>
-
-<section
-        class="hero-section tw-relative tw-flex tw-min-h-[100vh] tw-w-full tw-max-w-[100vw] tw-flex-col tw-overflow-hidden max-md:tw-mt-[50px]"
-        id="hero-section"
->
-    <div
-            class="tw-flex tw-h-full tw-min-h-[100vh] tw-w-full tw-flex-col tw-place-content-center tw-gap-6 tw-p-[5%] max-xl:tw-place-items-center max-lg:tw-p-4"
-    >
-        <div
-                class="tw-flex tw-flex-col tw-place-content-center tw-items-center"
-        >
-            <div
-                    class="reveal-up gradient-text tw-text-center tw-text-6xl tw-font-semibold tw-uppercase tw-leading-[80px] max-lg:tw-text-4xl max-md:tw-leading-snug"
-            >
-                <span class=""> Знай, где товар </span>
+<section class="hero-section tw-relative tw-flex tw-min-h-[100vh] tw-w-full tw-max-w-[100vw] tw-flex-col tw-overflow-hidden max-md:tw-mt-[50px]" id="hero-section">
+    <div class="tw-flex tw-h-full tw-min-h-[100vh] tw-w-full tw-flex-col tw-place-content-center tw-gap-6 tw-p-[5%] max-xl:tw-place-items-center max-lg:tw-p-4">
+        <div class="tw-flex tw-flex-col tw-place-content-center tw-items-center">
+            <div class="reveal-up gradient-text tw-text-center tw-text-6xl tw-font-semibold tw-uppercase tw-leading-[80px] max-lg:tw-text-4xl max-md:tw-leading-snug">
+                <span>{% trans "Know where your inventory is" %}</span>
                 <br/>
-                <span class=""> всегда и везде </span>
+                <span>{% trans "always and everywhere" %}</span>
             </div>
-            <div
-                    class="reveal-up tw-mt-10 tw-max-w-[450px] tw-p-2 tw-text-center tw-text-gray-300 max-lg:tw-max-w-full"
-            >
-                Tracky предотвращает потери товаров и ошибки в учёте. Инвентаризация – до 15 раз быстрее с
-                RFID-технологией.
+            <div class="reveal-up tw-mt-10 tw-max-w-[450px] tw-p-2 tw-text-center tw-text-gray-300 max-lg:tw-max-w-full">
+                {% trans "Tracky prevents inventory loss and accounting errors. Inventory counts up to 15 times faster with RFID technology." %}
             </div>
-
-            <div
-                    class="reveal-up tw-mt-10 tw-flex tw-place-items-center tw-gap-4"
-            >
-                <a
-                        class="btn tw-bg-[#7e22ce85] tw-shadow-lg tw-shadow-primary tw-transition-transform tw-duration-[0.3s] hover:tw-scale-x-[1.03]"
-                        href="https://tally.so/r/3x1dRk"
-                >
-                    Получить демо
+            <div class="reveal-up tw-mt-10 tw-flex tw-place-items-center tw-gap-4">
+                <a class="btn tw-bg-[#7e22ce85] tw-shadow-lg tw-shadow-primary tw-transition-transform tw-duration-[0.3s] hover:tw-scale-x-[1.03]" href="https://tally.so/r/3x1dRk">
+                    {% trans "Get Demo" %}
                 </a>
-                <a
-                        id="openVideo"
-                        class="btn tw-flex tw-gap-2 !tw-bg-black !tw-text-white tw-transition-colors tw-duration-[0.3s] hover:!tw-bg-white hover:!tw-text-black"
-                        href="#"
-                >
+                <a id="openVideo" class="btn tw-flex tw-gap-2 !tw-bg-black !tw-text-white tw-transition-colors tw-duration-[0.3s] hover:!tw-bg-white hover:!tw-text-black" href="#">
                     <i class="bi bi-play-circle-fill"></i>
-                    <span>Узнать больше</span>
+                    <span>{% trans "Learn More" %}</span>
                 </a>
                 <script>
                     document.getElementById('openVideo').addEventListener('click', function (e) {
                         e.preventDefault();
-
                         const videoId = 'RTgV4AjKnTs';
                         const url = `https://www.youtube.com/embed/${videoId}?autoplay=1&fs=1`;
-
-                        // Open popup window that's nearly fullscreen
                         const width = screen.width;
                         const height = screen.height;
                         const left = 0;
                         const top = 0;
-
                         const options = `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=no,status=no,fullscreen=yes`;
-
                         window.open(url, 'Tracky Video', options);
                     });
                 </script>
-
             </div>
         </div>
-
-        <div
-                class="reveal-up tw-relative tw-mt-8 tw-flex tw-w-full tw-place-content-center tw-place-items-center"
-                id="dashboard-container"
-        >
-            <div
-                    class="tw-relative tw-max-w-[80%] tw-overflow-hidden tw-rounded-xl tw-bg-transparent max-md:tw-max-w-full"
-                    id="dashboard"
-            >
-                <img
-                        src="../static/images/dashboard.png"
-                        alt="Панель управления Tracky"
-                        class="tw-h-full tw-w-full tw-object-cover tw-opacity-90 max-lg:tw-object-contain"
-                />
+        <div class="reveal-up tw-relative tw-mt-8 tw-flex tw-w-full tw-place-content-center tw-place-items-center" id="dashboard-container">
+            <div class="tw-relative tw-max-w-[80%] tw-overflow-hidden tw-rounded-xl tw-bg-transparent max-md:tw-max-w-full" id="dashboard">
+                <img src="../static/images/dashboard.png" alt="{% trans 'Tracky Dashboard' %}" class="tw-h-full tw-w-full tw-object-cover tw-opacity-90 max-lg:tw-object-contain"/>
             </div>
-
-            <div
-                    class="hero-img-bg-grad tw-absolute tw-left-[20%] tw-top-5 tw-h-[200px] tw-w-[200px]"
-            ></div>
+            <div class="hero-img-bg-grad tw-absolute tw-left-[20%] tw-top-5 tw-h-[200px] tw-w-[200px]"></div>
         </div>
     </div>
 </section>
-
-<section
-        class="tw-relative tw-flex tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-8"
->
+<section class="tw-relative tw-flex tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-8">
     <h2 class="reveal-up tw-text-3xl max-md:tw-text-xl">
-        Компании, ожидающие подключения к Tracky
+        {% trans "Companies waiting to connect with Tracky" %}
     </h2>
-
     <div class="reveal-up carousel-container">
         <div class="carousel lg:w-place-content-center tw-mt-6 tw-flex tw-w-full tw-gap-5 max-md:tw-gap-2">
-            <!-- ORIGINAL logos -->
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img src="../static/images/skechers.svg" alt="Skechers"
-                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/skechers.svg" alt="Skechers" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img src="../static/images/nike.svg" alt="Nike"
-                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/nike.svg" alt="Nike" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[140px]">
-                <img src="../static/images/crocs.svg" alt="Crocs"
-                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/crocs.svg" alt="Crocs" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img src="../static/images/calvinklein.svg" alt="Calvin Klein"
-                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/calvinklein.svg" alt="Calvin Klein" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img src="../static/images/armani_exchange.svg" alt="Armani Exchange"
-                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/armani_exchange.svg" alt="Armani Exchange" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img src="../static/images/thenorthface.svg" alt="The North Face"
-                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
-            </div>
-
-            <!-- DUPLICATED logos to create loop effect -->
-            <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img src="../static/images/skechers.svg" alt="Skechers"
-                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/thenorthface.svg" alt="The North Face" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img src="../static/images/nike.svg" alt="Nike"
-                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/skechers.svg" alt="Skechers" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+            </div>
+            <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
+                <img src="../static/images/nike.svg" alt="Nike" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[140px]">
-                <img src="../static/images/crocs.svg" alt="Crocs"
-                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/crocs.svg" alt="Crocs" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img src="../static/images/calvinklein.svg" alt="Calvin Klein"
-                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/calvinklein.svg" alt="Calvin Klein" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img src="../static/images/armani_exchange.svg" alt="Armani Exchange"
-                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/armani_exchange.svg" alt="Armani Exchange" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
             <div class="carousel-img tw-h-[50px] tw-w-auto tw-max-w-[150px]">
-                <img src="../static/images/thenorthface.svg" alt="The North Face"
-                     class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
+                <img src="../static/images/thenorthface.svg" alt="The North Face" class="tw-h-full tw-w-auto tw-object-contain tw-grayscale tw-transition-colors hover:tw-grayscale-0"/>
             </div>
         </div>
-
     </div>
 </section>
-
-<section
-        class="tw-relative tw-flex tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-6"
-        id="advantages"
->
-    <div
-            class="tw-mt-8 tw-flex tw-flex-col tw-place-items-center tw-gap-5"
-    >
-        <div
-                class="reveal-up tw-mt-5 tw-flex tw-flex-col tw-gap-3 tw-text-center"
-        >
-            <h2
-                    class="tw-text-4xl tw-font-medium tw-text-gray-200 max-md:tw-text-3xl"
-            >
-                Ключевые преимущества Tracky
+<section class="tw-relative tw-flex tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-6" id="advantages">
+    <div class="tw-mt-8 tw-flex tw-flex-col tw-place-items-center tw-gap-5">
+        <div class="reveal-up tw-mt-5 tw-flex tw-flex-col tw-gap-3 tw-text-center">
+            <h2 class="tw-text-4xl tw-font-medium tw-text-gray-200 max-md:tw-text-3xl">
+                {% trans "Key Advantages of Tracky" %}
             </h2>
         </div>
-        <div
-                class="tw-mt-6 tw-flex tw-max-w-[80%] tw-flex-wrap tw-place-content-center tw-gap-8 max-lg:tw-flex-col"
-        >
-            <div
-                    class="reveal-up tw-flex tw-h-[400px] tw-w-[450px] tw-flex-col tw-gap-3 tw-text-center max-md:tw-w-[320px]"
-            >
-                <div
-                        class="border-gradient tw-h-[200px] tw-w-full tw-overflow-hidden max-md:tw-h-[150px]"
-                >
-                    <div
-                            class="tw-flex tw-h-full tw-w-full tw-place-content-center tw-place-items-end tw-p-2"
-                    >
-                        <i
-                                class="bi bi-rocket-takeoff-fill tw-text-7xl tw-text-gray-200 max-md:tw-text-5xl"
-                        ></i>
+        <div class="tw-mt-6 tw-flex tw-max-w-[80%] tw-flex-wrap tw-place-content-center tw-gap-8 max-lg:tw-flex-col">
+            <div class="reveal-up tw-flex tw-h-[400px] tw-w-[450px] tw-flex-col tw-gap-3 tw-text-center max-md:tw-w-[320px]">
+                <div class="border-gradient tw-h-[200px] tw-w-full tw-overflow-hidden max-md:tw-h-[150px]">
+                    <div class="tw-flex tw-h-full tw-w-full tw-place-content-center tw-place-items-end tw-p-2">
+                        <i class="bi bi-rocket-takeoff-fill tw-text-7xl tw-text-gray-200 max-md:tw-text-5xl"></i>
                     </div>
                 </div>
                 <div class="tw-flex tw-flex-col tw-gap-4 tw-p-2">
-                    <h3
-                            class="tw-mt-8 tw-text-2xl tw-font-normal max-md:tw-text-xl"
-                    >
-                        Сокращение времени инвентаризации
+                    <h3 class="tw-mt-8 tw-text-2xl tw-font-normal max-md:tw-text-xl">
+                        {% trans "Reduced Inventory Time" %}
                     </h3>
                     <div class="tw-text-gray-300">
-                        Инвентаризация до 15 раз быстрее благодаря RFID-технологии, минимизирующей ручной труд.
+                        {% trans "Inventory counts up to 15 times faster with RFID technology, minimizing manual labor." %}
                     </div>
                 </div>
             </div>
-            <div
-                    class="reveal-up tw-flex tw-h-[400px] tw-w-[450px] tw-flex-col tw-gap-3 tw-text-center max-md:tw-w-[320px]"
-            >
-                <div
-                        class="border-gradient tw-h-[200px] tw-w-full tw-overflow-hidden max-md:tw-text-[150px]"
-                >
-                    <div
-                            class="tw-flex tw-h-full tw-w-full tw-place-content-center tw-place-items-end tw-p-2"
-                    >
-                        <i
-                                class="bi bi-layout-sidebar-inset tw-text-7xl tw-text-gray-200 max-md:tw-text-5xl"
-                        ></i>
+            <div class="reveal-up tw-flex tw-h-[400px] tw-w-[450px] tw-flex-col tw-gap-3 tw-text-center max-md:tw-w-[320px]">
+                <div class="border-gradient tw-h-[200px] tw-w-full tw-overflow-hidden max-md:tw-text-[150px]">
+                    <div class="tw-flex tw-h-full tw-w-full tw-place-content-center tw-place-items-end tw-p-2">
+                        <i class="bi bi-layout-sidebar-inset tw-text-7xl tw-text-gray-200 max-md:tw-text-5xl"></i>
                     </div>
                 </div>
                 <div class="tw-flex tw-flex-col tw-gap-4 tw-p-2">
-                    <h3
-                            class="tw-mt-8 tw-text-2xl tw-font-normal max-md:tw-text-xl"
-                    >
-                        Простота использования
+                    <h3 class="tw-mt-8 tw-text-2xl tw-font-normal max-md:tw-text-xl">
+                        {% trans "Ease of Use" %}
                     </h3>
                     <div class="tw-text-gray-300">
-                        Веб-панель управления работает в любом браузере без установки дополнительного ПО.
+                        {% trans "Web dashboard works in any browser without additional software." %}
                     </div>
                 </div>
             </div>
-            <div
-                    class="reveal-up tw-flex tw-h-[400px] tw-w-[450px] tw-flex-col tw-gap-3 tw-text-center max-md:tw-w-[320px]"
-            >
-                <div
-                        class="border-gradient tw-h-[200px] tw-w-full tw-overflow-hidden max-md:tw-h-[150px]"
-                >
-                    <div
-                            class="tw-flex tw-h-full tw-w-full tw-place-content-center tw-place-items-end tw-p-2"
-                    >
-                        <i
-                                class="bi bi-lightning-charge-fill tw-text-7xl tw-text-gray-200 max-md:tw-text-5xl"
-                        ></i>
+            <div class="reveal-up tw-flex tw-h-[400px] tw-w-[450px] tw-flex-col tw-gap-3 tw-text-center max-md:tw-w-[320px]">
+                <div class="border-gradient tw-h-[200px] tw-w-full tw-overflow-hidden max-md:tw-h-[150px]">
+                    <div class="tw-flex tw-h-full tw-w-full tw-place-content-center tw-place-items-end tw-p-2">
+                        <i class="bi bi-lightning-charge-fill tw-text-7xl tw-text-gray-200 max-md:tw-text-5xl"></i>
                     </div>
                 </div>
                 <div class="tw-flex tw-flex-col tw-gap-4 tw-p-2">
-                    <h3
-                            class="tw-mt-8 tw-text-2xl tw-font-normal max-md:tw-text-xl"
-                    >
-                        Нулевые потери при возвратах
+                    <h3 class="tw-mt-8 tw-text-2xl tw-font-normal max-md:tw-text-xl">
+                        {% trans "Zero Loss on Returns" %}
                     </h3>
                     <div class="tw-text-gray-300">
-                        Точное отслеживание возвратов предотвращает путаницу и потери на складе.
+                        {% trans "Accurate return tracking prevents warehouse confusion and losses." %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-<section
-        class="tw-relative tw-flex tw-min-h-[80vh] tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-6"
-        id="features"
->
-    <div
-            class="tw-mt-8 tw-flex tw-flex-col tw-place-items-center tw-gap-5"
-    >
-        <div
-                class="reveal-up tw-mt-5 tw-flex tw-flex-col tw-gap-3 tw-text-center"
-        >
-            <h2
-                    class="tw-text-4xl tw-font-medium tw-text-gray-200 max-md:tw-text-2xl"
-            >
-                Функции, которые ценят все
+<section class="tw-relative tw-flex tw-min-h-[80vh] tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-6" id="features">
+    <div class="tw-mt-8 tw-flex tw-flex-col tw-place-items-center tw-gap-5">
+        <div class="reveal-up tw-mt-5 tw-flex tw-flex-col tw-gap-3 tw-text-center">
+            <h2 class="tw-text-4xl tw-font-medium tw-text-gray-200 max-md:tw-text-2xl">
+                {% trans "Features Everyone Values" %}
             </h2>
         </div>
-        <div
-                class="tw-mt-6 tw-flex tw-max-w-[80%] tw-flex-wrap tw-place-content-center tw-gap-8 max-lg:tw-flex-col"
-        >
-            <div
-                    class="reveal-up tw-flex tw-h-[200px] tw-w-[450px] tw-gap-8 tw-rounded-xl tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-8 max-md:tw-w-[320px]"
-            >
+        <div class="tw-mt-6 tw-flex tw-max-w-[80%] tw-flex-wrap tw-place-content-center tw-gap-8 max-lg:tw-flex-col">
+            <div class="reveal-up tw-flex tw-h-[200px] tw-w-[450px] tw-gap-8 tw-rounded-xl tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-8 max-md:tw-w-[320px]">
                 <div class="tw-text-4xl max-md:tw-text-2xl">
                     <i class="bi bi-globe"></i>
                 </div>
-
                 <div class="tw-flex tw-flex-col tw-gap-4">
                     <h3 class="tw-text-2xl max-md:tw-text-xl">
-                        Отслеживание на уровне продукта
+                        {% trans "Product-Level Tracking" %}
                     </h3>
                     <p class="tw-text-gray-300 max-md:tw-text-sm">
-                        Каждый товар имеет уникальный RFID-тег, позволяющий отслеживать отдельные единицы, а не только
-                        категории.
+                        {% trans "Each product has a unique RFID tag, enabling tracking of individual items, not just categories." %}
                     </p>
                 </div>
             </div>
-
-            <div
-                    class="reveal-up tw-flex tw-h-[200px] tw-w-[450px] tw-gap-8 tw-rounded-xl tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-8 max-md:tw-w-[320px]"
-            >
+            <div class="reveal-up tw-flex tw-h-[200px] tw-w-[450px] tw-gap-8 tw-rounded-xl tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-8 max-md:tw-w-[320px]">
                 <div class="tw-text-4xl max-md:tw-text-2xl">
                     <i class="bi bi-bar-chart-fill"></i>
                 </div>
-
                 <div class="tw-flex tw-flex-col tw-gap-4">
                     <h3 class="tw-text-2xl max-md:tw-text-xl">
-                        Аналитика в реальном времени
+                        {% trans "Real-Time Analytics" %}
                     </h3>
                     <p class="tw-text-gray-300 max-md:tw-text-sm">
-                        RFID-ридеры обнаруживают товары каждую миллисекунду, предоставляя актуальные данные о наличии и
-                        перемещении.
+                        {% trans "RFID readers detect products every millisecond, providing up-to-date inventory and movement data." %}
                     </p>
                 </div>
             </div>
-
-            <div
-                    class="reveal-up tw-flex tw-h-[200px] tw-w-[450px] tw-gap-8 tw-rounded-xl tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-8 max-md:tw-w-[320px]"
-            >
+            <div class="reveal-up tw-flex tw-h-[200px] tw-w-[450px] tw-gap-8 tw-rounded-xl tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-8 max-md:tw-w-[320px]">
                 <div class="tw-text-4xl max-md:tw-text-2xl">
                     <i class="bi bi-cloud-fill"></i>
                 </div>
-
                 <div class="tw-flex tw-flex-col tw-gap-4">
                     <h3 class="tw-text-2xl max-md:tw-text-xl">
-                        Веб-панель управления
+                        {% trans "Web Dashboard" %}
                     </h3>
                     <p class="tw-text-gray-300 max-md:tw-text-sm">
-                        Управляйте запасами и просматривайте данные с любого устройства через браузер.
+                        {% trans "Manage inventory and view data from any device via a browser." %}
                     </p>
                 </div>
             </div>
-
-            <div
-                    class="reveal-up tw-flex tw-h-[200px] tw-w-[450px] tw-gap-8 tw-rounded-xl tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-8 max-md:tw-w-[320px]"
-            >
+            <div class="reveal-up tw-flex tw-h-[200px] tw-w-[450px] tw-gap-8 tw-rounded-xl tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-8 max-md:tw-w-[320px]">
                 <div class="tw-text-4xl max-md:tw-text-2xl">
                     <i class="bi bi-fingerprint"></i>
                 </div>
-
                 <div class="tw-flex tw-flex-col tw-gap-4">
                     <h3 class="tw-text-2xl max-md:tw-text-xl">
-                        Интеграция штрихкодов и RFID
+                        {% trans "Barcode and RFID Integration" %}
                     </h3>
                     <p class="tw-text-gray-300 max-md:tw-text-sm">
-                        Автоматическое сопоставление RFID-тегов с товарами для точного учёта.
+                        {% trans "Automatic matching of RFID tags with products for accurate accounting." %}
                     </p>
                 </div>
             </div>
-
-            <div
-                    class="reveal-up tw-flex tw-h-[200px] tw-w-[450px] tw-gap-8 tw-rounded-xl tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-8 max-md:tw-w-[320px]"
-            >
+            <div class="reveal-up tw-flex tw-h-[200px] tw-w-[450px] tw-gap-8 tw-rounded-xl tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-8 max-md:tw-w-[320px]">
                 <div class="tw-text-4xl max-md:tw-text-2xl">
                     <i class="bi bi-sliders"></i>
                 </div>
-
                 <div class="tw-flex tw-flex-col tw-gap-4">
                     <h3 class="tw-text-2xl max-md:tw-text-xl">
-                        Поддержка возвратов
+                        {% trans "Return Support" %}
                     </h3>
                     <p class="tw-text-gray-300 max-md:tw-text-sm">
-                        Точное управление возвратами предотвращает путаницу в учёте.
+                        {% trans "Accurate return management prevents accounting confusion." %}
                     </p>
                 </div>
             </div>
-
-            <div
-                    class="reveal-up tw-flex tw-h-[200px] tw-w-[450px] tw-gap-8 tw-rounded-xl tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-8 max-md:tw-w-[320px]"
-            >
+            <div class="reveal-up tw-flex tw-h-[200px] tw-w-[450px] tw-gap-8 tw-rounded-xl tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-8 max-md:tw-w-[320px]">
                 <div class="tw-text-4xl max-md:tw-text-2xl">
                     <i class="bi bi-gear-fill"></i>
                 </div>
-
                 <div class="tw-flex tw-flex-col tw-gap-4">
                     <h3 class="tw-text-2xl max-md:tw-text-xl">
-                        Простая установка
+                        {% trans "Easy Setup" %}
                     </h3>
                     <p class="tw-text-sm tw-text-gray-300">
-                        Лёгкое приложение для Windows синхронизирует RFID-ридер с веб-панелью.
+                        {% trans "Simple Windows app syncs RFID reader with the web dashboard." %}
                     </p>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-<section
-        class="tw-relative tw-flex tw-min-h-[80vh] tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-6"
->
-    <div
-            class="reveal-up tw-flex tw-min-h-[60vh] tw-place-content-center tw-place-items-center tw-gap-[10%] max-lg:tw-flex-col max-lg:tw-gap-10"
-    >
+<section class="tw-relative tw-flex tw-min-h-[80vh] tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-6">
+    <div class="reveal-up tw-flex tw-min-h-[60vh] tw-place-content-center tw-place-items-center tw-gap-[10%] max-lg:tw-flex-col max-lg:tw-gap-10">
         <div class="tw-flex">
-            <div
-                    class="tw-max-h-[650px] tw-max-w-[850px] tw-overflow-hidden tw-rounded-lg tw-shadow-lg tw-shadow-[rgba(170,49,233,0.44021358543417366)]"
-            >
-                <img
-                        src="../static/images/dash.png"
-                        alt="Панель управления"
-                        class="tw-h-full tw-w-full tw-object-cover"
-                />
+            <div class="tw-max-h-[650px] tw-max-w-[850px] tw-overflow-hidden tw-rounded-lg tw-shadow-lg tw-shadow-[rgba(170,49,233,0.44021358543417366)]">
+                <img src="../static/images/dash.png" alt="{% trans 'Dashboard' %}" class="tw-h-full tw-w-full tw-object-cover"/>
             </div>
         </div>
-        <div
-                class="tw-mt-6 tw-flex tw-max-w-[450px] tw-flex-col tw-gap-4"
-        >
+        <div class="tw-mt-6 tw-flex tw-max-w-[450px] tw-flex-col tw-gap-4">
             <h3 class="tw-text-4xl tw-font-medium max-md:tw-text-2xl">
-                Простые в использовании плагины
+                {% trans "Easy-to-Use Plugins" %}
             </h3>
-
             <div class="tw-mt-4 tw-flex tw-flex-col tw-gap-3">
                 <h4 class="tw-text-xl tw-font-medium">
                     <i class="bi bi-check-all !tw-text-2xl"></i>
-                    Поддержка ИИ
+                    {% trans "AI Support" %}
                 </h4>
-                <span
-                        class="tw-text-lg tw-text-gray-300 max-md:tw-text-base"
-                >
-                    Интеллектуальная аналитика помогает оптимизировать управление запасами.
+                <span class="tw-text-lg tw-text-gray-300 max-md:tw-text-base">
+                    {% trans "Intelligent analytics help optimize inventory management." %}
                 </span>
             </div>
             <div class="tw-mt-4 tw-flex tw-flex-col tw-gap-3">
                 <h4 class="tw-text-xl tw-font-medium">
                     <i class="bi bi-check-all !tw-text-2xl"></i>
-                    Локальная работа
+                    {% trans "Local Operation" %}
                 </h4>
-                <span
-                        class="tw-text-lg tw-text-gray-300 max-md:tw-text-base"
-                >
-                    Работает с недорогими RFID-ридерами, не требуя сложной инфраструктуры.
+                <span class="tw-text-lg tw-text-gray-300 max-md:tw-text-base">
+                    {% trans "Works with affordable RFID readers, requiring no complex infrastructure." %}
                 </span>
             </div>
         </div>
     </div>
 </section>
-
-<section
-        class="tw-relative tw-flex tw-min-h-[80vh] tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-6"
->
-    <div
-            class="reveal-up tw-flex tw-min-h-[60vh] tw-place-content-center tw-place-items-center tw-gap-[10%] max-lg:tw-flex-col max-lg:tw-gap-10"
-    >
-        <div
-                class="tw-mt-6 tw-flex tw-max-w-[450px] tw-flex-col tw-gap-4"
-        >
+<section class="tw-relative tw-flex tw-min-h-[80vh] tw-w-full tw-max-w-[100vw] tw-flex-col tw-place-content-center tw-place-items-center tw-overflow-hidden tw-p-6">
+    <div class="reveal-up tw-flex tw-min-h-[60vh] tw-place-content-center tw-place-items-center tw-gap-[10%] max-lg:tw-flex-col max-lg:tw-gap-10">
+        <div class="tw-mt-6 tw-flex tw-max-w-[450px] tw-flex-col tw-gap-4">
             <h3 class="tw-text-4xl tw-font-medium max-md:tw-text-2xl">
-                Мощная аналитика
+                {% trans "Powerful Analytics" %}
             </h3>
-
             <div class="tw-mt-4 tw-flex tw-flex-col tw-gap-3">
                 <h4 class="tw-text-xl tw-font-medium">
                     <i class="bi bi-check-all !tw-text-2xl"></i>
-                    Простота использования
+                    {% trans "Ease of Use" %}
                 </h4>
-                <span
-                        class="tw-text-lg tw-text-gray-300 max-md:tw-text-base"
-                >
-                    Интуитивно понятный интерфейс для быстрого анализа данных.
+                <span class="tw-text-lg tw-text-gray-300 max-md:tw-text-base">
+                    {% trans "Intuitive interface for quick data analysis." %}
                 </span>
             </div>
             <div class="tw-mt-4 tw-flex tw-flex-col tw-gap-3">
                 <h4 class="tw-text-xl tw-font-medium">
                     <i class="bi bi-check-all !tw-text-2xl"></i>
-                    Всё в одной панели
+                    {% trans "All-in-One Dashboard" %}
                 </h4>
-                <span
-                        class="tw-text-lg tw-text-gray-300 max-md:tw-text-base"
-                >
-                    Все данные о запасах и перемещениях доступны в едином интерфейсе.
+                <span class="tw-text-lg tw-text-gray-300 max-md:tw-text-base">
+                    {% trans "All inventory and movement data available in a single interface." %}
                 </span>
             </div>
         </div>
-
         <div class="tw-flex">
-            <div
-                    class="tw-max-h-[650px] tw-max-w-[850px] tw-overflow-hidden tw-rounded-lg tw-shadow-lg tw-shadow-[rgba(170,49,233,0.44021358543417366)]"
-            >
-                <img
-                        src="../static/images/insights.png"
-                        alt="Аналитика Tracky"
-                        class="tw-h-full tw-w-full tw-object-cover"
-                />
+            <div class="tw-max-h-[650px] tw-max-w-[850px] tw-overflow-hidden tw-rounded-lg tw-shadow-lg tw-shadow-[rgba(170,49,233,0.44021358543417366)]">
+                <img src="../static/images/insights.png" alt="{% trans 'Tracky Analytics' %}" class="tw-h-full tw-w-full tw-object-cover"/>
             </div>
         </div>
     </div>
 </section>
-
-<section
-        class="tw-mt-5 tw-flex tw-min-h-[80vh] tw-w-full tw-flex-col tw-place-content-center tw-place-items-center tw-p-[2%]"
-        id="reviews"
->
+<section class="tw-mt-5 tw-flex tw-min-h-[80vh] tw-w-full tw-flex-col tw-place-content-center tw-place-items-center tw-p-[2%]" id="reviews">
     <h3 class="tw-text-4xl tw-font-medium tw-text-gray-200 max-md:tw-text-2xl">
-        Что говорят наши первые пользователи
+        {% trans "What Our Early Users Say" %}
     </h3>
     <p class="tw-mt-2 tw-text-center tw-text-sm tw-text-gray-400 max-w-[600px]">
-        Отзывы от компаний, которые первыми протестировали Tracky во время закрытой беты. Спасибо за вашу помощь в улучшении продукта!
+        {% trans "Reviews from companies that tested Tracky during its closed beta. Thank you for helping us improve the product!" %}
     </p>
-
     <div class="tw-mt-8 tw-gap-10 tw-space-y-8 max-md:tw-columns-1 lg:tw-columns-2 xl:tw-columns-3">
         <div class="reveal-up tw-flex tw-h-fit tw-w-[350px] tw-break-inside-avoid tw-flex-col tw-gap-4 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-4 max-lg:tw-w-[320px]">
             <p class="tw-mt-4 tw-text-gray-300">
-                Мы протестировали Tracky в своём магазине — инвентаризация стала в 10 раз быстрее. Удивительно, как точно отслеживается каждый товар.
+                {% trans "We tested Tracky in our store — inventory became 10 times faster. It's amazing how accurately every item is tracked." %}
             </p>
             <div class="tw-flex tw-place-items-center tw-gap-3">
                 <div class="tw-h-[50px] tw-w-[50px] tw-overflow-hidden tw-rounded-full">
-                    <img src="../static/images/women.jpg" class="tw-h-full tw-w-full tw-object-cover" alt="Екатерина" />
+                    <img src="../static/images/women.jpg" class="tw-h-full tw-w-full tw-object-cover" alt="{% trans 'Ekaterina' %}" />
                 </div>
                 <div class="tw-flex tw-flex-col tw-gap-1">
-                    <div class="tw-font-semibold">Екатерина</div>
-                    <div class="tw-text-gray-400">Бета-тестер, Fashion Retail</div>
+                    <div class="tw-font-semibold">{% trans "Ekaterina" %}</div>
+                    <div class="tw-text-gray-400">{% trans "Beta Tester, Fashion Retail" %}</div>
                 </div>
             </div>
         </div>
-
         <div class="reveal-up tw-flex tw-h-fit tw-w-[350px] tw-break-inside-avoid tw-flex-col tw-gap-4 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-4 max-lg:tw-w-[320px]">
             <p class="tw-mt-4 tw-text-gray-300">
-                Система показалась простой и понятной. Проблемы с возвратами стали меньше благодаря учёту RFID.
+                {% trans "The system felt simple and clear. Return issues decreased thanks to RFID tracking." %}
             </p>
             <div class="tw-flex tw-place-items-center tw-gap-3">
                 <div class="tw-h-[50px] tw-w-[50px] tw-overflow-hidden tw-rounded-full">
-                    <img src="../static/images/man.jpg" class="tw-h-full tw-w-full tw-object-cover" alt="Иван" />
+                    <img src="../static/images/man.jpg" class="tw-h-full tw-w-full tw-object-cover" alt="{% trans 'Ivan' %}" />
                 </div>
                 <div class="tw-flex tw-flex-col tw-gap-1">
-                    <div class="tw-font-semibold">Иван</div>
-                    <div class="tw-text-gray-400">Бета-тестер, Электроника</div>
+                    <div class="tw-font-semibold">{% trans "Ivan" %}</div>
+                    <div class="tw-text-gray-400">{% trans "Beta Tester, Electronics" %}</div>
                 </div>
             </div>
         </div>
-
         <div class="reveal-up tw-flex tw-h-fit tw-w-[350px] tw-break-inside-avoid tw-flex-col tw-gap-4 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-4 max-lg:tw-w-[320px]">
             <p class="tw-mt-4 tw-text-gray-300">
-                Tracky быстро адаптировался к нашему складу. Особенно понравилось, что не пришлось менять оборудование.
+                {% trans "Tracky adapted quickly to our warehouse. I especially liked that we didn’t need to replace equipment." %}
             </p>
             <div class="tw-flex tw-place-items-center tw-gap-3">
                 <div class="tw-h-[50px] tw-w-[50px] tw-overflow-hidden tw-rounded-full">
-                    <img src="../static/images/man2.jpg" class="tw-h-full tw-w-full tw-object-cover" alt="Алексей" />
+                    <img src="../static/images/man2.jpg" class="tw-h-full tw-w-full tw-object-cover" alt="{% trans 'Aleksey' %}" />
                 </div>
                 <div class="tw-flex tw-flex-col tw-gap-1">
-                    <div class="tw-font-semibold">Алексей</div>
-                    <div class="tw-text-gray-400">Бета-тестер, Обувь</div>
+                    <div class="tw-font-semibold">{% trans "Aleksey" %}</div>
+                    <div class="tw-text-gray-400">{% trans "Beta Tester, Footwear" %}</div>
                 </div>
             </div>
         </div>
-
         <div class="reveal-up tw-flex tw-h-fit tw-w-[350px] tw-break-inside-avoid tw-flex-col tw-gap-4 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-4 max-lg:tw-w-[320px]">
             <p class="tw-mt-4 tw-text-gray-300">
-                RFID + веб-панель — идеальное сочетание. Наконец-то есть решение, которое реально помогает вести учёт.
+                {% trans "RFID + web dashboard is the perfect combo. Finally, a solution that really helps with inventory." %}
             </p>
             <div class="tw-flex tw-place-items-center tw-gap-3">
                 <div class="tw-h-[50px] tw-w-[50px] tw-overflow-hidden tw-rounded-full">
-                    <img src="../static/images/women.jpg" class="tw-h-full tw-w-full tw-object-cover" alt="Мария" />
+                    <img src="../static/images/women.jpg" class="tw-h-full tw-w-full tw-object-cover" alt="{% trans 'Maria' %}" />
                 </div>
                 <div class="tw-flex tw-flex-col tw-gap-1">
-                    <div class="tw-font-semibold">Мария</div>
-                    <div class="tw-text-gray-400">Бета-тестер, Склад</div>
+                    <div class="tw-font-semibold">{% trans "Maria" %}</div>
+                    <div class="tw-text-gray-400">{% trans "Beta Tester, Warehouse" %}</div>
                 </div>
             </div>
         </div>
-
         <div class="reveal-up tw-flex tw-h-fit tw-w-[350px] tw-break-inside-avoid tw-flex-col tw-gap-4 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-4 max-lg:tw-w-[320px]">
             <p class="tw-mt-4 tw-text-gray-300">
-                Система работает даже с бюджетными RFID-ридерами. Это большой плюс для старта.
+                {% trans "The system works even with budget RFID readers. A big plus for startups." %}
             </p>
             <div class="tw-flex tw-place-items-center tw-gap-3">
                 <div class="tw-h-[50px] tw-w-[50px] tw-overflow-hidden tw-rounded-full">
-                    <img src="../static/images/man.jpg" class="tw-h-full tw-w-full tw-object-cover" alt="Дмитрий" />
+                    <img src="../static/images/man.jpg" class="tw-h-full tw-w-full tw-object-cover" alt="{% trans 'Dmitry' %}" />
                 </div>
                 <div class="tw-flex tw-flex-col tw-gap-1">
-                    <div class="tw-font-semibold">Дмитрий</div>
-                    <div class="tw-text-gray-400">Бета-тестер, Ритейл</div>
+                    <div class="tw-font-semibold">{% trans "Dmitry" %}</div>
+                    <div class="tw-text-gray-400">{% trans "Beta Tester, Retail" %}</div>
                 </div>
             </div>
         </div>
-
         <div class="reveal-up tw-flex tw-h-fit tw-w-[350px] tw-break-inside-avoid tw-flex-col tw-gap-4 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-4 max-lg:tw-w-[320px]">
             <p class="tw-mt-4 tw-text-gray-300">
-                Простой интерфейс, понятный отчёт, всё работает. Отличный старт для решения такого уровня.
+                {% trans "Simple interface, clear reports, everything works. A great start for a solution of this level." %}
             </p>
             <div class="tw-flex tw-place-items-center tw-gap-3">
                 <div class="tw-h-[50px] tw-w-[50px] tw-overflow-hidden tw-rounded-full">
-                    <img src="../static/images/man2.jpg" class="tw-h-full tw-w-full tw-object-cover" alt="Сергей" />
+                    <img src="../static/images/man2.jpg" class="tw-h-full tw-w-full tw-object-cover" alt="{% trans 'Sergey' %}" />
                 </div>
                 <div class="tw-flex tw-flex-col tw-gap-1">
-                    <div class="tw-font-semibold">Сергей</div>
-                    <div class="tw-text-gray-400">Бета-тестер, Магазин одежды</div>
+                    <div class="tw-font-semibold">{% trans "Sergey" %}</div>
+                    <div class="tw-text-gray-400">{% trans "Beta Tester, Clothing Store" %}</div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-<section
-        class="tw-mt-5 tw-flex tw-w-full tw-flex-col tw-place-items-center tw-p-[2%]"
-        id="pricing"
->
-    <h3
-            class="tw-text-3xl tw-font-medium tw-text-gray-300 max-md:tw-text-2xl"
-    >
-        Простые тарифы
+<section class="tw-mt-5 tw-flex tw-w-full tw-flex-col tw-place-items-center tw-p-[2%]" id="pricing">
+    <h3 class="tw-text-3xl tw-font-medium tw-text-gray-300 max-md:tw-text-2xl">
+        {% trans "Simple Pricing Plans" %}
     </h3>
-    <div
-            class="tw-mt-10 tw-flex tw-flex-wrap tw-place-content-center tw-gap-8 max-lg:tw-flex-col"
-    >
-        <div
-                class="reveal-up tw-flex tw-w-[380px] tw-flex-col tw-place-items-center tw-gap-2 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-8 tw-shadow-xl max-lg:tw-w-[320px]"
-        >
-            <h3 class="">
+    <div class="tw-mt-10 tw-flex tw-flex-wrap tw-place-content-center tw-gap-8 max-lg:tw-flex-col">
+        <div class="reveal-up tw-flex tw-w-[380px] tw-flex-col tw-place-items-center tw-gap-2 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-8 tw-shadow-xl max-lg:tw-w-[320px]">
+            <h3>
                 <span class="tw-text-5xl tw-font-semibold">0 UZS</span>
-                <span class="tw-text-2xl tw-text-gray-400">/мес</span>
+                <span class="tw-text-2xl tw-text-gray-400">{% trans "/month" %}</span>
             </h3>
             <p class="tw-mt-3 tw-text-center tw-text-gray-300">
-                Идеально для небольших магазинов с базовыми потребностями в отслеживании.
+                {% trans "Ideal for small stores with basic tracking needs." %}
             </p>
             <hr/>
-            <ul
-                    class="tw-mt-4 tw-flex tw-flex-col tw-gap-2 tw-text-center tw-text-lg tw-text-gray-200"
-            >
-                <li>Отслеживание до 500 товаров</li>
-                <li>Веб-панель управления</li>
-                <li>Поддержка одного RFID-ридера</li>
-                <li>Базовая аналитика</li>
+            <ul class="tw-mt-4 tw-flex tw-flex-col tw-gap-2 tw-text-center tw-text-lg tw-text-gray-200">
+                <li>{% trans "Track up to 500 items" %}</li>
+                <li>{% trans "Web dashboard" %}</li>
+                <li>{% trans "Support for one RFID reader" %}</li>
+                <li>{% trans "Basic analytics" %}</li>
             </ul>
-            <a
-                    href="https://tally.so/r/3x1dRk"
-                    class="btn tw-mt-8 !tw-w-full tw-transition-transform tw-duration-[0.3s] hover:tw-scale-x-[1.02]"
-            >
-                Начать
+            <a href="https://tally.so/r/3x1dRk" class="btn tw-mt-8 !tw-w-full tw-transition-transform tw-duration-[0.3s] hover:tw-scale-x-[1.02]">
+                {% trans "Get Started" %}
             </a>
         </div>
-        <div
-                class="reveal-up tw-flex tw-w-[380px] tw-flex-col tw-place-items-center tw-gap-2 tw-rounded-lg tw-border-2 tw-border-primary tw-bg-secondary tw-p-8 tw-shadow-xl max-lg:tw-w-[320px]"
-        >
-            <h3 class="">
+        <div class="reveal-up tw-flex tw-w-[380px] tw-flex-col tw-place-items-center tw-gap-2 tw-rounded-lg tw-border-2 tw-border-primary tw-bg-secondary tw-p-8 tw-shadow-xl max-lg:tw-w-[320px]">
+            <h3>
                 <span class="tw-text-5xl tw-font-semibold">0 UZS</span>
-                <span class="tw-text-2xl tw-text-gray-400">/мес</span>
+                <span class="tw-text-2xl tw-text-gray-400">{% trans "/month" %}</span>
             </h3>
             <p class="tw-mt-3 tw-text-center tw-text-gray-300">
-                Подходит для средних ритейлеров с расширенными функциями.
+                {% trans "Suitable for medium retailers with advanced features." %}
             </p>
             <hr/>
-            <ul
-                    class="tw-mt-4 tw-flex tw-flex-col tw-gap-2 tw-text-center tw-text-lg tw-text-gray-200"
-            >
-                <li>Отслеживание до 2000 товаров</li>
-                <li>Расширенная аналитика</li>
-                <li>Поддержка до 3 RFID-ридеров</li>
-                <li>Интеграция с возвратами</li>
+            <ul class="tw-mt-4 tw-flex tw-flex-col tw-gap-2 tw-text-center tw-text-lg tw-text-gray-200">
+                <li>{% trans "Track up to 2000 items" %}</li>
+                <li>{% trans "Advanced analytics" %}</li>
+                <li>{% trans "Support for up to 3 RFID readers" %}</li>
+                <li>{% trans "Return integration" %}</li>
             </ul>
-            <a
-                    href="https://tally.so/r/3x1dRk"
-                    class="btn tw-mt-8 !tw-w-full tw-transition-transform tw-duration-[0.3s] hover:tw-scale-x-[1.02]"
-            >
-                Начать
+            <a href="https://tally.so/r/3x1dRk" class="btn tw-mt-8 !tw-w-full tw-transition-transform tw-duration-[0.3s] hover:tw-scale-x-[1.02]">
+                {% trans "Get Started" %}
             </a>
         </div>
-        <div
-                class="reveal-up tw-flex tw-w-[380px] tw-flex-col tw-place-items-center tw-gap-2 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-8 tw-shadow-xl max-lg:tw-w-[320px]"
-        >
-            <h3 class="">
+        <div class="reveal-up tw-flex tw-w-[380px] tw-flex-col tw-place-items-center tw-gap-2 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-8 tw-shadow-xl max-lg:tw-w-[320px]">
+            <h3>
                 <span class="tw-text-5xl tw-font-semibold">0 UZS</span>
-                <span class="tw-text-2xl tw-text-gray-400">/мес</span>
+                <span class="tw-text-2xl tw-text-gray-400">{% trans "/month" %}</span>
             </h3>
             <p class="tw-mt-3 tw-text-center tw-text-gray-300">
-                Полный доступ ко всем функциям для крупных ритейлеров.
+                {% trans "Full access to all features for large retailers." %}
             </p>
             <hr/>
-            <ul
-                    class="tw-mt-4 tw-flex tw-flex-col tw-gap-2 tw-text-center tw-text-lg tw-text-gray-200"
-            >
-                <li>Неограниченное отслеживание товаров</li>
-                <li>Полная аналитика</li>
-                <li>Поддержка множества RFID-ридеров</li>
-                <li>Интеграции с внешними системами</li>
+            <ul class="tw-mt-4 tw-flex tw-flex-col tw-gap-2 tw-text-center tw-text-lg tw-text-gray-200">
+                <li>{% trans "Unlimited item tracking" %}</li>
+                <li>{% trans "Full analytics" %}</li>
+                <li>{% trans "Support for multiple RFID readers" %}</li>
+                <li>{% trans "External system integrations" %}</li>
             </ul>
-            <a
-                    href="https://tally.so/r/3x1dRk"
-                    class="btn tw-mt-8 !tw-w-full tw-transition-transform tw-duration-[0.3s] hover:tw-scale-x-[1.02]"
-            >
-                Начать
+            <a href="https://tally.so/r/3x1dRk" class="btn tw-mt-8 !tw-w-full tw-transition-transform tw-duration-[0.3s] hover:tw-scale-x-[1.02]">
+                {% trans "Get Started" %}
             </a>
         </div>
     </div>
 </section>
-
-<section
-        class="tw-mt-5 tw-flex tw-min-h-[80vh] tw-w-full tw-flex-col tw-place-content-center tw-place-items-center tw-p-[2%] max-lg:tw-p-3"
->
-    <h3
-            class="reveal-up tw-text-center tw-text-4xl tw-font-medium max-md:tw-text-2xl"
-    >
-        Читайте наши статьи ✨
+<section class="tw-mt-5 tw-flex tw-min-h-[80vh] tw-w-full tw-flex-col tw-place-content-center tw-place-items-center tw-p-[2%] max-lg:tw-p-3">
+    <h3 class="reveal-up tw-text-center tw-text-4xl tw-font-medium max-md:tw-text-2xl">
+        {% trans "Read Our Articles" %} ✨
     </h3>
-    <div
-            class="reveal-up tw-mt-10 tw-flex tw-flex-wrap tw-place-content-center tw-gap-10 max-lg:tw-flex-col"
-    >
-        <a
-                href=""
-                class="tw-flex tw-h-[400px] tw-w-[400px] tw-flex-col tw-gap-4 tw-overflow-clip tw-rounded-lg tw-p-4 max-lg:tw-w-[300px]"
-        >
-            <div
-                    class="tw-h-[250px] tw-w-full tw-overflow-hidden tw-rounded-md"
-            >
-                <img
-                        src="../static/images/forest.jpg"
-                        alt="Статья о RFID"
-                        class="tw-h-full tw-w-full tw-object-cover tw-transition-transform tw-duration-[0.3s] hover:tw-scale-[1.04]"
-                        srcset=""
-                />
+    <div class="reveal-up tw-mt-10 tw-flex tw-flex-wrap tw-place-content-center tw-gap-10 max-lg:tw-flex-col">
+        <a href="" class="tw-flex tw-h-[400px] tw-w-[400px] tw-flex-col tw-gap-4 tw-overflow-clip tw-rounded-lg tw-p-4 max-lg:tw-w-[300px]">
+            <div class="tw-h-[250px] tw-w-full tw-overflow-hidden tw-rounded-md">
+                <img src="../static/images/forest.jpg" alt="{% trans 'RFID Article' %}" class="tw-h-full tw-w-full tw-object-cover tw-transition-transform tw-duration-[0.3s] hover:tw-scale-[1.04]" srcset=""/>
             </div>
-            <h3
-                    class="tw-mt-2 tw-text-2xl tw-font-semibold max-md:tw-text-xl"
-            >
-                Как RFID меняет ритейл
+            <h3 class="tw-mt-2 tw-text-2xl tw-font-semibold max-md:tw-text-xl">
+                {% trans "How RFID is Changing Retail" %}
             </h3>
             <p class="tw-text-gray-400">
-                Узнайте, как технология RFID повышает точность учёта и сокращает потери.
+                {% trans "Learn how RFID technology improves inventory accuracy and reduces losses." %}
             </p>
             <span>
-                        <span>Узнать больше</span>
-                        <i class="bi bi-arrow-right"></i>
-                    </span>
+                <span>{% trans "Learn More" %}</span>
+                <i class="bi bi-arrow-right"></i>
+            </span>
         </a>
-        <a
-                href=""
-                class="tw-flex tw-h-[400px] tw-w-[400px] tw-flex-col tw-gap-4 tw-overflow-clip tw-rounded-lg tw-p-4 max-lg:tw-w-[300px]"
-        >
-            <div
-                    class="tw-h-[250px] tw-w-full tw-overflow-hidden tw-rounded-md"
-            >
-                <img
-                        src="../static/images/mountain.jpg"
-                        alt="Статья об инвентаризации"
-                        class="tw-h-full tw-w-full tw-object-cover tw-transition-transform tw-duration-[0.3s] hover:tw-scale-[1.04]"
-                        srcset=""
-                />
+        <a href="" class="tw-flex tw-h-[400px] tw-w-[400px] tw-flex-col tw-gap-4 tw-overflow-clip tw-rounded-lg tw-p-4 max-lg:tw-w-[300px]">
+            <div class="tw-h-[250px] tw-w-full tw-overflow-hidden tw-rounded-md">
+                <img src="../static/images/mountain.jpg" alt="{% trans 'Inventory Article' %}" class="tw-h-full tw-w-full tw-object-cover tw-transition-transform tw-duration-[0.3s] hover:tw-scale-[1.04]" srcset=""/>
             </div>
-            <h3
-                    class="tw-mt-2 tw-text-2xl tw-font-semibold max-md:tw-text-xl"
-            >
-                5 советов для быстрой инвентаризации
+            <h3 class="tw-mt-2 tw-text-2xl tw-font-semibold max-md:tw-text-xl">
+                {% trans "5 Tips for Faster Inventory" %}
             </h3>
             <p class="tw-text-gray-400">
-                Простые шаги для оптимизации учёта в вашем магазине.
+                {% trans "Simple steps to optimize inventory in your store." %}
             </p>
             <span>
-                        <span>Узнать больше</span>
-                        <i class="bi bi-arrow-right"></i>
-                    </span>
+                <span>{% trans "Learn More" %}</span>
+                <i class="bi bi-arrow-right"></i>
+            </span>
         </a>
-        <a
-                href=""
-                class="tw-flex tw-h-[400px] tw-w-[400px] tw-flex-col tw-gap-4 tw-overflow-clip tw-rounded-lg tw-p-4 max-lg:tw-w-[300px]"
-        >
-            <div
-                    class="tw-h-[250px] tw-w-full tw-overflow-hidden tw-rounded-md"
-            >
-                <img
-                        src="../static/images/photography.jpg"
-                        alt="Статья о возвратах"
-                        class="tw-h-full tw-w-full tw-object-cover tw-transition-transform tw-duration-[0.3s] hover:tw-scale-[1.04]"
-                        srcset=""
-                />
+        <a href="" class="tw-flex tw-h-[400px] tw-w-[400px] tw-flex-col tw-gap-4 tw-overflow-clip tw-rounded-lg tw-p-4 max-lg:tw-w-[300px]">
+            <div class="tw-h-[250px] tw-w-full tw-overflow-hidden tw-rounded-md">
+                <img src="../static/images/photography.jpg" alt="{% trans 'Returns Article' %}" class="tw-h-full tw-w-full tw-object-cover tw-transition-transform tw-duration-[0.3s] hover:tw-scale-[1.04]" srcset=""/>
             </div>
-            <h3
-                    class="tw-mt-2 tw-text-2xl tw-font-semibold max-md:tw-text-xl"
-            >
-                Управление возвратами без потерь
+            <h3 class="tw-mt-2 tw-text-2xl tw-font-semibold max-md:tw-text-xl">
+                {% trans "Managing Returns Without Losses" %}
             </h3>
             <p class="tw-text-gray-400">
-                Как Tracky помогает избежать ошибок при обработке возвратов.
+                {% trans "How Tracky helps avoid errors in return processing." %}
             </p>
             <span>
-                        <span>Узнать больше</span>
-                        <i class="bi bi-arrow-right"></i>
-                    </span>
+                <span>{% trans "Learn More" %}</span>
+                <i class="bi bi-arrow-right"></i>
+            </span>
         </a>
     </div>
 </section>
-
-<section
-        class="tw-flex tw-w-full tw-flex-col tw-place-content-center tw-place-items-center tw-gap-[10%] tw-p-[5%] tw-px-[10%]"
->
-    <h3
-            class="tw-text-4xl tw-font-medium tw-text-gray-300 max-md:tw-text-2xl"
-    >
-        Часто задаваемые вопросы
+<section class="tw-flex tw-w-full tw-flex-col tw-place-content-center tw-place-items-center tw-gap-[10%] tw-p-[5%] tw-px-[10%]">
+    <h3 class="tw-text-4xl tw-font-medium tw-text-gray-300 max-md:tw-text-2xl">
+        {% trans "Frequently Asked Questions" %}
     </h3>
-    <div
-            class="tw-mt-5 tw-flex tw-min-h-[300px] tw-w-full tw-max-w-[850px] tw-flex-col tw-gap-4"
-    >
-        <div
-                class="faq tw-w-full tw-rounded-md tw-border-[1px] tw-border-solid tw-border-[#1F2123] tw-bg-[#080808]"
-        >
-            <div
-                    class="faq-accordion tw-flex tw-w-full tw-select-none tw-text-xl max-md:tw-text-lg"
-            >
-                <span>Какой тип RFID-ридеров поддерживает Tracky?</span>
+    <div class="tw-mt-5 tw-flex tw-min-h-[300px] tw-w-full tw-max-w-[850px] tw-flex-col tw-gap-4">
+        <div class="faq tw-w-full tw-rounded-md tw-border-[1px] tw-border-solid tw-border-[#1F2123] tw-bg-[#080808]">
+            <div class="faq-accordion tw-flex tw-w-full tw-select-none tw-text-xl max-md:tw-text-lg">
+                <span>{% trans "What types of RFID readers does Tracky support?" %}</span>
                 <i class="bi bi-plus tw-ml-auto tw-font-semibold"></i>
             </div>
             <div class="content">
-                Tracky совместим с большинством недорогих USB RFID-ридеров, включая китайские модели.
+                {% trans "Tracky is compatible with most affordable USB RFID readers, including Chinese models." %}
             </div>
         </div>
-
-        <div
-                class="faq tw-w-full tw-rounded-md tw-border-[1px] tw-border-solid tw-border-[#1F2123] tw-bg-[#080808]"
-        >
-            <div
-                    class="faq-accordion tw-flex tw-w-full tw-select-none tw-text-xl max-md:tw-text-lg"
-            >
-                <span>Могу ли я интегрировать Tracky с другими системами?</span>
+        <div class="faq tw-w-full tw-rounded-md tw-border-[1px] tw-border-solid tw-border-[#1F2123] tw-bg-[#080808]">
+            <div class="faq-accordion tw-flex tw-w-full tw-select-none tw-text-xl max-md:tw-text-lg">
+                <span>{% trans "Can I integrate Tracky with other systems?" %}</span>
                 <i class="bi bi-plus tw-ml-auto tw-font-semibold"></i>
             </div>
             <div class="content">
-                Да, Tracky поддерживает интеграцию с внешними системами. Свяжитесь с нами через <a
-                    href="https://tally.so/r/woO0Kx" class="tw-underline">форму</a> для индивидуальных решений.
+                {% blocktrans %}Yes, Tracky supports integration with external systems. Contact us via <a href="https://tally.so/r/woO0Kx" class="tw-underline">form</a> for custom solutions.{% endblocktrans %}
             </div>
         </div>
-
-        <div
-                class="faq tw-w-full tw-rounded-md tw-border-[1px] tw-border-solid tw-border-[#1F2123] tw-bg-[#080808]"
-        >
-            <div
-                    class="faq-accordion tw-flex tw-w-full tw-select-none tw-text-xl max-md:tw-text-lg"
-            >
-                <span>Требуется ли специальное оборудование?</span>
+        <div class="faq tw-w-full tw-rounded-md tw-border-[1px] tw-border-solid tw-border-[#1F2123] tw-bg-[#080808]">
+            <div class="faq-accordion tw-flex tw-w-full tw-select-none tw-text-xl max-md:tw-text-lg">
+                <span>{% trans "Does Tracky require special equipment?" %}</span>
                 <i class="bi bi-plus tw-ml-auto tw-font-semibold"></i>
             </div>
             <div class="content">
-                Tracky работает с недорогими RFID-ридерами и не требует дорогостоящей инфраструктуры.
+                {% trans "Tracky works with affordable RFID readers and does not require expensive infrastructure." %}
             </div>
         </div>
-
-        <div
-                class="faq tw-w-full tw-rounded-md tw-border-[1px] tw-border-solid tw-border-[#1F2123] tw-bg-[#080808]"
-        >
-            <div
-                    class="faq-accordion tw-flex tw-w-full tw-select-none tw-text-xl max-md:tw-text-lg"
-            >
-                <span>Как быстро можно начать использовать Tracky?</span>
+        <div class="faq tw-w-full tw-rounded-md tw-border-[1px] tw-border-solid tw-border-[#1F2123] tw-bg-[#080808]">
+            <div class="faq-accordion tw-flex tw-w-full tw-select-none tw-text-xl max-md:tw-text-lg">
+                <span>{% trans "How quickly can I start using Tracky?" %}</span>
                 <i class="bi bi-plus tw-ml-auto tw-font-semibold"></i>
             </div>
             <div class="content">
-                Установка занимает менее дня. Просто подключите RFID-ридер и установите наше приложение для Windows.
+                {% trans "Setup takes less than a day. Just connect an RFID reader and install our Windows app." %}
             </div>
         </div>
     </div>
-
-    <div
-            class="tw-mt-20 tw-flex tw-flex-col tw-place-items-center tw-gap-4"
-    >
+    <div class="tw-mt-20 tw-flex tw-flex-col tw-place-items-center tw-gap-4">
         <div class="tw-text-3xl max-md:tw-text-2xl">
-            Остались вопросы?
+            {% trans "Have More Questions?" %}
         </div>
-        <a
-                href="https://tally.so/r/woO0Kx"
-                class="btn !tw-rounded-full !tw-border-[1px] !tw-border-solid !tw-border-gray-300 !tw-bg-transparent tw-transition-colors tw-duration-[0.3s]"
-        >
-            Связаться
+        <a href="https://tally.so/r/woO0Kx" class="btn !tw-rounded-full !tw-border-[1px] !tw-border-solid !tw-border-gray-300 !tw-bg-transparent tw-transition-colors tw-duration-[0.3s]">
+            {% trans "Contact Us" %}
         </a>
     </div>
 </section>
-
-<section
-        class="tw-flex tw-w-full tw-flex-col tw-place-content-center tw-place-items-center tw-gap-[10%] tw-p-[5%] tw-px-[10%] max-md:tw-px-2"
->
-    <div
-            class="tw-flex tw-w-full tw-max-w-[80%] tw-place-content-center tw-place-items-center tw-justify-between tw-gap-3 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-6 max-md:tw-max-w-full max-md:tw-flex-col"
-    >
+<section class="tw-flex tw-w-full tw-flex-col tw-place-content-center tw-place-items-center tw-gap-[10%] tw-p-[5%] tw-px-[10%] max-md:tw-px-2">
+    <div class="tw-flex tw-w-full tw-max-w-[80%] tw-place-content-center tw-place-items-center tw-justify-between tw-gap-3 tw-rounded-lg tw-border-[1px] tw-border-outlineColor tw-bg-secondary tw-p-6 max-md:tw-max-w-full max-md:tw-flex-col">
         <div class="tw-flex tw-flex-col tw-gap-1">
             <h2 class="tw-text-3xl tw-text-gray-300 max-md:tw-text-xl">
-                Подпишитесь на нашу рассылку
+                {% trans "Subscribe to Our Newsletter" %}
             </h2>
-            <div class="tw-text-gray-300">Получайте новости и советы по управлению запасами.</div>
+            <div class="tw-text-gray-300">{% trans "Get news and tips on inventory management." %}</div>
         </div>
-
-        <div
-                class="tw-flex tw-h-[60px] tw-place-items-center tw-gap-2 tw-overflow-hidden tw-p-2"
-        >
+        <div class="tw-flex tw-h-[60px] tw-place-items-center tw-gap-2 tw-overflow-hidden tw-p-2">
             <label>
-                <input
-                        type="email"
-                        class="input tw-h-full tw-w-full !tw-border-gray-600 tw-p-2 tw-outline-none"
-                        placeholder="Ваш email"
-                />
+                <input type="email" class="input tw-h-full tw-w-full !tw-border-gray-600 tw-p-2 tw-outline-none" placeholder="{% trans 'Your email' %}"/>
             </label>
-            <a
-                    class="btn !tw-rounded-full !tw-border-[1px] !tw-border-solid !tw-border-gray-300 !tw-bg-transparent tw-transition-colors tw-duration-[0.3s]"
-                    href=""
-            >
-                Подписаться
+            <a class="btn !tw-rounded-full !tw-border-[1px] !tw-border-solid !tw-border-gray-300 !tw-bg-transparent tw-transition-colors tw-duration-[0.3s]" href="">
+                {% trans "Subscribe" %}
             </a>
         </div>
     </div>
 </section>
-
-<footer
-        class="tw-mt-auto tw-flex tw-w-full tw-place-content-around tw-gap-3 tw-p-[5%] tw-px-[10%] tw-text-white max-md:tw-flex-col"
->
-    <div
-            class="tw-flex tw-h-full tw-w-[250px] tw-flex-col tw-place-items-center tw-gap-6 max-md:tw-w-full"
-    >
-        <img
-                src="../static/images/image.png"
-                alt="Логотип Tracky"
-                srcset=""
-                class="tw-max-w-[120px]"
-        />
+<footer class="tw-mt-auto tw-flex tw-w-full tw-place-content-around tw-gap-3 tw-p-[5%] tw-px-[10%] tw-text-white max-md:tw-flex-col">
+    <div class="tw-flex tw-h-full tw-w-[250px] tw-flex-col tw-place-items-center tw-gap-6 max-md:tw-w-full">
+        <img src="../static/images/image.png" alt="{% trans 'Tracky Logo' %}" srcset="" class="tw-max-w-[120px]"/>
         <div>
-            ул. Лорда Эдварда, 2,
-            <br/>
-            D02 P634,
-            <br/>
-            США
+            {% trans "Lord Edward St, 2," %}<br/>
+            {% trans "D02 P634," %}<br/>
+            {% trans "USA" %}
         </div>
-        <div class="tw-mt-3 tw-text-lg tw-font-semibold">Следите за нами</div>
+        <div class="tw-mt-3 tw-text-lg tw-font-semibold">{% trans "Follow Us" %}</div>
         <div class="tw-flex tw-gap-4 tw-text-2xl">
             <a href="https://youtube.com/channel/UCVNz4WqUm1tmTL3KrBikPIw?si=Sco3VaEKfawLEzdB" aria-label="Youtube">
                 <i class="bi bi-youtube"></i>
             </a>
-            <a
-                    href="https://www.linkedin.com/company/107507050"
-                    aria-label="LinkedIn"
-            >
+            <a href="https://www.linkedin.com/company/107507050" aria-label="LinkedIn">
                 <i class="bi bi-linkedin"></i>
             </a>
-            <a
-                    href="https://www.instagram.com/tracky.pos/"
-                    class="tw-h-[40px] tw-w-[40px]"
-                    aria-label="Instagram"
-            >
+            <a href="https://www.instagram.com/tracky.pos/" class="tw-h-[40px] tw-w-[40px]" aria-label="Instagram">
                 <i class="bi bi-instagram"></i>
             </a>
         </div>
     </div>
-
     <div class="tw-flex tw-h-full tw-w-[250px] tw-flex-col tw-gap-4">
-        <h2 class="tw-text-3xl max-md:tw-text-xl">Компания</h2>
+        <h2 class="tw-text-3xl max-md:tw-text-xl">{% trans "Company" %}</h2>
         <div class="tw-flex tw-flex-col tw-gap-3 max-md:tw-text-sm">
-            <a href="" class="footer-link">Кейсы</a>
-            <a href="" class="footer-link">Интеграции</a>
-            <a href="" class="footer-link">Журнал изменений</a>
-            <a href="" class="footer-link">Блог</a>
-            <a href="" class="footer-link">Контакты</a>
+            <a href="" class="footer-link">{% trans "Case Studies" %}</a>
+            <a href="" class="footer-link">{% trans "Integrations" %}</a>
+            <a href="" class="footer-link">{% trans "Changelog" %}</a>
+            <a href="" class="footer-link">{% trans "Blog" %}</a>
+            <a href="" class="footer-link">{% trans "Contacts" %}</a>
         </div>
     </div>
-
     <div class="tw-flex tw-h-full tw-w-[250px] tw-flex-col tw-gap-4">
-        <h2 class="tw-text-3xl max-md:tw-text-xl">Ресурсы</h2>
+        <h2 class="tw-text-3xl max-md:tw-text-xl">{% trans "Resources" %}</h2>
         <div class="tw-flex tw-flex-col tw-gap-3 max-md:tw-text-sm">
-            <a href="" class="footer-link">О нас</a>
-            <a href="" class="footer-link">Часто задаваемые вопросы</a>
-            <a href="" class="footer-link">Контакты</a>
-            <a href="" class="footer-link">Блог</a>
-            <a href="" class="footer-link">Политика конфиденциальности</a>
+            <a href="" class="footer-link">{% trans "About Us" %}</a>
+            <a href="" class="footer-link">{% trans "Frequently Asked Questions" %}</a>
+            <a href="" class="footer-link">{% trans "Contacts" %}</a>
+            <a href="" class="footer-link">{% trans "Blog" %}</a>
+            <a href="" class="footer-link">{% trans "Privacy Policy" %}</a>
         </div>
     </div>
 </footer>
-</body>
-
-<script
-        src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.0/gsap.min.js"
-        integrity="sha512-B1lby8cGcAUU3GR+Fd809/ZxgHbfwJMp0jLTVfHiArTuUt++VqSlJpaJvhNtRf3NERaxDNmmxkdx2o+aHd4bvw=="
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer"
-></script>
-<script
-        src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.0/ScrollTrigger.min.js"
-        integrity="sha512-AY2+JxnBETJ0wcXnLPCcZJIJx0eimyhz3OJ55k2Jx4RtYC+XdIi2VtJQ+tP3BaTst4otlGG1TtPJ9fKrAUnRdQ=="
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer"
-></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.0/gsap.min.js" integrity="sha512-B1lby8cGcAUU3GR+Fd809/ZxgHbfwJMp0jLTVfHiArTuUt++VqSlJpaJvhNtRf3NERaxDNmmxkdx2o+aHd4bvw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.0/ScrollTrigger.min.js" integrity="sha512-AY2+JxnBETJ0wcXnLPCcZJIJx0eimyhz3OJ55k2Jx4RtYC+XdIi2VtJQ+tP3BaTst4otlGG1TtPJ9fKrAUnRdQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="../static/landing/js/index.js"></script>
+</body>
 </html>
