@@ -24,6 +24,10 @@
     <orderEntry type="library" name="overlayscrollbars" level="application" />
     <orderEntry type="library" name="gsap" level="application" />
     <orderEntry type="library" name="bootstrap-icons" level="application" />
+    <orderEntry type="library" name="overlayscrollbars" level="application" />
+    <orderEntry type="library" name="@fontsource/source-sans-3" level="application" />
+    <orderEntry type="library" name="bootstrap" level="application" />
+    <orderEntry type="library" name="@popperjs/core" level="application" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
