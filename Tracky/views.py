@@ -1,9 +1,16 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+import time
+import logging
+logger = logging.getLogger(__name__)
 
 @login_required(login_url='/login/')
 def BaseView(request):
+    start_time = time.time()
+    logger.debug(f"User authenticated: {request.user.username}, Is authenticated: {request.user.is_authenticated}")
+    end_time = time.time()
+    logger.debug(f"Authentication check took {end_time - start_time:.2f} seconds")
     return render(request, 'base.html', context={'message': 'Hello from the view!'})
 
 def LandingView(request):
@@ -27,4 +34,4 @@ def LoginView(request):
 @login_required(login_url='/login/')
 def LogoutView(request):
     logout(request)
-    return render(request, 'registration/logout.html')
+    return redirect('login')

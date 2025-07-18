@@ -1,10 +1,11 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from .models import Shop
 from .serializers import ShopSerializer
 
-
 class ShopCreateAPIView(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Shop.objects.all()
     serializer_class = ShopSerializer
 
@@ -23,13 +24,13 @@ class ShopCreateAPIView(generics.CreateAPIView):
             headers=headers
         )
 
-
 class ShopListAPIView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Shop.objects.all()
     serializer_class = ShopSerializer
-
 
 class ShopDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Shop.objects.all()
     serializer_class = ShopSerializer
-    lookup_field = 'id'  # Make sure your URL uses <int:id>
+    lookup_field = 'id'

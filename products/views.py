@@ -1,17 +1,17 @@
-# products/views.py
 from django.urls import reverse_lazy
 from rest_framework import generics, status
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from shops.models import Shop
 from .forms import ProductForm
 from .serializers import ProductSerializer
-from .utils import generate_barcode
+from .utils import generate_barcode, generate_barcode_image
 import json
 from django.core.cache import cache
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView
-from django.shortcuts import redirect
-from .utils import generate_barcode_image
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.decorators.http import require_POST, require_GET
@@ -25,14 +25,19 @@ import logging
 logger = logging.getLogger(__name__)
 
 class ProductCreateAPIView(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
     def get(self, request, *args, **kwargs):
+        start_time = time.time()
         shops = Shop.objects.all()
+        end_time = time.time()
+        logger.debug(f"ProductCreateAPIView.get took {end_time - start_time:.2f} seconds")
         return render(request, 'create_product.html', {'shops': shops})
 
     def post(self, request, *args, **kwargs):
+        start_time = time.time()
         barcode = request.data.get('barcode', None)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -44,39 +49,41 @@ class ProductCreateAPIView(generics.CreateAPIView):
 
         product = serializer.save()
         headers = self.get_success_headers(serializer.data)
+        end_time = time.time()
+        logger.debug(f"ProductCreateAPIView.post took {end_time - start_time:.2f} seconds")
         return Response({
             'status': 'success',
             'data': serializer.data,
             'message': 'Product created successfully, barcode generated if not provided'
         }, status=status.HTTP_201_CREATED, headers=headers)
 
-
-class ProductListAPIView(ListView):
+class ProductListAPIView(LoginRequiredMixin, ListView):
+    login_url = '/login/'
     model = Product
     template_name = "products.html"
     context_object_name = "products"
     ordering = ["-created_at"]
 
-
-class ProductDetailView(DetailView):
+class ProductDetailView(LoginRequiredMixin, DetailView):
+    login_url = '/login/'
     model = Product
     template_name = "product.html"
     context_object_name = "product"
 
-
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
+    login_url = '/login/'
     model = Product
     form_class = ProductForm
     template_name = "product_edit.html"
     success_url = "/products/all"
 
-
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
+    login_url = '/login/'
     model = Product
     template_name = "product_confirm_delete.html"
     success_url = reverse_lazy("product-list")
 
-
+@login_required(login_url='/login/')
 def generate_barcode_view(request):
     if request.method == 'POST':
         try:
@@ -89,7 +96,6 @@ def generate_barcode_view(request):
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
 
-
 LABEL_PRESETS = {
     "Default (44x18mm)": {"width": 44, "height": 18},
     "Small (58x30mm)": {"width": 58, "height": 30},
@@ -97,7 +103,7 @@ LABEL_PRESETS = {
     "Large (100x50mm)": {"width": 100, "height": 50},
 }
 
-
+@login_required(login_url='/login/')
 def print_product_barcode_view(request, pk):
     product = get_object_or_404(Product, pk=pk)
 
@@ -145,7 +151,7 @@ def print_product_barcode_view(request, pk):
         'label_presets': LABEL_PRESETS
     })
 
-
+@login_required(login_url='/login/')
 @require_POST
 def bind_rfid_view(request, pk):
     pending_pk = request.session.get('pending_print_pk')
@@ -186,7 +192,7 @@ def bind_rfid_view(request, pk):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': f'Error processing RFID: {str(e)}'}, status=500)
 
-
+@login_required(login_url='/login/')
 def bind_rfid_page_view(request, pk):
     pending_pk = request.session.get('pending_print_pk')
     qty = request.session.get('pending_print_qty', 0)
@@ -199,7 +205,7 @@ def bind_rfid_page_view(request, pk):
     remaining = qty - len(bound_rfids)
     return render(request, 'bind_rfids.html', {'product': product, 'remaining': remaining})
 
-
+@login_required(login_url='/login/')
 def choose_quantity_view(request, pk):
     product = get_object_or_404(Product, pk=pk)
     if request.method == 'POST':
@@ -207,7 +213,7 @@ def choose_quantity_view(request, pk):
         return redirect(f'/print-barcode/{pk}/?qty={qty}')
     return render(request, 'choose_quantity.html', {'product': product})
 
-
+@login_required(login_url='/login/')
 def cancel_print_session(request):
     if request.method == 'POST':
         request.session.pop('pending_print_pk', None)
@@ -216,11 +222,11 @@ def cancel_print_session(request):
         return JsonResponse({'status': 'cancelled'})
     return JsonResponse({'status': 'error'}, status=405)
 
-
+@login_required(login_url='/login/')
 def check_rfid_view(request):
     return render(request, "check_rfid.html")
 
-
+@login_required(login_url='/login/')
 @require_GET
 def current_products(request):
     try:
@@ -228,12 +234,10 @@ def current_products(request):
         raw_rfids = list(tag_dict.keys())
         logger.debug(f"Current RFIDs from cache: {raw_rfids}")
 
-        # Normalize RFIDs for both formats
         normalized_rfids = []
         for rfid in raw_rfids:
-            # Handle agent format (01 prefix)
             if rfid.startswith('01') and len(rfid) == 24:
-                normalized_rfids.append(rfid[2:] + 'C8')  # Convert to server format
+                normalized_rfids.append(rfid[2:] + 'C8')
             else:
                 normalized_rfids.append(rfid)
 
@@ -247,7 +251,7 @@ def current_products(request):
         products = []
         for inst in qs:
             products.append({
-                "rfid": inst.RFID,  # Return exactly what's in DB
+                "rfid": inst.RFID,
                 "name": inst.product.name,
                 "price": float(inst.product.selling_price),
                 "barcode": inst.product.barcode,
@@ -256,20 +260,16 @@ def current_products(request):
 
         return JsonResponse({
             "products": products,
-            "raw_rfids": raw_rfids  # The original normalized ones from cache
+            "raw_rfids": raw_rfids
         })
     except Exception as e:
         logger.error(f"Error in current_products: {e}")
         return JsonResponse({"products": [], "raw_rfids": []})
 
-
+@login_required(login_url='/login/')
 @csrf_protect
 @require_POST
 def lookup_rfid_view(request):
-    """
-    Manual lookup form (Enter RFID + Enter).
-    Expects form-encoded POST: rfid=TAGID
-    """
     try:
         rfid = request.POST.get("rfid", "").strip().upper()
         if not rfid:
@@ -293,6 +293,7 @@ def lookup_rfid_view(request):
         logger.error(f"Error in lookup_rfid_view: {e}")
         return JsonResponse({"status": "error", "message": "Server error"}, status=500)
 
+@login_required(login_url='/login/')
 @require_POST
 def cancel_print_session_view(request):
     request.session.pop('pending_print_pk', None)
@@ -300,15 +301,10 @@ def cancel_print_session_view(request):
     request.session.pop('bound_rfids', None)
     return JsonResponse({'status': 'success'})
 
-
-
+@login_required(login_url='/login/')
 @csrf_exempt
 @require_POST
 def store_rfids_view(request):
-    """
-    POST {"rfids": ["TAG1", "TAG2", ...]}
-    → updates cache['current_rfids_dict'] = { tag: timestamp }
-    """
     try:
         data = json.loads(request.body)
         rfids = data.get("rfids", [])
@@ -319,7 +315,6 @@ def store_rfids_view(request):
         existing = cache.get("current_rfids_dict", {}) or {}
         for rfid in rfids:
             existing[rfid.strip().upper()] = now
-        # keep them alive for 2s unless refreshed
         cache.set("current_rfids_dict", existing, timeout=2)
 
         logger.debug(f"Stored RFIDs: {list(existing.keys())}")
@@ -328,12 +323,9 @@ def store_rfids_view(request):
         logger.error(f"Error in store_rfids_view: {e}")
         return JsonResponse({"error": str(e)}, status=500)
 
+@login_required(login_url='/login/')
 @require_GET
 def current_sold_products(request):
-    """
-    Returns currently scanned products that are marked as SOLD in the DB.
-    Used in refund flow to identify refundable products within RFID range.
-    """
     try:
         tag_dict = cache.get('current_rfids_dict', {}) or {}
         raw_rfids = list(tag_dict.keys())
