@@ -2,12 +2,19 @@
 
 {% block title %}Product List{% endblock %}
 
-{% block page_title %}Products{% endblock %}
+{% block page_title %}
+    Products {% if request.user.shop %} for {{ request.user.shop.name }}{% endif %}
+{% endblock %}
 
 {% block content %}
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Products</h3>
+            {% if request.user.role in 'superuser tracky_admin store_admin manager' %}
+                <div class="card-tools">
+                    <a href="{% url 'product-create' %}" class="btn btn-primary btn-sm">Add Product</a>
+                </div>
+            {% endif %}
         </div>
         <div class="card-body p-0">
             <table class="table table-striped text-sm">
@@ -15,12 +22,15 @@
                 <tr>
                     <th style="width: 10px">#</th>
                     <th>Name</th>
-                    <th>Category</th>
+                    <th>Shop</th>
                     <th>Price (UZS)</th>
                     <th>Barcode</th>
                     <th>Quantity</th>
                     <th>Has RFID</th>
                     <th>Created At</th>
+                    {% if request.user.role in 'superuser tracky_admin store_admin manager' %}
+                        <th>Actions</th>
+                    {% endif %}
                 </tr>
                 </thead>
                 <tbody>
@@ -28,16 +38,22 @@
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td><a href="{% url 'product-detail' product.pk %}">{{ product.name }}</a></td>
-                        <td>{{ product.category|default:"-" }}</td>
+                        <td>{{ product.shop.name }}</td>
                         <td>{{ product.selling_price }}</td>
                         <td>{{ product.barcode }}</td>
                         <td>{{ product.quantity }}</td>
                         <td>{{ product.has_rfid }}</td>
                         <td>{{ product.created_at|date:"Y-m-d H:i" }}</td>
+                        {% if request.user.role in 'superuser tracky_admin store_admin manager' %}
+                            <td>
+                                <a href="{% url 'edit-product' product.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="{% url 'delete-product' product.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        {% endif %}
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="6" class="text-center">No products available.</td>
+                        <td colspan="{% if request.user.role in 'superuser tracky_admin store_admin manager' %}8{% else %}7{% endif %}" class="text-center">No products available.</td>
                     </tr>
                 {% endfor %}
                 </tbody>

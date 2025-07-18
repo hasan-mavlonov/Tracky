@@ -1,12 +1,12 @@
 from django.urls import path
-from .views import ProductCreateAPIView, ProductListAPIView, ProductDetailView, generate_barcode_view, \
+from .views import ProductCreateAPIView, ProductListView, ProductDetailView, generate_barcode_view, \
     print_product_barcode_view, bind_rfid_view, choose_quantity_view, cancel_print_session, check_rfid_view, \
     lookup_rfid_view, cancel_print_session_view, bind_rfid_page_view, ProductUpdateView, ProductDeleteView, \
     current_products, store_rfids_view, current_sold_products
 
 urlpatterns = [
     path('create/', ProductCreateAPIView.as_view(), name='product-create'),
-    path('all', ProductListAPIView.as_view(), name='product-list'),
+    path('all', ProductListView.as_view(), name='product-list'),
     path('<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
     path('<int:pk>/edit/', ProductUpdateView.as_view(), name='edit-product'),
     path('<int:pk>/delete/', ProductDeleteView.as_view(), name='delete-product'),

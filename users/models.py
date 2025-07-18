@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils import timezone
+from shops.models import Shop
 
 class UserManager(BaseUserManager):
     def create_user(self, phone_number, password=None, **extra_fields):
@@ -39,8 +40,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='seller')
+    shop = models.ForeignKey(Shop, on_delete=models.SET_NULL, null=True, blank=True)
     is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)  # For admin interface access
+    is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
 
     objects = UserManager()
@@ -62,3 +64,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         elif self.role == 'store_admin':
             return ['manager', 'seller', 'cashier']
         return []
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['phone_number']),
+            models.Index(fields=['shop']),
+        ]

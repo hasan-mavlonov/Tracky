@@ -30,17 +30,26 @@ class ProductCreateAPIView(generics.CreateAPIView):
     serializer_class = ProductSerializer
 
     def get(self, request, *args, **kwargs):
+        if request.user.role not in ['superuser', 'tracky_admin', 'store_admin', 'manager']:
+            messages.error(request, "You do not have permission to create products.")
+            return redirect('product-list')
         start_time = time.time()
-        shops = Shop.objects.all()
+        shops = Shop.objects.all() if request.user.role in ['superuser', 'tracky_admin'] else [request.user.shop]
         end_time = time.time()
         logger.debug(f"ProductCreateAPIView.get took {end_time - start_time:.2f} seconds")
         return render(request, 'create_product.html', {'shops': shops})
 
     def post(self, request, *args, **kwargs):
+        if request.user.role not in ['superuser', 'tracky_admin', 'store_admin', 'manager']:
+            return Response({'status': 'error', 'message': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
         start_time = time.time()
         barcode = request.data.get('barcode', None)
+        shop_id = request.data.get('shop')
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
+        if shop_id and request.user.role == 'store_admin' and str(request.user.shop.id) != str(shop_id):
+            return Response({'status': 'error', 'message': 'You can only create products for your own shop'}, status=status.HTTP_403_FORBIDDEN)
 
         if not barcode:
             product_name = serializer.validated_data['name']
@@ -57,12 +66,20 @@ class ProductCreateAPIView(generics.CreateAPIView):
             'message': 'Product created successfully, barcode generated if not provided'
         }, status=status.HTTP_201_CREATED, headers=headers)
 
-class ProductListAPIView(LoginRequiredMixin, ListView):
+class ProductListView(LoginRequiredMixin, ListView):
     login_url = '/login/'
     model = Product
-    template_name = "products.html"
+    template_name = "products.html"  # Updated to match provided template
     context_object_name = "products"
     ordering = ["-created_at"]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role in ['superuser', 'tracky_admin']:
+            return Product.objects.all().select_related('shop')
+        elif user.shop:
+            return Product.objects.filter(shop=user.shop).select_related('shop')
+        return Product.objects.none()
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
     login_url = '/login/'
@@ -70,12 +87,26 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
     template_name = "product.html"
     context_object_name = "product"
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.role in ['superuser', 'tracky_admin']:
+            return Product.objects.all().select_related('shop')
+        elif user.shop:
+            return Product.objects.filter(shop=user.shop).select_related('shop')
+        return Product.objects.none()
+
 class ProductUpdateView(LoginRequiredMixin, UpdateView):
     login_url = '/login/'
     model = Product
     form_class = ProductForm
     template_name = "product_edit.html"
-    success_url = "/products/all"
+    success_url = reverse_lazy("product-list")
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role in ['superuser', 'tracky_admin', 'store_admin', 'manager']:
+            return Product.objects.all().select_related('shop') if user.role in ['superuser', 'tracky_admin'] else Product.objects.filter(shop=user.shop).select_related('shop')
+        return Product.objects.none()
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
     login_url = '/login/'
@@ -83,8 +114,16 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
     template_name = "product_confirm_delete.html"
     success_url = reverse_lazy("product-list")
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.role in ['superuser', 'tracky_admin', 'store_admin', 'manager']:
+            return Product.objects.all().select_related('shop') if user.role in ['superuser', 'tracky_admin'] else Product.objects.filter(shop=user.shop).select_related('shop')
+        return Product.objects.none()
+
 @login_required(login_url='/login/')
 def generate_barcode_view(request):
+    if request.user.role not in ['superuser', 'tracky_admin', 'store_admin', 'manager']:
+        return JsonResponse({'error': 'Permission denied'}, status=403)
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -106,6 +145,9 @@ LABEL_PRESETS = {
 @login_required(login_url='/login/')
 def print_product_barcode_view(request, pk):
     product = get_object_or_404(Product, pk=pk)
+    if request.user.role not in ['superuser', 'tracky_admin', 'store_admin', 'manager'] or (request.user.role in ['store_admin', 'manager'] and request.user.shop != product.shop):
+        messages.error(request, "You do not have permission to print barcodes for this product.")
+        return redirect('product-list')
 
     if request.method == 'POST':
         qty = int(request.POST.get('quantity', 1))
@@ -154,6 +196,9 @@ def print_product_barcode_view(request, pk):
 @login_required(login_url='/login/')
 @require_POST
 def bind_rfid_view(request, pk):
+    if request.user.role not in ['superuser', 'tracky_admin', 'store_admin', 'manager'] or (request.user.role in ['store_admin', 'manager'] and request.user.shop != Product.objects.get(pk=pk).shop):
+        return JsonResponse({'status': 'error', 'message': 'Permission denied'}, status=403)
+
     pending_pk = request.session.get('pending_print_pk')
     qty = request.session.get('pending_print_qty', 0)
     bound_rfids = request.session.get('bound_rfids', [])
@@ -194,6 +239,11 @@ def bind_rfid_view(request, pk):
 
 @login_required(login_url='/login/')
 def bind_rfid_page_view(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.user.role not in ['superuser', 'tracky_admin', 'store_admin', 'manager'] or (request.user.role in ['store_admin', 'manager'] and request.user.shop != product.shop):
+        messages.error(request, "You do not have permission to bind RFIDs for this product.")
+        return redirect('product-list')
+
     pending_pk = request.session.get('pending_print_pk')
     qty = request.session.get('pending_print_qty', 0)
     bound_rfids = request.session.get('bound_rfids', [])
@@ -201,13 +251,16 @@ def bind_rfid_page_view(request, pk):
     if not pending_pk or pending_pk != pk:
         return HttpResponse("No RFID binding session found.", status=400)
 
-    product = get_object_or_404(Product, pk=pk)
     remaining = qty - len(bound_rfids)
     return render(request, 'bind_rfids.html', {'product': product, 'remaining': remaining})
 
 @login_required(login_url='/login/')
 def choose_quantity_view(request, pk):
     product = get_object_or_404(Product, pk=pk)
+    if request.user.role not in ['superuser', 'tracky_admin', 'store_admin', 'manager'] or (request.user.role in ['store_admin', 'manager'] and request.user.shop != product.shop):
+        messages.error(request, "You do not have permission to choose quantity for this product.")
+        return redirect('product-list')
+
     if request.method == 'POST':
         qty = int(request.POST.get('quantity', 1))
         return redirect(f'/print-barcode/{pk}/?qty={qty}')
@@ -248,6 +301,9 @@ def current_products(request):
             .exclude(status__in=['SOLD', 'LOST', 'DAMAGED'])
         )
 
+        if request.user.role not in ['superuser', 'tracky_admin'] and request.user.shop:
+            qs = qs.filter(product__shop=request.user.shop)
+
         products = []
         for inst in qs:
             products.append({
@@ -276,7 +332,7 @@ def lookup_rfid_view(request):
             return JsonResponse({"status": "error", "message": "No RFID provided"})
 
         inst = ProductInstance.objects.select_related("product").filter(RFID=rfid).first()
-        if inst:
+        if inst and (request.user.role in ['superuser', 'tracky_admin'] or request.user.shop == inst.product.shop):
             prod = inst.product
             return JsonResponse({
                 "status": "success",
@@ -288,7 +344,7 @@ def lookup_rfid_view(request):
                 }
             })
 
-        return JsonResponse({"status": "not_found", "message": "RFID not found"})
+        return JsonResponse({"status": "not_found", "message": "RFID not found or access denied"})
     except Exception as e:
         logger.error(f"Error in lookup_rfid_view: {e}")
         return JsonResponse({"status": "error", "message": "Server error"}, status=500)
@@ -337,6 +393,9 @@ def current_sold_products(request):
             .select_related("product")
             .filter(RFID__in=raw_rfids, status="SOLD")
         )
+
+        if request.user.role not in ['superuser', 'tracky_admin', 'cashier'] and request.user.shop:
+            queryset = queryset.filter(product__shop=request.user.shop)
 
         products = []
         for inst in queryset:
