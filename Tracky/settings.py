@@ -55,13 +55,11 @@ REST_FRAMEWORK = {
 # settings.py
 CACHES = {
     'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        }
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'rfid-cache',
     }
 }
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -72,7 +70,7 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': 'DEBUG',
+        'level': 'INFO',
     },
 }
 MIDDLEWARE = [
@@ -81,9 +79,11 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'Tracky.middleware.TimingMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 LANGUAGES = [
@@ -167,8 +167,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # folder used only for coll
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Add WhiteNoise Middleware
-MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
