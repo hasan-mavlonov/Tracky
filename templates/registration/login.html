@@ -28,12 +28,19 @@
         <div class="card">
             <div class="card-body login-card-body">
                 <p class="login-box-msg">Sign in to start your session</p>
+                {% if error %}
+                    <div class="alert alert-danger alert-dismissible">
+                        {{ error }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endif %}
                 <form method="post">
                     {% csrf_token %}
+                    {% if request.GET.next %}
+                        <input type="hidden" name="next" value="{{ request.GET.next }}" />
+                    {% endif %}
                     <div class="input-group mb-3">
-                        <label>
-                            <input type="text" name="username" class="form-control" placeholder="Username or Email" required autofocus />
-                        </label>
+                        <input type="text" name="username" class="form-control" placeholder="Username or Email" required autofocus />
                         <div class="input-group-text"><span class="bi bi-envelope"></span></div>
                     </div>
                     <div class="input-group mb-3">
@@ -54,7 +61,6 @@
                         </div>
                     </div>
                 </form>
-                <!-- Optional: Keep social login placeholders or remove -->
                 <div class="social-auth-links text-center mb-3 d-grid gap-2">
                     <p>- OR -</p>
                     <a href="#" class="btn btn-primary">
