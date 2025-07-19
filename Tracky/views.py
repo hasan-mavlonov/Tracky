@@ -1,28 +1,58 @@
+import logging
+import time
+
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum, ExpressionWrapper, F, DecimalField
 from django.shortcuts import render, redirect
-from django.contrib import messages
-from users.models import CustomUser
+
+from products.models import Product
 from shops.models import Shop
-import time
-import logging
+from users.models import CustomUser
+
 logger = logging.getLogger(__name__)
+
 
 @login_required(login_url='/login/')
 def BaseView(request):
     start_time = time.time()
-    logger.debug(f"User authenticated: {request.user.phone_number}, Role: {request.user.role}, Is authenticated: {request.user.is_authenticated}")
+    logger.debug(
+        f"User authenticated: {request.user.phone_number}, Role: {request.user.role}, Is authenticated: {request.user.is_authenticated}")
+
+    total_sum = 0.00
+    queryset = Product.objects.all()
+    if request.user.role == 'superuser':
+        queryset = queryset
+    elif request.user.role == 'store_admin' and request.user.shop:
+        queryset = queryset.filter(shop=request.user.shop)
+    else:
+        queryset = queryset.none()
+
+    # Optionally filter for IN_STOCK if confirmed
+    # queryset = queryset.filter(instances__status='IN_STOCK')
+
+    total_sum = queryset.annotate(
+        total_value=ExpressionWrapper(
+            F('selling_price') * F('quantity'),
+            output_field=DecimalField(max_digits=12, decimal_places=2)
+        )
+    ).aggregate(Sum('total_value'))['total_value__sum'] or 0.00
+
     context = {
-        'message': 'Hello from the view!',
+        'message': 'Welcome to the Dashboard!',
         'user_display_name': f"{request.user.first_name} {request.user.last_name}".strip() or request.user.phone_number,
-        'user_role': request.user.get_role_display()
+        'user_role': request.user.get_role_display(),
+        'total_sum': total_sum,
     }
     end_time = time.time()
-    logger.debug(f"BaseView processing took {end_time - start_time:.2f} seconds")
-    return render(request, 'base.html', context)
+    logger.debug(f"BaseView processing took {end_time - start_time:.2f} seconds, Total sum: {total_sum}")
+    return render(request, 'dashboard.html', context)
+
 
 def LandingView(request):
     return render(request, 'index.html')
+
 
 def LoginView(request):
     if request.method == 'POST':
@@ -42,10 +72,12 @@ def LoginView(request):
             })
     return render(request, 'registration/login.html')
 
+
 @login_required(login_url='/login/')
 def LogoutView(request):
     logout(request)
     return redirect('login')
+
 
 @login_required(login_url='/login/')
 def CreateUserView(request):
@@ -64,11 +96,11 @@ def CreateUserView(request):
         allowed_roles = request.user.allowed_roles_to_create()
         if role not in allowed_roles:
             messages.error(request, f"Invalid role selected. Allowed roles: {', '.join(allowed_roles)}.")
-            return render(request, 'users/create_user.html')
+            return render(request, 'create_user.html')
 
         if CustomUser.objects.filter(phone_number=phone_number).exists():
             messages.error(request, "Phone number already exists.")
-            return render(request, 'users/create_user.html')
+            return render(request, 'create_user.html')
 
         try:
             shop = None
@@ -76,7 +108,7 @@ def CreateUserView(request):
                 shop = Shop.objects.get(id=shop_id)
                 if request.user.role == 'store_admin' and request.user.shop != shop:
                     messages.error(request, "You can only assign users to your own shop.")
-                    return render(request, 'users/create_user.html')
+                    return render(request, 'create_user.html')
 
             CustomUser.objects.create_user(
                 phone_number=phone_number,
@@ -101,6 +133,7 @@ def CreateUserView(request):
         'roles': request.user.allowed_roles_to_create(),
         'shops': shops
     })
+
 
 def ForgotPasswordView(request):
     if request.method == 'POST':

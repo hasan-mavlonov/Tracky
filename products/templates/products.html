@@ -1,81 +1,71 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load static i18n %}
 
-{% block title %}Product List{% endblock %}
-
-{% block page_title %}
-    Products {% if request.user.shop %} for {{ request.user.shop.name }}{% endif %}
-{% endblock %}
+{% block title %}{% trans "Product List" %}{% endblock %}
+{% block page_title %}{% trans "Product List" %}{% endblock %}
 
 {% block content %}
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Products</h3>
-            <div class="card-tools">
-                {% if request.user.role in 'superuser tracky_admin store_admin manager' %}
-                    <a href="{% url 'product-create' %}" class="btn btn-primary btn-sm">Add Product</a>
-                {% endif %}
-                {% if request.user.can_create_users %}
-                    <a href="{% url 'create_user' %}" class="btn btn-success btn-sm">Create User</a>
-                {% endif %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-3 col-6">
+            <div class="small-box text-bg-info">
+                <div class="inner">
+                    <h3>{{ total_sum|floatformat:2 }} UZS</h3>
+                    <p>{% trans "Total Product Value" %}</p>
+                </div>
+                <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+                </svg>
             </div>
-        </div>
-        <div class="card-body p-0">
-            <table class="table table-striped text-sm">
-                <thead>
-                <tr>
-                    <th style="width: 10px">#</th>
-                    <th>Name</th>
-                    <th>Shop</th>
-                    <th>Price (UZS)</th>
-                    <th>Barcode</th>
-                    <th>Quantity</th>
-                    <th>Has RFID</th>
-                    <th>Created At</th>
-                    {% if request.user.role in 'superuser tracky_admin store_admin manager' %}
-                        <th>Actions</th>
-                    {% endif %}
-                </tr>
-                </thead>
-                <tbody>
-                {% for product in products %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td><a href="{% url 'product-detail' product.pk %}">{{ product.name }}</a></td>
-                        <td>{{ product.shop.name }}</td>
-                        <td>{{ product.selling_price }}</td>
-                        <td>{{ product.barcode }}</td>
-                        <td>{{ product.quantity }}</td>
-                        <td>{{ product.has_rfid|yesno:"Yes,No" }}</td>
-                        <td>{{ product.created_at|date:"Y-m-d H:i" }}</td>
-                        {% if request.user.role in 'superuser tracky_admin store_admin manager' %}
-                            <td>
-                                <a href="{% url 'edit-product' product.pk %}" class="btn btn-warning btn-sm">Edit</a>
-                                <a href="{% url 'delete-product' product.pk %}" class="btn btn-danger btn-sm">Delete</a>
-                            </td>
-                        {% endif %}
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="{% if request.user.role in 'superuser tracky_admin store_admin manager' %}9{% else %}8{% endif %}" class="text-center">No products available.</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
         </div>
     </div>
-{% endblock %}
-
-{% block sidebar %}
-    <aside class="main-sidebar">
-        <section class="sidebar">
-            <!-- Other sidebar content from base.html -->
-            <div class="user-panel">
-                <div class="pull-left info">
-                    <p>{{ request.user.first_name }} {{ request.user.last_name|default:request.user.phone_number }}</p>
-                    <small>{{ request.user.get_role_display }}</small>
+    <div class="row">
+        <div class="col-12">
+            {% if can_create_users %}
+                <a href="{% url 'create_user' %}" class="btn btn-success btn-sm mb-3">{% trans "Create User" %}</a>
+            {% endif %}
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">{% trans "Products" %}</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>{% trans "Name" %}</th>
+                                <th>{% trans "Barcode" %}</th>
+                                <th>{% trans "Selling Price" %}</th>
+                                <th>{% trans "Quantity" %}</th>
+                                <th>{% trans "Shop" %}</th>
+                                <th>{% trans "Actions" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in products %}
+                                <tr>
+                                    <td>{{ product.name }}</td>
+                                    <td>{{ product.barcode }}</td>
+                                    <td>{{ product.selling_price|floatformat:2 }} UZS</td>
+                                    <td>{{ product.quantity }}</td>
+                                    <td>{{ product.shop.name }}</td>
+                                    <td>
+                                        <a href="{% url 'product-detail' product.pk %}" class="btn btn-info btn-sm">{% trans "View" %}</a>
+                                        {% if user.role in 'superuser store_admin manager' %}
+                                            <a href="{% url 'product-update' product.pk %}" class="btn btn-warning btn-sm">{% trans "Edit" %}</a>
+                                            <a href="{% url 'product-delete' product.pk %}" class="btn btn-danger btn-sm">{% trans "Delete" %}</a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="6">{% trans "No products available." %}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </section>
-    </aside>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.cache import cache
-from django.db.models import F
+from django.db.models import Sum, ExpressionWrapper, DecimalField, F
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
@@ -78,6 +78,7 @@ class ProductListView(LoginRequiredMixin, ListView):
     template_name = "products.html"
     context_object_name = "products"
     ordering = ["-created_at"]
+    paginate_by = 10
 
     def get_queryset(self):
         user = self.request.user
@@ -88,6 +89,24 @@ class ProductListView(LoginRequiredMixin, ListView):
         elif user.shop:
             return Product.objects.filter(shop=user.shop).select_related('shop')
         return Product.objects.none()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        context['user_role'] = user.get_role_display()
+        context['user_full_name'] = f"{user.first_name} {user.last_name}".strip() or user.phone_number
+        context['can_create_users'] = user.can_create_users()
+
+        queryset = self.get_queryset()
+        total_sum = queryset.annotate(
+            total_value=ExpressionWrapper(
+                F('selling_price') * F('quantity'),
+                output_field=DecimalField(max_digits=12, decimal_places=2)
+            )
+        ).aggregate(Sum('total_value'))['total_value__sum'] or 0.00
+        context['total_sum'] = total_sum
+        logger.debug(f"Total sum for {user.role} ({user.phone_number}): {total_sum}")
+        return context
 
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
