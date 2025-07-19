@@ -1,28 +1,32 @@
-from django.urls import reverse_lazy
-from rest_framework import generics, status
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+import base64
+import json
+import logging
+import time
+from io import BytesIO
+
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from shops.models import Shop
-from .forms import ProductForm
-from .serializers import ProductSerializer
-from .utils import generate_barcode, generate_barcode_image
-import json
 from django.core.cache import cache
-from django.views.generic import ListView, DetailView, UpdateView, DeleteView
-from django.shortcuts import redirect, render, get_object_or_404
+from django.db.models import F
 from django.http import JsonResponse, HttpResponse
+from django.shortcuts import redirect, render, get_object_or_404
+from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.decorators.http import require_POST, require_GET
+from django.views.generic import ListView, DetailView, UpdateView, DeleteView
+from rest_framework import generics, status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+from shops.models import Shop
+from .forms import ProductForm
 from .models import Product, ProductInstance
-import base64
-from io import BytesIO
-from django.contrib import messages
-from django.db.models import F
-import time
-import logging
+from .serializers import ProductSerializer
+from .utils import generate_barcode, generate_barcode_image
+
 logger = logging.getLogger(__name__)
+
 
 class ProductCreateAPIView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -49,7 +53,8 @@ class ProductCreateAPIView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
 
         if shop_id and request.user.role == 'store_admin' and str(request.user.shop.id) != str(shop_id):
-            return Response({'status': 'error', 'message': 'You can only create products for your own shop'}, status=status.HTTP_403_FORBIDDEN)
+            return Response({'status': 'error', 'message': 'You can only create products for your own shop'},
+                            status=status.HTTP_403_FORBIDDEN)
 
         if not barcode:
             product_name = serializer.validated_data['name']
@@ -66,20 +71,24 @@ class ProductCreateAPIView(generics.CreateAPIView):
             'message': 'Product created successfully, barcode generated if not provided'
         }, status=status.HTTP_201_CREATED, headers=headers)
 
+
 class ProductListView(LoginRequiredMixin, ListView):
     login_url = '/login/'
     model = Product
-    template_name = "products.html"  # Updated to match provided template
+    template_name = "products.html"
     context_object_name = "products"
     ordering = ["-created_at"]
 
     def get_queryset(self):
         user = self.request.user
-        if user.role in ['superuser', 'tracky_admin']:
+        if user.role == 'superuser':
             return Product.objects.all().select_related('shop')
+        elif user.role == 'tracky_admin':
+            return Product.objects.none()  # Tracky Admin sees no products
         elif user.shop:
             return Product.objects.filter(shop=user.shop).select_related('shop')
         return Product.objects.none()
+
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
     login_url = '/login/'
@@ -89,11 +98,14 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.role in ['superuser', 'tracky_admin']:
+        if user.role == 'superuser':
             return Product.objects.all().select_related('shop')
+        elif user.role == 'tracky_admin':
+            return Product.objects.none()
         elif user.shop:
             return Product.objects.filter(shop=user.shop).select_related('shop')
         return Product.objects.none()
+
 
 class ProductUpdateView(LoginRequiredMixin, UpdateView):
     login_url = '/login/'
@@ -104,9 +116,14 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.role in ['superuser', 'tracky_admin', 'store_admin', 'manager']:
-            return Product.objects.all().select_related('shop') if user.role in ['superuser', 'tracky_admin'] else Product.objects.filter(shop=user.shop).select_related('shop')
+        if user.role == 'superuser':
+            return Product.objects.all().select_related('shop')
+        elif user.role == 'tracky_admin':
+            return Product.objects.none()
+        elif user.role in ['store_admin', 'manager'] and user.shop:
+            return Product.objects.filter(shop=user.shop).select_related('shop')
         return Product.objects.none()
+
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
     login_url = '/login/'
@@ -116,9 +133,14 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.role in ['superuser', 'tracky_admin', 'store_admin', 'manager']:
-            return Product.objects.all().select_related('shop') if user.role in ['superuser', 'tracky_admin'] else Product.objects.filter(shop=user.shop).select_related('shop')
+        if user.role == 'superuser':
+            return Product.objects.all().select_related('shop')
+        elif user.role == 'tracky_admin':
+            return Product.objects.none()
+        elif user.role in ['store_admin', 'manager'] and user.shop:
+            return Product.objects.filter(shop=user.shop).select_related('shop')
         return Product.objects.none()
+
 
 @login_required(login_url='/login/')
 def generate_barcode_view(request):
@@ -135,6 +157,7 @@ def generate_barcode_view(request):
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
 
+
 LABEL_PRESETS = {
     "Default (44x18mm)": {"width": 44, "height": 18},
     "Small (58x30mm)": {"width": 58, "height": 30},
@@ -142,10 +165,12 @@ LABEL_PRESETS = {
     "Large (100x50mm)": {"width": 100, "height": 50},
 }
 
+
 @login_required(login_url='/login/')
 def print_product_barcode_view(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    if request.user.role not in ['superuser', 'tracky_admin', 'store_admin', 'manager'] or (request.user.role in ['store_admin', 'manager'] and request.user.shop != product.shop):
+    if request.user.role not in ['superuser', 'tracky_admin', 'store_admin', 'manager'] or (
+            request.user.role in ['store_admin', 'manager'] and request.user.shop != product.shop):
         messages.error(request, "You do not have permission to print barcodes for this product.")
         return redirect('product-list')
 
@@ -193,10 +218,12 @@ def print_product_barcode_view(request, pk):
         'label_presets': LABEL_PRESETS
     })
 
+
 @login_required(login_url='/login/')
 @require_POST
 def bind_rfid_view(request, pk):
-    if request.user.role not in ['superuser', 'tracky_admin', 'store_admin', 'manager'] or (request.user.role in ['store_admin', 'manager'] and request.user.shop != Product.objects.get(pk=pk).shop):
+    if request.user.role not in ['superuser', 'tracky_admin', 'store_admin', 'manager'] or (
+            request.user.role in ['store_admin', 'manager'] and request.user.shop != Product.objects.get(pk=pk).shop):
         return JsonResponse({'status': 'error', 'message': 'Permission denied'}, status=403)
 
     pending_pk = request.session.get('pending_print_pk')
@@ -216,7 +243,9 @@ def bind_rfid_view(request, pk):
     try:
         product = get_object_or_404(Product, pk=pk)
         if not product.has_available_rfid_slots():
-            return JsonResponse({'status': 'error', 'message': 'All RFIDs already assigned to this product. Cannot exceed quantity.'}, status=400)
+            return JsonResponse(
+                {'status': 'error', 'message': 'All RFIDs already assigned to this product. Cannot exceed quantity.'},
+                status=400)
 
         ProductInstance.objects.create(product=product, RFID=rfid_code)
         product.rfid_count = F('rfid_count') + 1
@@ -237,10 +266,12 @@ def bind_rfid_view(request, pk):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': f'Error processing RFID: {str(e)}'}, status=500)
 
+
 @login_required(login_url='/login/')
 def bind_rfid_page_view(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    if request.user.role not in ['superuser', 'tracky_admin', 'store_admin', 'manager'] or (request.user.role in ['store_admin', 'manager'] and request.user.shop != product.shop):
+    if request.user.role not in ['superuser', 'tracky_admin', 'store_admin', 'manager'] or (
+            request.user.role in ['store_admin', 'manager'] and request.user.shop != product.shop):
         messages.error(request, "You do not have permission to bind RFIDs for this product.")
         return redirect('product-list')
 
@@ -254,10 +285,12 @@ def bind_rfid_page_view(request, pk):
     remaining = qty - len(bound_rfids)
     return render(request, 'bind_rfids.html', {'product': product, 'remaining': remaining})
 
+
 @login_required(login_url='/login/')
 def choose_quantity_view(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    if request.user.role not in ['superuser', 'tracky_admin', 'store_admin', 'manager'] or (request.user.role in ['store_admin', 'manager'] and request.user.shop != product.shop):
+    if request.user.role not in ['superuser', 'tracky_admin', 'store_admin', 'manager'] or (
+            request.user.role in ['store_admin', 'manager'] and request.user.shop != product.shop):
         messages.error(request, "You do not have permission to choose quantity for this product.")
         return redirect('product-list')
 
@@ -265,6 +298,7 @@ def choose_quantity_view(request, pk):
         qty = int(request.POST.get('quantity', 1))
         return redirect(f'/print-barcode/{pk}/?qty={qty}')
     return render(request, 'choose_quantity.html', {'product': product})
+
 
 @login_required(login_url='/login/')
 def cancel_print_session(request):
@@ -275,9 +309,11 @@ def cancel_print_session(request):
         return JsonResponse({'status': 'cancelled'})
     return JsonResponse({'status': 'error'}, status=405)
 
+
 @login_required(login_url='/login/')
 def check_rfid_view(request):
     return render(request, "check_rfid.html")
+
 
 @login_required(login_url='/login/')
 @require_GET
@@ -322,6 +358,7 @@ def current_products(request):
         logger.error(f"Error in current_products: {e}")
         return JsonResponse({"products": [], "raw_rfids": []})
 
+
 @login_required(login_url='/login/')
 @csrf_protect
 @require_POST
@@ -349,6 +386,7 @@ def lookup_rfid_view(request):
         logger.error(f"Error in lookup_rfid_view: {e}")
         return JsonResponse({"status": "error", "message": "Server error"}, status=500)
 
+
 @login_required(login_url='/login/')
 @require_POST
 def cancel_print_session_view(request):
@@ -356,6 +394,7 @@ def cancel_print_session_view(request):
     request.session.pop('pending_print_qty', None)
     request.session.pop('bound_rfids', None)
     return JsonResponse({'status': 'success'})
+
 
 @login_required(login_url='/login/')
 @csrf_exempt
@@ -378,6 +417,7 @@ def store_rfids_view(request):
     except Exception as e:
         logger.error(f"Error in store_rfids_view: {e}")
         return JsonResponse({"error": str(e)}, status=500)
+
 
 @login_required(login_url='/login/')
 @require_GET
