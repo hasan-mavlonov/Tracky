@@ -24,6 +24,9 @@
             {% if can_create_users %}
                 <a href="{% url 'create_user' %}" class="btn btn-success btn-sm mb-3">{% trans "Create User" %}</a>
             {% endif %}
+            {% if user.role in 'superuser store_admin manager' %}
+                <a href="{% url 'product-create' %}" class="btn btn-primary btn-sm mb-3">{% trans "Create Product" %}</a>
+            {% endif %}
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">{% trans "Products" %}</h3>

@@ -80,13 +80,18 @@ class ProductListView(LoginRequiredMixin, ListView):
     ordering = ["-created_at"]
     paginate_by = 10
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.role not in ['superuser', 'store_admin', 'manager', 'seller']:
+            messages.error(request, "You do not have permission to view the product list.")
+            logger.debug(f"User {request.user.phone_number} (Role: {request.user.role}) denied access to product list.")
+            return redirect('base_view')
+        return super().dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
         user = self.request.user
         if user.role == 'superuser':
             return Product.objects.all().select_related('shop')
-        elif user.role == 'tracky_admin':
-            return Product.objects.none()  # Tracky Admin sees no products
-        elif user.shop:
+        elif user.role in ['store_admin', 'manager', 'seller'] and user.shop:
             return Product.objects.filter(shop=user.shop).select_related('shop')
         return Product.objects.none()
 
@@ -97,15 +102,16 @@ class ProductListView(LoginRequiredMixin, ListView):
         context['user_full_name'] = f"{user.first_name} {user.last_name}".strip() or user.phone_number
         context['can_create_users'] = user.can_create_users()
 
-        queryset = self.get_queryset()
-        total_sum = queryset.annotate(
-            total_value=ExpressionWrapper(
-                F('selling_price') * F('quantity'),
-                output_field=DecimalField(max_digits=12, decimal_places=2)
-            )
-        ).aggregate(Sum('total_value'))['total_value__sum'] or 0.00
-        context['total_sum'] = total_sum
-        logger.debug(f"Total sum for {user.role} ({user.phone_number}): {total_sum}")
+        if user.role in ['superuser', 'store_admin', 'manager']:
+            queryset = self.get_queryset()
+            total_sum = queryset.annotate(
+                total_value=ExpressionWrapper(
+                    F('selling_price') * F('quantity'),
+                    output_field=DecimalField(max_digits=12, decimal_places=2)
+                )
+            ).aggregate(Sum('total_value'))['total_value__sum'] or 0.00
+            context['total_sum'] = total_sum
+            logger.debug(f"Total sum for {user.role} ({user.phone_number}): {total_sum}")
         return context
 
 

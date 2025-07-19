@@ -10,8 +10,8 @@
             <div class="col-lg-3 col-6">
                 <div class="small-box text-bg-info">
                     <div class="inner">
-                        <h3>{{ total_sum|floatformat:2 }} UZS</h3>
-                        <p>{% trans "Total Product Value" %}</p>
+                        <h3>{{ daily_sales|floatformat:2 }} UZS</h3>
+                        <p>{% trans "Daily Sales (Today)" %}</p>
                     </div>
                     <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24"
                          xmlns="http://www.w3.org/2000/svg">
@@ -19,7 +19,6 @@
                     </svg>
                 </div>
             </div>
-            <!-- Add other dashboard widgets here (e.g., total products, recent sales) -->
         </div>
     </div>
 {% endblock %}

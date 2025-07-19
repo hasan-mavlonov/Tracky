@@ -4,10 +4,12 @@ import time
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.db.models import Sum, ExpressionWrapper, F, DecimalField
-from django.shortcuts import render, redirect
+from django.db.models import Sum, F, DecimalField
+from django.shortcuts import redirect
+from django.shortcuts import render
+from django.utils import timezone
 
-from products.models import Product
+from products.models import ProductInstance
 from shops.models import Shop
 from users.models import CustomUser
 
@@ -20,33 +22,29 @@ def BaseView(request):
     logger.debug(
         f"User authenticated: {request.user.phone_number}, Role: {request.user.role}, Is authenticated: {request.user.is_authenticated}")
 
-    total_sum = 0.00
-    queryset = Product.objects.all()
+    today = timezone.now().date()
+    daily_sales = 0.00
+    queryset = ProductInstance.objects.filter(status='SOLD', created_at__date=today)
     if request.user.role == 'superuser':
         queryset = queryset
-    elif request.user.role == 'store_admin' and request.user.shop:
-        queryset = queryset.filter(shop=request.user.shop)
+    elif request.user.role in ['store_admin', 'manager', 'seller'] and request.user.shop:
+        queryset = queryset.filter(product__shop=request.user.shop)
     else:
         queryset = queryset.none()
 
-    # Optionally filter for IN_STOCK if confirmed
-    # queryset = queryset.filter(instances__status='IN_STOCK')
-
-    total_sum = queryset.annotate(
-        total_value=ExpressionWrapper(
-            F('selling_price') * F('quantity'),
-            output_field=DecimalField(max_digits=12, decimal_places=2)
-        )
-    ).aggregate(Sum('total_value'))['total_value__sum'] or 0.00
+    daily_sales = queryset.annotate(
+        sale_value=F('product__selling_price')
+    ).aggregate(Sum('sale_value', output_field=DecimalField(max_digits=12, decimal_places=2)))[
+                      'sale_value__sum'] or 0.00
 
     context = {
         'message': 'Welcome to the Dashboard!',
         'user_display_name': f"{request.user.first_name} {request.user.last_name}".strip() or request.user.phone_number,
         'user_role': request.user.get_role_display(),
-        'total_sum': total_sum,
+        'daily_sales': daily_sales,
     }
     end_time = time.time()
-    logger.debug(f"BaseView processing took {end_time - start_time:.2f} seconds, Total sum: {total_sum}")
+    logger.debug(f"BaseView processing took {end_time - start_time:.2f} seconds, Daily sales: {daily_sales}")
     return render(request, 'dashboard.html', context)
 
 
