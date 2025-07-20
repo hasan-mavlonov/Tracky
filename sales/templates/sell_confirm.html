@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Sale Confirmation{% endblock %}
+{% block page_title %}Sale Confirmation{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-success card-outline">
+                <div class="card-header">
+                    <h3 class="card-title">✅ Sale Completed</h3>
+                </div>
+                <div class="card-body">
+                    <div id="successMessage" class="alert alert-success mt-3" style="display:none;">
+                        ✅ Successfully sold <span id="soldCount"></span> product(s)!
+                    </div>
+                    <div id="notFound" class="alert alert-danger mt-3" style="display:none;">
+                        ❌ No products found in this sale.
+                    </div>
+                    <div id="productList" class="mt-4"></div>
+                    <a href="{% url 'sell_products' %}" class="btn btn-primary mt-3">
+                        🛒 Sell More Products
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    async function fetchSoldProducts() {
+        try {
+            const res = await fetch("{% url 'confirm_sold_products' %}", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            });
+            const result = await res.json();
+
+            if (result.status === 'success' && result.sold.length > 0) {
+                document.getElementById('successMessage').style.display = 'block';
+                document.getElementById('soldCount').textContent = result.sold.length;
+                document.getElementById('notFound').style.display = 'none';
+                renderProductList(result.sold);
+            } else {
+                document.getElementById('successMessage').style.display = 'none';
+                document.getElementById('notFound').style.display = 'block';
+            }
+        } catch (error) {
+            console.error("Error fetching sold products:", error);
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('notFound').style.display = 'block';
+            document.getElementById('notFound').textContent = '❌ Error fetching sale details.';
+        }
+    }
+
+    function renderProductList(products) {
+        const container = document.getElementById('productList');
+        container.innerHTML = '';
+
+        products.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'card card-body mb-2 bg-light border border-success';
+            card.innerHTML = `
+                <p><strong>Name:</strong> ${product.name}</p>
+                <p><strong>Price:</strong> ${product.price} UZS</p>
+                <p><strong>Barcode:</strong> ${product.barcode}</p>
+                <p><strong>RFID:</strong> ${product.rfid}</p>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchSoldProducts(); // Fetch sold products once on page load
+    });
+</script>
+{% endblock %}

@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function refreshProducts() {
         try {
-            const response = await fetch("{% url 'current_products' %}");
+            const response = await fetch("{% url 'current-products' %}");
             const { products, raw_rfids } = await response.json();
             const now = Date.now();
 

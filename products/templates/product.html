@@ -53,10 +53,10 @@
             <a href="{% url 'print_barcode' product.pk %}" class="btn btn-outline-primary">
                 <i class="bi bi-printer"></i> Print Tags
             </a>
-            <a href="{% url 'edit-product' product.pk %}" class="btn btn-outline-warning">
+            <a href="{% url 'product-detail' product.pk %}" class="btn btn-outline-warning">
                 <i class="bi bi-pencil-square"></i> Edit
             </a>
-            <form method="post" action="{% url 'delete-product' product.pk %}" style="display:inline;">
+            <form method="post" action="{% url 'product-delete' product.pk %}" style="display:inline;">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Are you sure?');">
                     <i class="bi bi-trash"></i> Delete
