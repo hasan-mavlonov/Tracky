@@ -41,16 +41,35 @@
                 <span>{% trans "Get Demo" %}</span>
                 <i class="bi bi-arrow-right"></i>
             </a>
-            <form action="{% url 'set_language' %}" method="post">
+            <form action="{% url 'set_language' %}" method="post" id="language-form">
                 {% csrf_token %}
-                <input type="hidden" name="next" value="{{ request.path }}">
-                <select name="language" onchange="this.form.submit()"
+                <input type="hidden" name="next" value="{{ request.get_full_path|default:request.path }}">
+                <select name="language" id="language-select"
                         class="tw-rounded-md tw-border tw-bg-secondary tw-px-3 tw-py-1 tw-text-white tw-outline-none tw-transition-all tw-duration-200 hover:tw-border-white focus:tw-border-white">
                     <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
                     <option value="uz" {% if LANGUAGE_CODE == 'uz' %}selected{% endif %}>O‘zbek</option>
                     <option value="ru" {% if LANGUAGE_CODE == 'ru' %}selected{% endif %}>Русский</option>
                 </select>
             </form>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const languageForm = document.getElementById('language-form');
+                    const languageSelect = document.getElementById('language-select');
+                    const currentLang = '{{ LANGUAGE_CODE|escapejs }}';
+
+                    // Set dropdown to current language
+                    if (languageSelect && currentLang) {
+                        languageSelect.value = currentLang;
+                    }
+
+                    // Handle form submission
+                    languageSelect.addEventListener('change', function () {
+                        if (languageForm) {
+                            languageForm.submit();
+                        }
+                    });
+                });
+            </script>
         </div>
     </div>
     <button class="bi bi-list tw-absolute tw-right-3 tw-top-3 tw-z-50 tw-text-3xl tw-text-white lg:tw-hidden"
@@ -628,7 +647,8 @@
             </div>
         </div>
         <div class="faq tw-w-full tw-rounded-md tw-border-[1px] tw-border-solid tw-border-[#1F2123] tw-bg-[#080808]">
-            <div class="faq-accordion tw-flex tw-w-full tw-select-none tw-text-xl max-md:tw-text-lg">
+            <div class="fa
+q-accordion tw-flex tw-w-full tw-select-none tw-text-xl max-md:tw-text-lg">
                 <span>{% trans "Can I integrate Tracky with other systems?" %}</span>
                 <i class="bi bi-plus tw-ml-auto tw-font-semibold"></i>
             </div>
