@@ -23,7 +23,7 @@ function toggleHeader() {
 
         // Use requestAnimationFrame for smoother event handling
         requestAnimationFrame(() => {
-            window.addEventListener("click", onHeaderClickOutside, {once: true});
+            window.addEventListener("click", onHeaderClickOutside, { once: true });
         });
     } else {
         collapseHeaderItems.classList.remove("opacity-100");
@@ -51,22 +51,32 @@ window.addEventListener("resize", responsive);
 gsap.registerPlugin(ScrollTrigger);
 
 gsap.to(".reveal-up", {
-    opacity: 0, y: "100%",
+    opacity: 0,
+    y: "100%",
 });
 
 gsap.to("#dashboard", {
-    boxShadow: "0px 15px 25px -5px #7e22ceaa", duration: 0.3, scrollTrigger: {
-        trigger: "#hero-section", start: "60% 60%", end: "80% 80%", // markers: true
+    boxShadow: "0px 15px 25px -5px #7e22ceaa",
+    duration: 0.3,
+    scrollTrigger: {
+        trigger: "#hero-section",
+        start: "60% 60%",
+        end: "80% 80%",
+        // markers: true
     }
 });
 
 // straightens the slanting image
 gsap.to("#dashboard", {
-    scale: 1, translateY: 0, rotateX: "0deg", scrollTrigger: {
+    scale: 1,
+    translateY: 0,
+    rotateX: "0deg",
+    scrollTrigger: {
         trigger: "#hero-section",
         start: window.innerWidth > RESPONSIVE_WIDTH ? "top 95%" : "top 70%",
         end: "bottom bottom",
-        scrub: 1, // markers: true,
+        scrub: 1,
+        // markers: true,
     }
 });
 
@@ -74,17 +84,23 @@ const faqAccordion = document.querySelectorAll('.faq-accordion');
 
 faqAccordion.forEach(function (btn) {
     btn.addEventListener('click', function () {
+        const content = this.nextElementSibling;
+        const icon = this.querySelector('i');
+
+        // Toggle active class for styling
         this.classList.toggle('active');
 
-        // Toggle 'rotate' class to rotate the arrow
-        let content = this.nextElementSibling;
-
-        if (content.style.maxHeight === '200px') {
+        // Toggle icon between plus and dash
+        if (this.classList.contains('active')) {
+            icon.classList.remove('bi-plus');
+            icon.classList.add('bi-dash');
+            content.style.maxHeight = content.scrollHeight + 'px';
+            content.style.padding = '20px 18px';
+        } else {
+            icon.classList.remove('bi-dash');
+            icon.classList.add('bi-plus');
             content.style.maxHeight = '0px';
             content.style.padding = '0px 18px';
-        } else {
-            content.style.maxHeight = '200px';
-            content.style.padding = '20px 18px';
         }
     });
 });
@@ -94,14 +110,20 @@ const sections = gsap.utils.toArray("section");
 
 sections.forEach((sec) => {
     const revealUptimeline = gsap.timeline({
-        paused: true, scrollTrigger: {
-            trigger: sec, start: "10% 80%", // top of trigger hits the top of viewport
-            end: "20% 90%", // markers: true,
+        paused: true,
+        scrollTrigger: {
+            trigger: sec,
+            start: "10% 80%", // top of trigger hits the top of viewport
+            end: "20% 90%",
+            // markers: true,
             // scrub: 1,
         }
     });
 
     revealUptimeline.to(sec.querySelectorAll(".reveal-up"), {
-        opacity: 1, duration: 0.8, y: "0%", stagger: 0.2,
+        opacity: 1,
+        duration: 0.8,
+        y: "0%",
+        stagger: 0.2,
     });
 });
