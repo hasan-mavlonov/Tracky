@@ -32,6 +32,6 @@ urlpatterns = [
     path('cancel-print-session/', cancel_print_session_view, name='cancel-print-session'),
     path('lookup-rfid/', lookup_rfid_view, name='lookup-rfid'),
     path('store-rfids/', store_rfids_view, name='store-rfids'),
-    path('current-products/', current_products, name='current_products'),
+    path('current-products/', current_products, name='current-products'),
     path('current-sold-products/', current_sold_products, name='current-sold-products'),
 ]
