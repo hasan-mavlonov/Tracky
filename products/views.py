@@ -18,7 +18,6 @@ from django.views.decorators.http import require_POST, require_GET
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from rest_framework import generics, status
 from rest_framework.authtoken.models import Token
-from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -338,15 +337,9 @@ def cancel_print_session(request):
     return JsonResponse({'status': 'error'}, status=405)
 
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@login_required(login_url='/login/')
 def check_rfid_view(request):
-    token = request.auth
-    if not token:
-        return Response({"error": "Authentication required"}, status=401)
-    rfids = cache.get("current_rfids_dict", {}) or {}
-    logger.debug(f"RFID list accessed by user {request.user.id}: {list(rfids.keys())}")
-    return Response({"rfids": rfids})
+    return render(request, "check_rfid.html")
 
 
 @login_required(login_url='/login/')
