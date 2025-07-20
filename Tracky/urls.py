@@ -1,9 +1,10 @@
+# Tracky/Tracky/urls.py
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.urls import path, include
 from django.views.i18n import set_language
 
-from .views import BaseView, LandingView, LoginView, LogoutView, ForgotPasswordView
+from .views import BaseView, LandingView, LoginView, LogoutView, ForgotPasswordView, APILoginView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -15,6 +16,7 @@ urlpatterns = [
     path('login/', LoginView, name='login'),
     path('logout/', LogoutView, name='logout'),
     path('forgot_password/', ForgotPasswordView, name='forgot_password'),
+    path('api/login/', APILoginView.as_view(), name='api-login'),
 ]
 
 urlpatterns += i18n_patterns(

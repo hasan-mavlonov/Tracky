@@ -1,3 +1,4 @@
+# Tracky/products/views.py
 import base64
 import json
 import logging
@@ -16,6 +17,8 @@ from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.decorators.http import require_POST, require_GET
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from rest_framework import generics, status
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -335,9 +338,15 @@ def cancel_print_session(request):
     return JsonResponse({'status': 'error'}, status=405)
 
 
-@login_required(login_url='/login/')
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def check_rfid_view(request):
-    return render(request, "check_rfid.html")
+    token = request.auth
+    if not token:
+        return Response({"error": "Authentication required"}, status=401)
+    rfids = cache.get("current_rfids_dict", {}) or {}
+    logger.debug(f"RFID list accessed by user {request.user.id}: {list(rfids.keys())}")
+    return Response({"rfids": rfids})
 
 
 @login_required(login_url='/login/')
@@ -425,6 +434,16 @@ def cancel_print_session_view(request):
 @require_POST
 def store_rfids_view(request):
     try:
+        auth = request.META.get("HTTP_AUTHORIZATION", "")
+        if not auth.startswith("Bearer "):
+            return JsonResponse({"error": "Authentication required"}, status=401)
+        token_key = auth[len("Bearer "):]
+        try:
+            token = Token.objects.get(key=token_key)
+            request.user = token.user
+        except Token.DoesNotExist:
+            return JsonResponse({"error": "Invalid token"}, status=401)
+
         data = json.loads(request.body)
         rfids = data.get("rfids", [])
         if not isinstance(rfids, list):
@@ -433,10 +452,10 @@ def store_rfids_view(request):
         now = time.time()
         existing = cache.get("current_rfids_dict", {}) or {}
         for rfid in rfids:
-            existing[rfid.strip().upper()] = now
+            existing[rfid.strip().upper()] = {"timestamp": now, "user_id": request.user.id}
         cache.set("current_rfids_dict", existing, timeout=2)
 
-        logger.debug(f"Stored RFIDs: {list(existing.keys())}")
+        logger.debug(f"Stored RFIDs for user {request.user.id}: {list(existing.keys())}")
         return JsonResponse({"status": "ok"})
     except Exception as e:
         logger.error(f"Error in store_rfids_view: {e}")

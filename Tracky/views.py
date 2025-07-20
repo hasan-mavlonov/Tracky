@@ -1,3 +1,4 @@
+# Tracky/views.py
 import logging
 import time
 
@@ -8,6 +9,10 @@ from django.db.models import Sum, F, DecimalField
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from products.models import ProductInstance
 from shops.models import Shop
@@ -139,3 +144,25 @@ def ForgotPasswordView(request):
         messages.info(request, "Password reset feature coming soon!")
         return redirect('login')
     return render(request, 'registration/forgot_password.html')
+
+
+class APILoginView(APIView):
+    @csrf_exempt
+    def post(self, request, *args, **kwargs):
+        logger.debug(f"API login request: {request.headers}, body={request.body}")
+        phone_number = request.data.get("phone_number")
+        password = request.data.get("password")
+        logger.debug(f"API login attempt: phone_number={phone_number}")
+        if not phone_number or not password:
+            return Response({"error": "Missing phone number or password"}, status=400)
+        user = authenticate(username=phone_number, password=password)
+        if user:
+            token, _ = Token.objects.get_or_create(user=user)
+            logger.info(f"API login successful: {phone_number}, token={token.key}")
+            return Response({"token": token.key})
+        logger.error(f"API login failed: {phone_number}")
+        return Response({"error": "Invalid credentials"}, status=401)
+
+    def get(self, request, *args, **kwargs):
+        logger.warning(f"GET request to /api/login/ not allowed: {request.headers}")
+        return Response({"error": "Method not allowed"}, status=405)
