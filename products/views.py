@@ -421,8 +421,6 @@ def cancel_print_session_view(request):
     return JsonResponse({'status': 'success'})
 
 
-@login_required(login_url='/login/')
-@csrf_exempt
 @require_POST
 def store_rfids_view(request):
     try:
