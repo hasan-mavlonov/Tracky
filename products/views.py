@@ -377,13 +377,10 @@ def current_products(request):
                 "status": inst.status,
             })
 
-        return JsonResponse({
-            "products": products,
-            "raw_rfids": raw_rfids
-        })
+        return JsonResponse({"products": products})
     except Exception as e:
         logger.error(f"Error in current_products: {e}")
-        return JsonResponse({"products": [], "raw_rfids": []})
+        return JsonResponse({"products": []})
 
 
 @login_required(login_url='/login/')
@@ -442,13 +439,31 @@ def store_rfids_view(request):
         if not isinstance(rfids, list):
             return JsonResponse({"error": "Invalid format"}, status=400)
 
+        # Validate user's shop and filter RFIDs
+        user_shop = request.user.shop
+        if not user_shop and request.user.role not in ['superuser', 'tracky_admin']:
+            return JsonResponse({"error": "User has no assigned shop"}, status=403)
+
+        # Check if RFIDs match the user's shop (for non-superuser/tracky_admin)
+        if request.user.role not in ['superuser', 'tracky_admin']:
+            valid_rfids = []
+            for rfid in rfids:
+                rfid = rfid.strip().upper()
+                if ProductInstance.objects.filter(RFID=rfid, product__shop=user_shop).exists():
+                    valid_rfids.append(rfid)
+                else:
+                    logger.debug(f"RFID {rfid} rejected: Does not belong to {user_shop.name}")
+            rfids = valid_rfids
+            if not rfids:
+                return JsonResponse({"status": "ok", "message": "No valid RFIDs for this shop"}, status=200)
+
         now = time.time()
         existing = cache.get("current_rfids_dict", {}) or {}
         for rfid in rfids:
-            existing[rfid.strip().upper()] = {"timestamp": now, "user_id": request.user.id}
+            existing[rfid] = {"timestamp": now, "user_id": request.user.id}
         cache.set("current_rfids_dict", existing, timeout=2)
 
-        logger.debug(f"Stored RFIDs for user {request.user.id}: {list(existing.keys())}")
+        logger.debug(f"Stored RFIDs for user {request.user.id} in {user_shop.name}: {list(existing.keys())}")
         return JsonResponse({"status": "ok"})
     except Exception as e:
         logger.error(f"Error in store_rfids_view: {e}")
