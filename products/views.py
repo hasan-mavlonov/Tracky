@@ -350,6 +350,10 @@ def current_products(request):
         raw_rfids = list(tag_dict.keys())
         logger.debug(f"Current RFIDs from cache: {raw_rfids}")
 
+        if not raw_rfids:
+            logger.debug("No RFIDs found in cache.")
+            return JsonResponse({"products": [], "raw_rfids": []})
+
         normalized_rfids = []
         for rfid in raw_rfids:
             if rfid.startswith('01') and len(rfid) == 24:
@@ -363,8 +367,7 @@ def current_products(request):
             .filter(RFID__in=normalized_rfids)
             .exclude(status__in=['SOLD', 'LOST', 'DAMAGED'])
         )
-
-        if request.user.role not in ['superuser', 'tracky_admin'] and request.user.shop:
+        if request.user.shop and request.user.role not in ['superuser', 'tracky_admin']:
             qs = qs.filter(product__shop=request.user.shop)
 
         products = []
@@ -377,10 +380,10 @@ def current_products(request):
                 "status": inst.status,
             })
 
-        return JsonResponse({"products": products})
+        return JsonResponse({"products": products, "raw_rfids": raw_rfids})
     except Exception as e:
         logger.error(f"Error in current_products: {e}")
-        return JsonResponse({"products": []})
+        return JsonResponse({"products": [], "raw_rfids": []})
 
 
 @login_required(login_url='/login/')
