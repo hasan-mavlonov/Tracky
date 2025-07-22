@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, F, DecimalField
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.utils import timezone
@@ -163,6 +164,14 @@ class APILoginView(APIView):
         logger.error(f"API login failed: {phone_number}")
         return Response({"error": "Invalid credentials"}, status=401)
 
+    @csrf_exempt
     def get(self, request, *args, **kwargs):
-        logger.warning(f"GET request to /api/login/ not allowed: {request.headers}")
-        return Response({"error": "Method not allowed"}, status=405)
+        auth = request.META.get("HTTP_AUTHORIZATION", "")
+        if not auth.startswith("Bearer "):
+            return JsonResponse({"error": "Authentication required"}, status=401)
+        token_key = auth[len("Bearer "):]
+        try:
+            Token.objects.get(key=token_key)
+            return JsonResponse({"status": "valid"}, status=200)
+        except Token.DoesNotExist:
+            return JsonResponse({"error": "Invalid token"}, status=401)
