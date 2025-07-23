@@ -31,9 +31,9 @@ def BaseView(request):
     today = timezone.now().date()
     daily_sales = 0.00
     queryset = ProductInstance.objects.filter(status='SOLD', created_at__date=today)
-    if request.user.role == 'superuser':
+    if request.user.role in ['superuser', 'tracky_admin']:
         queryset = queryset
-    elif request.user.role in ['store_admin', 'manager', 'seller'] and request.user.shop:
+    elif request.user.shop and request.user.role in ['store_admin', 'manager', 'seller']:
         queryset = queryset.filter(product__shop=request.user.shop)
     else:
         queryset = queryset.none()
@@ -113,6 +113,9 @@ def CreateUserView(request):
                 if request.user.role == 'store_admin' and request.user.shop != shop:
                     messages.error(request, "You can only assign users to your own shop.")
                     return render(request, 'create_user.html')
+            elif role != 'tracky_admin':
+                messages.error(request, "Shop is required for this role.")
+                return render(request, 'create_user.html')
 
             CustomUser.objects.create_user(
                 phone_number=phone_number,

@@ -37,11 +37,12 @@ class CreateUserView(LoginRequiredMixin, View):
         form = CustomUserCreationForm(request.POST, user=request.user)
         logger.debug(f"POST data: {request.POST}, Form errors: {form.errors}")
         if form.is_valid():
-            form.save()
-            messages.success(request, f"User {form.cleaned_data['phone_number']} created successfully.")
+            user = form.save()
+            messages.success(request, f"User {user.phone_number} created successfully.")
             return redirect('product-list')
         else:
             messages.error(request, "Please correct the errors below.")
+            logger.debug(f"Form validation failed for user: {request.user.phone_number}, errors: {form.errors}")
 
         context = {
             'form': form,
@@ -49,5 +50,4 @@ class CreateUserView(LoginRequiredMixin, View):
             'user_full_name': f"{request.user.first_name} {request.user.last_name}".strip() or request.user.phone_number,
             'can_create_users': request.user.can_create_users(),
         }
-        logger.debug(f"Form validation failed for user: {request.user.phone_number}, errors: {form.errors}")
         return render(request, self.template_name, context)

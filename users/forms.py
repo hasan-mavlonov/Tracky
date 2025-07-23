@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser
 from shops.models import Shop
 
@@ -20,6 +21,11 @@ class CustomUserCreationForm(forms.ModelForm):
                 self.fields['shop'].disabled = True
             else:
                 self.fields['shop'].queryset = Shop.objects.all()
+            # Make shop optional for tracky_admin
+            if self.data.get('role') == 'tracky_admin' or self.initial.get('role') == 'tracky_admin':
+                self.fields['shop'].required = False
+            else:
+                self.fields['shop'].required = True
         else:
             self.fields['role'].choices = []  # Default to empty if no user
             self.fields['shop'].queryset = Shop.objects.all()
@@ -39,6 +45,9 @@ class CustomUserCreationForm(forms.ModelForm):
             raise forms.ValidationError("You can only assign users to your own shop.")
         if user and role and role not in user.allowed_roles_to_create():
             raise forms.ValidationError(f"Invalid role selected. Allowed roles: {', '.join(user.allowed_roles_to_create())}.")
+        # Require shop for non-tracky_admin roles
+        if role != 'tracky_admin' and not shop:
+            raise forms.ValidationError("Shop is required for this role.")
         return cleaned_data
 
     def save(self, commit=True):
