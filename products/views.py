@@ -346,44 +346,89 @@ def check_rfid_view(request):
 @require_GET
 def current_products(request):
     try:
-        tag_dict = cache.get("current_rfids_dict", {}) or {}
+        # Determine cache key based on user's shop and role
+        cache_key = (
+            f"current_rfids_dict_{request.user.shop.id}"
+            if request.user.shop and request.user.role not in ['superuser', 'tracky_admin']
+            else "current_rfids_dict_global"
+        )
+        tag_dict = cache.get(cache_key, {}) or {}
         raw_rfids = list(tag_dict.keys())
-        logger.debug(f"Current RFIDs from cache: {raw_rfids}")
+        logger.debug(f"Current RFIDs from cache ({cache_key}): {raw_rfids}")
 
         if not raw_rfids:
             logger.debug("No RFIDs found in cache.")
-            return JsonResponse({"products": [], "raw_rfids": []})
+            return JsonResponse({"products": [], "raw_rfids": [], "unbound_rfids": []})
 
+        # Normalize RFIDs (handle specific format if needed)
         normalized_rfids = []
         for rfid in raw_rfids:
+            rfid = rfid.strip().upper()
             if rfid.startswith('01') and len(rfid) == 24:
                 normalized_rfids.append(rfid[2:] + 'C8')
             else:
                 normalized_rfids.append(rfid)
 
-        qs = (
-            ProductInstance.objects
-            .select_related("product")
-            .filter(RFID__in=normalized_rfids)
-            .exclude(status__in=['SOLD', 'LOST', 'DAMAGED'])
-        )
-        if request.user.shop and request.user.role not in ['superuser', 'tracky_admin']:
-            qs = qs.filter(product__shop=request.user.shop)
-
+        # For non-superuser/non-tracky_admin, ensure shop match before DB query
         products = []
-        for inst in qs:
-            products.append({
-                "rfid": inst.RFID,
-                "name": inst.product.name,
-                "price": float(inst.product.selling_price),
-                "barcode": inst.product.barcode,
-                "status": inst.status,
-            })
+        unbound_rfids = []
+        if request.user.role in ['superuser', 'tracky_admin']:
+            # Superusers see all RFIDs and products
+            qs = (
+                ProductInstance.objects
+                .select_related("product")
+                .filter(RFID__in=normalized_rfids)
+                .exclude(status__in=['SOLD', 'LOST', 'DAMAGED'])
+            )
+            for inst in qs:
+                products.append({
+                    "rfid": inst.RFID,
+                    "name": inst.product.name,
+                    "price": float(inst.product.selling_price),
+                    "barcode": inst.product.barcode,
+                    "status": inst.status,
+                })
+            unbound_rfids = [
+                rfid for rfid in normalized_rfids
+                if not ProductInstance.objects.filter(RFID=rfid).exists()
+            ]
+        elif request.user.shop:
+            # Check if any RFIDs are bound to products in the user's shop
+            qs = (
+                ProductInstance.objects
+                .select_related("product")
+                .filter(RFID__in=normalized_rfids, product__shop=request.user.shop)
+                .exclude(status__in=['SOLD', 'LOST', 'DAMAGED'])
+            )
+            bound_rfids = set()
+            for inst in qs:
+                bound_rfids.add(inst.RFID)
+                products.append({
+                    "rfid": inst.RFID,
+                    "name": inst.product.name,
+                    "price": float(inst.product.selling_price),
+                    "barcode": inst.product.barcode,
+                    "status": inst.status,
+                })
+            # Include unbound RFIDs (not in ProductInstance but in cache for this shop)
+            unbound_rfids = [
+                rfid for rfid in normalized_rfids
+                if rfid not in bound_rfids
+            ]
+        else:
+            # User has no shop assigned (should not happen for regular users)
+            logger.debug(f"User {request.user.phone_number} has no shop assigned.")
+            return JsonResponse({"products": [], "raw_rfids": [], "unbound_rfids": []})
 
-        return JsonResponse({"products": products, "raw_rfids": raw_rfids})
+        logger.debug(f"Returning products: {products}, unbound_rfids: {unbound_rfids}")
+        return JsonResponse({
+            "products": products,
+            "raw_rfids": raw_rfids,
+            "unbound_rfids": unbound_rfids
+        })
     except Exception as e:
         logger.error(f"Error in current_products: {e}")
-        return JsonResponse({"products": [], "raw_rfids": []})
+        return JsonResponse({"products": [], "raw_rfids": [], "unbound_rfids": []})
 
 
 @login_required(login_url='/login/')
@@ -442,32 +487,30 @@ def store_rfids_view(request):
         if not isinstance(rfids, list):
             return JsonResponse({"error": "Invalid format"}, status=400)
 
-        # Validate user's shop and filter RFIDs
         user_shop = request.user.shop
         if not user_shop and request.user.role not in ['superuser', 'tracky_admin']:
             return JsonResponse({"error": "User has no assigned shop"}, status=403)
 
-        # Check if RFIDs match the user's shop (for non-superuser/tracky_admin)
-        if request.user.role not in ['superuser', 'tracky_admin']:
-            valid_rfids = []
-            for rfid in rfids:
-                rfid = rfid.strip().upper()
-                if ProductInstance.objects.filter(RFID=rfid, product__shop=user_shop).exists():
-                    valid_rfids.append(rfid)
-                else:
-                    logger.debug(f"RFID {rfid} rejected: Does not belong to {user_shop.name}")
-            rfids = valid_rfids
-            if not rfids:
-                return JsonResponse({"status": "ok", "message": "No valid RFIDs for this shop"}, status=200)
-
+        cache_key = f"current_rfids_dict_{user_shop.id}" if user_shop else "current_rfids_dict_global"
         now = time.time()
-        existing = cache.get("current_rfids_dict", {}) or {}
-        for rfid in rfids:
-            existing[rfid] = {"timestamp": now, "user_id": request.user.id}
-        cache.set("current_rfids_dict", existing, timeout=2)
+        existing = cache.get(cache_key, {}) or {}
 
-        logger.debug(f"Stored RFIDs for user {request.user.id} in {user_shop.name}: {list(existing.keys())}")
-        return JsonResponse({"status": "ok"})
+        valid_rfids = []
+        for rfid in rfids:
+            rfid = rfid.strip().upper()
+            # Only reject bound RFIDs from other shops
+            if request.user.role not in ['superuser', 'tracky_admin'] and ProductInstance.objects.filter(
+                    RFID=rfid).exists():
+                if not ProductInstance.objects.filter(RFID=rfid, product__shop=user_shop).exists():
+                    logger.debug(f"RFID {rfid} rejected: Belongs to another shop")
+                    continue
+            valid_rfids.append(rfid)
+            existing[rfid] = {"timestamp": now, "user_id": request.user.id}
+
+        cache.set(cache_key, existing, timeout=2)
+        logger.debug(
+            f"Stored RFIDs for user {request.user.id} in {user_shop.name if user_shop else 'global'}: {valid_rfids}")
+        return JsonResponse({"status": "ok", "stored_rfids": valid_rfids})
     except Exception as e:
         logger.error(f"Error in store_rfids_view: {e}")
         return JsonResponse({"error": str(e)}, status=500)
@@ -477,18 +520,33 @@ def store_rfids_view(request):
 @require_GET
 def current_sold_products(request):
     try:
-        tag_dict = cache.get('current_rfids_dict', {}) or {}
+        cache_key = (
+            f"current_rfids_dict_{request.user.shop.id}"
+            if request.user.shop and request.user.role not in ['superuser', 'tracky_admin', 'cashier']
+            else "current_rfids_dict_global"
+        )
+        tag_dict = cache.get(cache_key, {}) or {}
         raw_rfids = list(tag_dict.keys())
+        logger.debug(f"Current SOLD RFIDs in cache ({cache_key}): {raw_rfids}")
 
-        logger.debug(f"Current SOLD RFIDs in range: {raw_rfids}")
+        if not raw_rfids:
+            logger.debug("No RFIDs found in cache.")
+            return JsonResponse({"products": [], "raw_rfids": []})
+
+        normalized_rfids = []
+        for rfid in raw_rfids:
+            rfid = rfid.strip().upper()
+            if rfid.startswith('01') and len(rfid) == 24:
+                normalized_rfids.append(rfid[2:] + 'C8')
+            else:
+                normalized_rfids.append(rfid)
 
         queryset = (
             ProductInstance.objects
             .select_related("product")
-            .filter(RFID__in=raw_rfids, status="SOLD")
+            .filter(RFID__in=normalized_rfids, status="SOLD")
         )
-
-        if request.user.role not in ['superuser', 'tracky_admin', 'cashier'] and request.user.shop:
+        if request.user.shop and request.user.role not in ['superuser', 'tracky_admin', 'cashier']:
             queryset = queryset.filter(product__shop=request.user.shop)
 
         products = []
@@ -501,6 +559,7 @@ def current_sold_products(request):
                 "status": inst.status,
             })
 
+        logger.debug(f"Returning sold products: {products}")
         return JsonResponse({
             "products": products,
             "raw_rfids": raw_rfids
