@@ -26,6 +26,9 @@ class ProductSitemap(Sitemap):
     def location(self, obj):
         return reverse('product-detail', args=[obj.pk])
 
+    def lastmod(self, obj):
+        return obj.updated_at  # Uses updated_at for <lastmod>
+
 
 class ShopSitemap(Sitemap):
     changefreq = "weekly"
@@ -36,3 +39,6 @@ class ShopSitemap(Sitemap):
 
     def location(self, obj):
         return reverse('shop-detail', args=[obj.id])
+
+    def lastmod(self, obj):
+        return obj.updated_at  # Uses updated_at for <lastmod>
