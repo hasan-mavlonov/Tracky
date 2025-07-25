@@ -567,3 +567,13 @@ def current_sold_products(request):
     except Exception as e:
         logger.error(f"Error in current_sold_products: {e}")
         return JsonResponse({"products": [], "raw_rfids": []})
+
+
+def robots_txt(request):
+    lines = [
+        "User-Agent: *",
+        "Disallow: /admin/",
+        "Allow: /",
+        "Sitemap: https://tracky-d764.onrender.com/sitemap.xml",
+    ]
+    return HttpResponse("\n".join(lines), content_type="text/plain")

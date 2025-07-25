@@ -6,10 +6,12 @@ from django.urls import path, include
 from django.views.i18n import set_language
 
 from products.sitemaps import StaticViewSitemap, ProductSitemap, ShopSitemap
+from products.views import robots_txt
 from .views import BaseView, LandingView, LoginView, LogoutView, ForgotPasswordView, APILoginView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('robots.txt', robots_txt),
     path('products/', include('products.urls')),
     path('shops/', include('shops.urls')),
     path('sales/', include('sales.urls')),
