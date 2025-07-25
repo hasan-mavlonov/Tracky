@@ -1,9 +1,11 @@
 # Tracky/Tracky/urls.py
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
 from django.urls import path, include
 from django.views.i18n import set_language
 
+from products.sitemaps import StaticViewSitemap, ProductSitemap, ShopSitemap
 from .views import BaseView, LandingView, LoginView, LogoutView, ForgotPasswordView, APILoginView
 
 urlpatterns = [
@@ -23,3 +25,12 @@ urlpatterns += i18n_patterns(
     path('', LandingView, name='landing_view'),
     path('dashboard/', BaseView, name='base_view'),
 )
+sitemaps = {
+    'static': StaticViewSitemap,
+    'products': ProductSitemap,
+    'shops': ShopSitemap,
+}
+
+urlpatterns += [
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
+]
