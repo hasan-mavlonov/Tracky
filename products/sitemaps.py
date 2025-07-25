@@ -21,10 +21,13 @@ class ProductSitemap(Sitemap):
     priority = 0.8
 
     def items(self):
-        return Product.objects.all()
+        return Product.objects.all().order_by("pk")  # Add ordering
 
     def location(self, obj):
         return reverse('product-detail', args=[obj.pk])
+
+    def lastmod(self, obj):
+        return obj.updated_at
 
 
 class ShopSitemap(Sitemap):
@@ -32,7 +35,10 @@ class ShopSitemap(Sitemap):
     priority = 0.6
 
     def items(self):
-        return Shop.objects.all()
+        return Shop.objects.all().order_by("pk")  # Add ordering
 
     def location(self, obj):
-        return reverse('shop-detail', args=[obj.id])
+        return reverse('shop-detail', args=[obj.pk])
+
+    def lastmod(self, obj):
+        return obj.updated_at

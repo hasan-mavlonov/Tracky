@@ -14,6 +14,7 @@ class Product(models.Model):
     quantity = models.PositiveIntegerField(default=1)
     rfid_count = models.PositiveIntegerField(default=0)  # New field to track how many RFIDs are associated
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         indexes = [
