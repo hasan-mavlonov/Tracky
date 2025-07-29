@@ -4,17 +4,41 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>{% trans "Tracky" %}</title>
-    <meta name="description"
-          content="{% trans 'Tracky – real-time inventory tracking system for modern retail. Know where your inventory is – always and everywhere.' %}"/>
+
+    <!-- ✅ SEO TITLE -->
+    <title>{% trans "Tracky – RFID Inventory Tracking for Retail" %}</title>
+
+    <!-- ✅ SEO DESCRIPTION -->
+    <meta name="description" content="{% trans 'RFID-based real-time inventory tracking system for modern retail. Reduce loss, speed up counts, and stay in control with Tracky.' %}"/>
+
+    <!-- ✅ ADDED KEYWORDS -->
+    <meta name="keywords" content="Tracky, inventory tracking, RFID system, retail inventory, warehouse software, stock control, RFID retail"/>
+
     <link rel="shortcut icon" href="../static/images/logo-color.png" type="image/x-icon"/>
-    <!-- Open Graph / Facebook -->
-    <meta property="og:title" content="{% trans 'Tracky – Real-time inventory tracking' %}"/>
-    <meta property="og:description"
-          content="{% trans 'Tracky prevents inventory loss and accounting errors. Inventory counts up to 15 times faster with RFID technology.' %}"/>
+
+    <!-- ✅ UPDATED OPEN GRAPH -->
+    <meta property="og:title" content="{% trans 'Tracky – RFID Inventory System for Retail' %}"/>
+    <meta property="og:description" content="{% trans 'Tracky helps prevent stock loss and errors with real-time RFID tracking. Inventory counts up to 15x faster.' %}"/>
     <meta property="og:type" content="website"/>
-    <meta property="og:url" content="https://tracky.io"/>
+    <meta property="og:url" content="https://tracky.one"/>
     <meta property="og:image" content="../static/images/dashboard.png"/>
+
+    <!-- ✅ STRUCTURED DATA FOR GOOGLE -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Tracky",
+      "url": "https://tracky.one",
+      "description": "Tracky is an RFID-based inventory tracking system for retail and warehouses. Prevent inventory loss and count stock 15x faster.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://tracky.one/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
     <link rel="stylesheet" href="../static/landing/css/tailwind-build.css"/>
     <link rel="stylesheet" href="../static/landing/css/index.css"/>
     <link rel="stylesheet"
@@ -23,6 +47,8 @@
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
 </head>
 <body class="tw-flex tw-min-h-[100vh] tw-flex-col tw-bg-black tw-text-white">
+<!-- ... your header and body continues here exactly as-is -->
+
 <header class="tw-max-w-lg:tw-px-4 tw-max-w-lg:tw-mr-auto tw-absolute tw-top-0 tw-z-20 tw-flex tw-h-[60px] tw-w-full tw-bg-opacity-0 tw-px-[5%] lg:tw-justify-around">
     <a class="tw-h-[60px] tw-max-w-[60px] tw-flex tw-items-center tw-justify-center tw-p-[6px]" href="">
         <img src="../static/images/image.png" alt="{% trans 'Tracky Logo' %}" class="tw-h-full tw-w-auto tw-object-contain"/>
