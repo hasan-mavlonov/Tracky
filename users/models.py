@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from shops.models import Shop
 
+
 class UserManager(BaseUserManager):
     def create_user(self, phone_number, password=None, **extra_fields):
         if not phone_number:
@@ -25,6 +26,7 @@ class UserManager(BaseUserManager):
             raise ValueError('Superuser must have role=superuser.')
 
         return self.create_user(phone_number, password, **extra_fields)
+
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     ROLE_CHOICES = (
